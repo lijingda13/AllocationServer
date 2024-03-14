@@ -22,17 +22,16 @@ public class UserService {
     }
 
     public User registerUser(Staff staff, Role role) {
-        // Here we would set the role, hash the password, and then save the staff to the database.
         staff.setPassword(passwordEncoder.encode(staff.getPassword()));
-        staff.setRole(role); // Assuming you have a setRole method in your User class.
+        staff.setRole(role); 
         return userRepository.save(staff);
     }
 
     public User registerUser(Student student, Role role) {
-        // Similar to registering staff, we set the role, hash the password, and save the student.
         student.setPassword(passwordEncoder.encode(student.getPassword()));
-        student.setRole(role); // Assuming you have a setRole method in your User class.
+        student.setRole(role); 
         return userRepository.save(student);
     }
+    //login
     
 }

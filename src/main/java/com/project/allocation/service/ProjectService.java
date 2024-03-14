@@ -39,7 +39,6 @@ public class ProjectService {
     if (user instanceof Staff && user.getRole() == Role.STAFF) {
         // Set the staff member who is proposing the project
         project.setStaff((Staff) user);
-        // Set the project's status to true, indicating it's available for students to express interest
         project.setStatus(true);
         // Save the new project to the repository
         return projectRepository.save(project);

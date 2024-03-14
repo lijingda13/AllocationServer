@@ -59,6 +59,6 @@ public class ProjectController {
         return project != null ? new ResponseEntity<>(project, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    // Additional endpoints like 'getProjectsByStaff', 'getStudentsInterestedInProject', etc., can be added here
+    // Additional endpoints like 'getProjectsByStaff', 'getStudentsInterestedInProject'
 
 }
