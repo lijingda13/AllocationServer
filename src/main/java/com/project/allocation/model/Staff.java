@@ -3,7 +3,7 @@ package com.project.allocation.model;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Staff extends User{
+public class Staff extends User {
 
     /**
      * projects list proposed by staff.
@@ -40,7 +40,8 @@ public class Staff extends User{
      * @return user list
      */
     public Set<User> checkStudents(Project project) {
-        return project.getInterestStudents();
+        // return project.getInterestStudents();
+        throw new UnsupportedOperationException();
     }
 
     /**
