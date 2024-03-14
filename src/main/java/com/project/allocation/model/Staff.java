@@ -1,5 +1,6 @@
 package com.project.allocation.model;
 
+import java.util.HashSet;
 import java.util.Set;
 
 public class Staff extends User{
@@ -8,6 +9,14 @@ public class Staff extends User{
      * projects list proposed by staff.
      */
     private Set<Project> projects;
+
+    /**
+     * Staff constructor.
+     */
+    public Staff(String username, String password, String firstname, String lastname) {
+        super(username, password, firstname, lastname);
+        this.projects = new HashSet<>();
+    }
 
     /**
      * get the projects proposed by the staff.
