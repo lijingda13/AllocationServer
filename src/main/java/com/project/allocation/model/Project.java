@@ -12,4 +12,12 @@ public class Project {
     private User assignedStudent; // The student assigned to the project
     private Set<User> interestStudents;
     private boolean status;
+
+    public boolean getStatus() {
+        return status;
+    }
+
+    public Set<User> getInterestStudents() {
+        return interestStudents;
+    }
 }
