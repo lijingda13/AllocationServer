@@ -1,10 +1,16 @@
 package com.project.allocation.model;
 
+import java.util.Date;
 import java.util.Set;
 
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+
 public class Project {
-    
-    private static Long id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    private static Long projectId;
 
     private String title;
     private String description;
@@ -13,6 +19,8 @@ public class Project {
     private User assignedStudent; // The student assigned to the project
     private Set<User> interestStudents;
     private boolean status;
+    private Date createTime;
+    private Date assignTime;
 
     public Project() {
     }
