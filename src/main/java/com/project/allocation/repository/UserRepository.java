@@ -6,5 +6,7 @@ import com.project.allocation.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
+
+    User findByUsername(String username);
     // Custom database queries can be added here
 }

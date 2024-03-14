@@ -19,8 +19,12 @@ public class Staff extends User{
     public Staff(String username, String password, String firstname, String lastname) {
         super(username, password, firstname, lastname);
         this.projects = new HashSet<>();
+        this.role = Role.STAFF;
     }
-
+    public Staff(){
+        super();
+        this.role = Role.STAFF;
+    }
     /**
      * get the projects proposed by the staff.
      * @return projects.

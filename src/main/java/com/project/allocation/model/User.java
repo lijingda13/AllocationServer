@@ -9,7 +9,7 @@ public class User extends BaseEntity {
     private String password;
     private String firstname;
     private String lastname;
-    private Role role; // "STUDENT" or "STAFF"
+    protected Role role; // "STUDENT" or "STAFF"
 
     public User(String username, String password, String firstname, String lastname) {
         this.username=username;

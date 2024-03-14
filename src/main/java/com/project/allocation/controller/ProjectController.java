@@ -42,21 +42,21 @@ public class ProjectController {
     }
 
     @PostMapping("/{projectId}/registerInterest")
-    public ResponseEntity<Void> registerInterest(@PathVariable Long projectId, @AuthenticationPrincipal User user) {
+    public ResponseEntity<Void> registerInterest(@PathVariable Project project, @AuthenticationPrincipal User user) {
         if (user.getRole() != Role.STUDENT) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        projectService.registerInterest(projectId, user);
+        projectService.registerInterest(project, user);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @PutMapping("/{projectId}/assign/{studentId}")
-    public ResponseEntity<Project> assignProjectToStudent(@PathVariable Long projectId, @PathVariable Long studentId, @AuthenticationPrincipal User user) {
-        if (user.getRole() != Role.STAFF) {
+    public ResponseEntity<Project> assignProjectToStudent(@PathVariable Project project, @AuthenticationPrincipal User student,  @AuthenticationPrincipal User staff) {
+        if (staff.getRole() != Role.STAFF || student.getRole() != Role.STUDENT) {
             return new ResponseEntity<>(HttpStatus.FORBIDDEN);
         }
-        Project project = projectService.assignProject(projectId, studentId, user);
-        return project != null ? new ResponseEntity<>(project, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        Project projectAssign = projectService.assignProject(project, student, staff);
+        return projectAssign != null ? new ResponseEntity<>(project, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     // Additional endpoints like 'getProjectsByStaff', 'getStudentsInterestedInProject'

@@ -24,14 +24,33 @@ public class UserController {
 
     @PostMapping("/register/staff")
     public ResponseEntity<User> registerStaff(@RequestBody Staff staff) {
-        User newUser = userService.registerUser(staff, Role.STAFF);
+        User newUser = userService.registerUser(staff);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
     @PostMapping("/register/student")
     public ResponseEntity<User> registerStudent(@RequestBody Student student) {
-        User newUser = userService.registerUser(student, Role.STUDENT);
+        User newUser = userService.registerUser(student);
         return new ResponseEntity<>(newUser, HttpStatus.CREATED);
     }
 
+    @PutMapping("/{id}")
+    public ResponseEntity<User> updateUser(@RequestBody User userDetails) {
+        User updatedUser = userService.updateUser(userDetails);
+        return ResponseEntity.ok(updatedUser);
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<String> login(@RequestParam("role") String role,
+                                        @RequestParam("username") String username,
+                                        @RequestParam("password") String password) {
+        boolean isAuthenticated = userService.login(role, username, password);
+
+        if (isAuthenticated) {
+            return ResponseEntity.ok("Login successful");
+        } else {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid credentials");
+        }
+    }
 }
+

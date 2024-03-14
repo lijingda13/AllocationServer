@@ -30,7 +30,6 @@ public class ProjectService {
 
     @Transactional
     public Project createProject(Project project) {
-        // Here you could include logic to set initial values or validate the project details.
         return projectRepository.save(project);
     }
 
@@ -54,9 +53,9 @@ public class ProjectService {
     }
 
     @Transactional
-    public Project assignProject(Long projectId, Long studentId, User staffUser) {
-        Optional<Project> projectOptional = projectRepository.findById(projectId);
-        Optional<User> studentOptional = userRepository.findById(studentId);
+    public Project assignProject(Project project2, User student2, User staffUser) {
+        Optional<Project> projectOptional = projectRepository.findById(project2.getId());
+        Optional<User> studentOptional = userRepository.findById(student2.getId());
 
         if (projectOptional.isPresent() && studentOptional.isPresent() && staffUser.getRole()== Role.STAFF) {
             Project project = projectOptional.get();
@@ -76,16 +75,14 @@ public class ProjectService {
     }
 
     @Transactional
-     public void registerInterest(Long projectId, User studentUser) {
+     public void registerInterest(Project newProject, User studentUser) {
         if (!(studentUser instanceof Student)) {
             throw new IllegalArgumentException("Only students can register interest in projects.");
         }
 
         Student student = (Student) studentUser;
-        Project project = projectRepository.findById(projectId)
-                .orElseThrow(() -> new IllegalArgumentException("Project with id " + projectId + " not found"));
-
-        // Here we should also check if the project is already assigned or not
+        Project project = projectRepository.findById(newProject.getId())
+                .orElseThrow(() -> new IllegalArgumentException("Project with id " + newProject.getId() + " not found"));
         if (!project.getStatus()) {
             throw new IllegalStateException("Cannot register interest in an assigned project.");
         }
