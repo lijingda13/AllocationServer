@@ -1,4 +1,4 @@
-package com.project.allocation.config;
+package com.project.allocation.util;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
