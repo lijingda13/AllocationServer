@@ -3,11 +3,14 @@ package com.project.allocation.model;
 import java.util.HashSet;
 import java.util.Set;
 
+import jakarta.persistence.OneToMany;
+
 public class Staff extends User{
 
     /**
      * projects list proposed by staff.
      */
+    @OneToMany(mappedBy = "proposedBy")
     private Set<Project> projects;
 
     /**
@@ -38,11 +41,11 @@ public class Staff extends User{
      * staff view any students who have registered interest.
      * @param project Project.
      * @return user list
-     */
+     
     public Set<User> checkStudents(Project project) {
         return project.getInterestStudents();
     }
-
+    */
     /**
      * staff can assign the student to the project.
      */
