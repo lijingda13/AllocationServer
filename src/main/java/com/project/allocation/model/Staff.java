@@ -3,11 +3,14 @@ package com.project.allocation.model;
 import java.util.HashSet;
 import java.util.Set;
 
-public class Staff extends User {
+import jakarta.persistence.OneToMany;
+
+public class Staff extends User{
 
     /**
      * projects list proposed by staff.
      */
+    @OneToMany(mappedBy = "proposedBy")
     private Set<Project> projects;
 
     /**
