@@ -44,6 +44,9 @@ public class User extends BaseEntity {
     public Role getRole() {
         return role;
     }
+    public void setRole(Role role) {
+        this.role = role;
+    }
 
     // Role enum for better type safety
     public enum Role {
