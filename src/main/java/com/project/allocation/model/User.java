@@ -1,13 +1,9 @@
 package com.project.allocation.model;
 
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.Entity;
 
-public class User {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+@Entity(name = "users")
+public class User extends BaseEntity {
 
     private String username;
     private String password;
@@ -25,11 +21,6 @@ public class User {
     public User() {
     }
 
-    // Getters and Setters
-    public Long getId() {
-        return id;
-    }
- 
     public String getUsername() {
         return username;
     }

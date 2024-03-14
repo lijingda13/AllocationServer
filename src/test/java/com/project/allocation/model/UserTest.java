@@ -6,7 +6,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import org.junit.jupiter.api.Test;
 
 public class UserTest {
-     @Test
+    @Test
     void createUserWithConstructorAndValidateFields() {
         String username = "testUser";
         String password = "testPass";
