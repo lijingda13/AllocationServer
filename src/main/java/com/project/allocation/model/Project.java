@@ -14,6 +14,14 @@ public class Project {
     private Set<User> interestStudents;
     private boolean status;
 
-    public Project(){
+    public Project() {
+    }
+
+    public boolean getStatus() {
+        return status;
+    }
+
+    public Set<User> getInterestStudents() {
+        return interestStudents;
     }
 }
