@@ -11,4 +11,5 @@ public class Project {
     private User proposer; // The staff member who proposed the project
     private User assignedStudent; // The student assigned to the project
     private Set<User> interestStudents;
+    private boolean status;
 }
