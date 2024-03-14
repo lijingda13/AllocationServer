@@ -3,7 +3,8 @@ package com.project.allocation.model;
 import java.util.Set;
 
 public class Project {
-    private Long id;
+    
+    private static Long id;
 
     private String title;
     private String description;
@@ -12,4 +13,7 @@ public class Project {
     private User assignedStudent; // The student assigned to the project
     private Set<User> interestStudents;
     private boolean status;
+
+    public Project(){
+    }
 }
