@@ -10,7 +10,9 @@ import com.project.allocation.model.User.Role;
 import com.project.allocation.repository.UserRepository;
 
 import jakarta.persistence.EntityNotFoundException;
+import org.springframework.stereotype.Service;
 
+@Service
 public class UserService {
 
 
