@@ -1,8 +1,11 @@
 package com.project.allocation.model;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.OneToOne;
 
 @Entity(name = "projects")
@@ -11,13 +14,9 @@ public class Project extends BaseEntity {
     private String title;
     private String description;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "staff_user_id")
+    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @JoinColumn(name = "staff_user_id", referencedColumnName = "id")
     private User staff; // The staff member who proposed the project
-
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "student_user_id")
-    private User assignedStudent; // The student assigned to the project
 
     private boolean status;
 
@@ -54,14 +53,6 @@ public class Project extends BaseEntity {
 
     public void setStaff(User staff) {
         this.staff = staff;
-    }
-
-    public User getAssignedStudent() {
-        return assignedStudent;
-    }
-
-    public void setAssignedStudent(User assignedStudent) {
-        this.assignedStudent = assignedStudent;
     }
 
     public boolean getStatus() {

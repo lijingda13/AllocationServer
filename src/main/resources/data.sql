@@ -1,5 +1,5 @@
 -- Sample users
-INSERT INTO users (username, role, first_name, last_name, password) VALUES
+INSERT INTO users (username, role, firstname, lastname, password) VALUES
     ('rwilliams', 1, 'Rachel', 'Williams', 'password123'),
     ('mjones', 1, 'Michael', 'Jones', 'password123'),
     ('jchen', 0, 'Jenny', 'Chen', 'password123'),
@@ -15,7 +15,7 @@ INSERT INTO projects (staff_user_id, title, description, status, create_time) VA
     (2, 'Cybersecurity', 'Investigating the latest cybersecurity threats and defenses.', TRUE, '2024-01-04 13:00:00');
 
 -- Sample interest list entries
-INSERT INTO interest_list (project_id, student_user_id) VALUES
+INSERT INTO interested_record (project_id, student_user_id) VALUES
     (1, 3),
     (2, 3),
     (2, 4),
@@ -25,5 +25,5 @@ INSERT INTO interest_list (project_id, student_user_id) VALUES
     (1, 6);
 
 -- Sample assigned list entries
-INSERT INTO assigned_list (project_id, student_user_id, assign_time) VALUES
+INSERT INTO assigned_record (project_id, student_user_id, assign_time) VALUES
     (1, 3, '2024-02-01 12:00:00');

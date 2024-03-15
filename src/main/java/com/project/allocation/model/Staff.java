@@ -5,7 +5,7 @@ import java.util.Set;
 
 import jakarta.persistence.OneToMany;
 
-public class Staff extends User{
+public class Staff extends User {
 
     /**
      * projects list proposed by staff.

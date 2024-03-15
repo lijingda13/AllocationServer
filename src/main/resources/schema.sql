@@ -9,8 +9,8 @@ CREATE TABLE users (
       id INT AUTO_INCREMENT PRIMARY KEY,
       username VARCHAR(255),
       role INT, -- 0 for student, 1 for staff
-      first_name VARCHAR(255),
-      last_name VARCHAR(255),
+      firstname VARCHAR(255),
+      lastname VARCHAR(255),
       password VARCHAR(255)
 );
 
@@ -21,25 +21,26 @@ CREATE TABLE projects (
      title VARCHAR(255),
      description TEXT,
      status BOOLEAN, -- 0 for available, 1 for assigned
+     student_user_id INT, -- assigned student id
      create_time TIMESTAMP,
      FOREIGN KEY (staff_user_id) REFERENCES users (id)
 );
 
 -- Creation of interest list table
-CREATE TABLE interest_list (
+CREATE TABLE interested_record (
+    id INT AUTO_INCREMENT PRIMARY KEY,
     project_id INT,
     student_user_id INT,
     FOREIGN KEY (project_id) REFERENCES projects (id),
-    FOREIGN KEY (student_user_id) REFERENCES users (id),
-    PRIMARY KEY (project_id, student_user_id)
+    FOREIGN KEY (student_user_id) REFERENCES users (id)
 );
 
 -- Creation of assigned list table
-CREATE TABLE assigned_list (
+CREATE TABLE assigned_record (
+    id INT AUTO_INCREMENT PRIMARY KEY,
     project_id INT,
     student_user_id INT,
     assign_time TIMESTAMP,
     FOREIGN KEY (project_id) REFERENCES projects (id),
-    FOREIGN KEY (student_user_id) REFERENCES users (id),
-    PRIMARY KEY (project_id, student_user_id)
+    FOREIGN KEY (student_user_id) REFERENCES users (id)
 );

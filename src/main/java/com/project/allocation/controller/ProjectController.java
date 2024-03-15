@@ -35,7 +35,7 @@ public class ProjectController {
         return new ResponseEntity<>(newProject, HttpStatus.CREATED);
     }
 
-    @GetMapping("/view")
+    @GetMapping("/")
     public ResponseEntity<List<Project>> viewProjects() {
         List<Project> projects = projectService.getAllProjects();
         return new ResponseEntity<>(projects, HttpStatus.OK);

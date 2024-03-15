@@ -63,7 +63,6 @@ public class ProjectService {
 
             // Logic to ensure the staff member is allowed to assign this project.
             if (project.getStaff().equals(staffUser)) {
-                project.setAssignedStudent(student);
                 project.setStatus(false); // Assuming 'false' means assigned.
                 return projectRepository.save(project);
             } else {
