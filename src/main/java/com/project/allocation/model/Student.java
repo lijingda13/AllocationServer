@@ -15,7 +15,7 @@ public class Student extends User {
     public Student(String username, String password, String firstname, String lastname) {
         super(username, password, firstname, lastname);
         this.interestProject = new HashSet<>();
-        this.role = Role.STAFF;
+        this.role = Role.STUDENT;
     }
 
     public Student() {
