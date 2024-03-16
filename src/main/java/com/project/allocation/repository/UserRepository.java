@@ -12,6 +12,7 @@ import jakarta.persistence.EntityNotFoundException;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Optional;
 
 @Repository
@@ -31,6 +32,11 @@ public class UserRepository {
         } catch (EmptyResultDataAccessException e) {
             return Optional.empty(); // No user found with the given ID
         }
+    }
+    
+    public List<User> findAll() {
+        String sql = "SELECT * FROM users";
+        return jdbcTemplate.query(sql, new UserRowMapper());
     }
 
     public Optional<User> findByUsername(String username) {
@@ -73,4 +79,5 @@ public class UserRepository {
             return user;
         }
     }
+
 }

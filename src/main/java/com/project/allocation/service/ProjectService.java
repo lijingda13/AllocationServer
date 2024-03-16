@@ -64,7 +64,6 @@ public class ProjectService {
             jdbcTemplate.update(insertSql, project.getId(), student.getId());
             
             // Update the project object and return it
-            project.setAssignedStudent(student);
             project.setStatus(false);
             return project;
         } else {

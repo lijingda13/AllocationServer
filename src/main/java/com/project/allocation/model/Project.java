@@ -62,4 +62,5 @@ public class Project extends BaseEntity {
     public void setStatus(boolean status) {
         this.status = status;
     }
+
 }

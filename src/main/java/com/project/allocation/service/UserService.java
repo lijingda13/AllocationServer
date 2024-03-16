@@ -11,7 +11,7 @@ import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.project.allocation.model.User;
-import com.project.allocation.model.User.Role;
+
 
 @Service
 public class UserService {
