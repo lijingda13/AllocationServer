@@ -1,99 +1,95 @@
 package com.project.allocation.service;
 
-import java.util.List;
-
-import com.project.allocation.model.Project;
-import com.project.allocation.model.Staff;
-import com.project.allocation.model.Student;
-import com.project.allocation.model.User;
-import com.project.allocation.model.User.Role;
-import com.project.allocation.repository.ProjectRepository;
-import com.project.allocation.repository.UserRepository;
-
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
-
-import java.util.Optional;
+import com.project.allocation.model.Project;
+import com.project.allocation.model.User;
+import java.util.List;
 
 @Service
 public class ProjectService {
 
-    private final ProjectRepository projectRepository;
-    private final UserRepository userRepository;
+    private final JdbcTemplate jdbcTemplate;
 
     @Autowired
-    public ProjectService(ProjectRepository projectRepository, UserRepository userRepository) {
-        this.projectRepository = projectRepository;
-        this.userRepository = userRepository;
+    public ProjectService(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
-    @Transactional
     public Project createProject(Project project) {
-        return projectRepository.save(project);
+        final String sql = "INSERT INTO projects (title, description, status, staff_user_id, create_time) VALUES (?, ?, ?, ?, ?)";
+        jdbcTemplate.update(sql,
+                project.getTitle(),
+                project.getDescription(),
+                project.getStatus(),
+                project.getStaff().getId()
+        );
+        return project; // In a real application, you would return the Project with the generated ID
     }
 
-   public Project proposeProject(Project project, User user) {
-    // Validate that the user is indeed a Staff member before allowing them to propose a project
-    if (user instanceof Staff && user.getRole() == Role.STAFF) {
-        // Set the staff member who is proposing the project
-        project.setStaff((Staff) user);
-        project.setStatus(true);
-        // Save the new project to the repository
-        return projectRepository.save(project);
-    } else {
-        // If the user is not a Staff member, throw an exception
-        throw new IllegalArgumentException("Only staff members can propose projects.");
-    }
-}
-
-    @Transactional(readOnly = true)
     public List<Project> getAllProjects() {
-        return projectRepository.findAll();
+        final String sql = "SELECT * FROM projects";
+        return jdbcTemplate.query(sql, (rs, rowNum) -> {
+            Project project = new Project();
+            project.setId(rs.getLong("id"));
+            project.setTitle(rs.getString("title"));
+            project.setDescription(rs.getString("description"));
+            project.setStatus(rs.getBoolean("status"));
+            // You would also need to fetch and set the staff member for each project
+            return project;
+        });
     }
 
-    @Transactional
-    public Project assignProject(Project project2, User student2, User staffUser) {
-        Optional<Project> projectOptional = projectRepository.findById(project2.getId());
-        Optional<User> studentOptional = userRepository.findById(student2.getId());
+    public void assignProject(Project project, User student) {
+        final String sql = "UPDATE projects SET student_user_id = ?, status = ? WHERE id = ?";
+        jdbcTemplate.update(sql, student, false, project);
+        // Consider additional logic for managing the assigned list
+    }
 
-        if (projectOptional.isPresent() && studentOptional.isPresent() && staffUser.getRole()== Role.STAFF) {
-            Project project = projectOptional.get();
-            User student = studentOptional.get();
+    public void registerInterest(Project project, User user) {
+        final String sql = "INSERT INTO interest_list (project_id, student_user_id) VALUES (?, ?)";
+        jdbcTemplate.update(sql, project, user);
+        // You must also handle the case where the student has already registered interest
+    }
 
-            // Logic to ensure the staff member is allowed to assign this project.
-            if (project.getStaff().equals(staffUser)) {
-                project.setStatus(false); // Assuming 'false' means assigned.
-                return projectRepository.save(project);
-            } else {
-                throw new IllegalArgumentException("This staff cannot assign the project.");
-            }
+    public Project assignProject(Project project, User student, User staff) {
+        if (project.getStaff().getId().equals(staff.getId())) {
+            // Update the project with the student's ID and set the status to 'assigned'
+            String sql = "UPDATE projects SET student_user_id = ?, status = ? WHERE id = ?";
+            jdbcTemplate.update(sql, student.getId(), false, project.getId());
+            
+            // Add an entry in the assigned list table
+            String insertSql = "INSERT INTO assigned_list (project_id, student_user_id, assign_time) VALUES (?, ?, ?)";
+            jdbcTemplate.update(insertSql, project.getId(), student.getId());
+            
+            // Update the project object and return it
+            project.setAssignedStudent(student);
+            project.setStatus(false);
+            return project;
         } else {
-            throw new IllegalArgumentException("Project or student not found, or user is not staff.");
+            throw new IllegalArgumentException("This staff cannot assign the project.");
         }
     }
-
-    @Transactional
-     public void registerInterest(Project newProject, User studentUser) {
-        if (!(studentUser instanceof Student)) {
-            throw new IllegalArgumentException("Only students can register interest in projects.");
+    
+    public Project proposeProject(Project project, User user) {
+        // Validate that the user is indeed a Staff member
+        if (user.getRole() == User.Role.STAFF) {
+            // Insert the new project into the projects table
+            String sql = "INSERT INTO projects (title, description, status, staff_user_id, create_time) VALUES (?, ?, ?, ?, ?)";
+            jdbcTemplate.update(sql,
+                    project.getTitle(),
+                    project.getDescription(),
+                    true,
+                    user.getId());
+            
+            // Update the project object with the new ID (this would require fetching the new ID from the database, not shown here)
+            project.setStaff(user);
+            project.setStatus(true);
+            return project;
+        } else {
+            throw new IllegalArgumentException("Only staff members can propose projects.");
         }
-
-        Student student = (Student) studentUser;
-        Project project = projectRepository.findById(newProject.getId())
-                .orElseThrow(() -> new IllegalArgumentException("Project with id " + newProject.getId() + " not found"));
-        if (!project.getStatus()) {
-            throw new IllegalStateException("Cannot register interest in an assigned project.");
-        }
-
-        // Check if the student already registered interest
-        if (student.getInterestProject().contains(project)) {
-            throw new IllegalStateException("Student has already registered interest in this project.");
-        }
-
-        student.getInterestProject().add(project);
-        userRepository.save(student);
-        projectRepository.save(project);
     }
 
 }
