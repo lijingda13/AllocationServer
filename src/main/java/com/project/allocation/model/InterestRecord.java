@@ -5,8 +5,8 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 
-@Entity(name = "interested_record")
-public class InterestedRecord extends BaseEntity {
+@Entity(name = "interest_record")
+public class InterestRecord extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "student_user_id", referencedColumnName = "id")
@@ -16,7 +16,7 @@ public class InterestedRecord extends BaseEntity {
     @JoinColumn(name = "project_id", referencedColumnName = "id")
     private Project project;
 
-    public InterestedRecord() {
+    public InterestRecord() {
     }
 
     public User getStudent() {

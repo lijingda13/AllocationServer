@@ -1,6 +1,6 @@
 package com.project.allocation.repository;
 
-import com.project.allocation.model.AssignedRecord;
+import com.project.allocation.model.AssignRecord;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
@@ -17,7 +17,7 @@ public class AssignedRecordRepositoryTest {
 
     @Test
     public void testGetAssignedRecords() {
-        List<AssignedRecord> assignedRecords = assignedRecordRepository.findAll();
+        List<AssignRecord> assignedRecords = assignedRecordRepository.findAll();
         assertNotEquals(0, assignedRecords.size());
     }
 }

@@ -27,7 +27,7 @@ CREATE TABLE projects (
 );
 
 -- Creation of interest list table
-CREATE TABLE interested_record (
+CREATE TABLE interest_record (
     id INT AUTO_INCREMENT PRIMARY KEY,
     project_id INT,
     student_user_id INT,
@@ -36,7 +36,7 @@ CREATE TABLE interested_record (
 );
 
 -- Creation of assigned list table
-CREATE TABLE assigned_record (
+CREATE TABLE assign_record (
     id INT AUTO_INCREMENT PRIMARY KEY,
     project_id INT,
     student_user_id INT,

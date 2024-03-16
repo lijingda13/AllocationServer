@@ -4,6 +4,10 @@ import jakarta.persistence.Entity;
 
 @Entity(name = "users")
 public class User extends BaseEntity {
+    // Role enum for better type safety
+    public enum Role {
+        STUDENT, STAFF
+    }
 
     private String username;
     private String password;
@@ -21,36 +25,49 @@ public class User extends BaseEntity {
     public User() {
     }
 
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
     public String getUsername() {
         return username;
+    }
+
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 
     public String getPassword() {
         return password;
     }
 
+    public void setFirstName(String firstname) {
+        this.firstname = firstname;
+    }
+
     public String getFirstName() {
         return firstname;
+    }
+
+
+    public void setLastName(String lastname) {
+        this.lastname = lastname;
     }
 
     public String getLastName() {
         return lastname;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
+    public void setRole(Role role) {
+        this.role = role;
     }
 
     public Role getRole() {
         return role;
     }
-    public void setRole(Role role) {
-        this.role = role;
-    }
 
-    // Role enum for better type safety
-    public enum Role {
-        STUDENT, STAFF
-    }
+
 
 }

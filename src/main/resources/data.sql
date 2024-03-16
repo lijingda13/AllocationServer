@@ -15,7 +15,7 @@ INSERT INTO projects (staff_user_id, title, description, status, create_time) VA
     (2, 'Cybersecurity', 'Investigating the latest cybersecurity threats and defenses.', TRUE, '2024-01-04 13:00:00');
 
 -- Sample interest list entries
-INSERT INTO interested_record (project_id, student_user_id) VALUES
+INSERT INTO interest_record (project_id, student_user_id) VALUES
     (1, 3),
     (2, 3),
     (2, 4),
@@ -25,5 +25,5 @@ INSERT INTO interested_record (project_id, student_user_id) VALUES
     (1, 6);
 
 -- Sample assigned list entries
-INSERT INTO assigned_record (project_id, student_user_id, assign_time) VALUES
+INSERT INTO assign_record (project_id, student_user_id, assign_time) VALUES
     (1, 3, '2024-02-01 12:00:00');

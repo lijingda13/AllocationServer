@@ -5,10 +5,9 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToOne;
 
-@Entity(name = "assigned_record")
-public class AssignedRecord extends BaseEntity {
+@Entity(name = "assign_record")
+public class AssignRecord extends BaseEntity {
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "student_user_id", referencedColumnName = "id")
@@ -18,7 +17,7 @@ public class AssignedRecord extends BaseEntity {
     @JoinColumn(name = "project_id", referencedColumnName = "id")
     private Project project;
 
-    public AssignedRecord() {
+    public AssignRecord() {
     }
 
     public User getStudent() {
