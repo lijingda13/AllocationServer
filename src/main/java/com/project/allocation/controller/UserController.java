@@ -8,7 +8,6 @@ import org.springframework.web.bind.annotation.*;
 import com.project.allocation.model.Staff;
 import com.project.allocation.model.Student;
 import com.project.allocation.model.User;
-import com.project.allocation.model.User.Role;
 import com.project.allocation.service.UserService;
 
 @RestController
