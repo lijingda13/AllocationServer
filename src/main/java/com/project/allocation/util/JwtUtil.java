@@ -6,7 +6,9 @@ import com.auth0.jwt.exceptions.JWTVerificationException;
 import com.auth0.jwt.interfaces.DecodedJWT;
 import com.auth0.jwt.interfaces.JWTVerifier;
 import com.project.allocation.model.User;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.stereotype.Component;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.Date;
 
@@ -27,10 +29,31 @@ public class JwtUtil {
     }
 
     public String getUserIdFromToken(String token) {
+        token = token.replace("Bearer ", "");
         try {
             JWTVerifier verifier = JWT.require(algorithm).build();
             DecodedJWT jwt = verifier.verify(token);
             return jwt.getSubject();
+        } catch (JWTVerificationException e) {
+            return null;
+        }
+    }
+
+    public String getUsernameFromToken(String token) {
+        try {
+            JWTVerifier verifier = JWT.require(algorithm).build();
+            DecodedJWT jwt = verifier.verify(token);
+            return jwt.getClaim("username").asString();
+        } catch (JWTVerificationException e) {
+            return null;
+        }
+    }
+
+    public User.Role getRoleFromToken(String token) {
+        try {
+            JWTVerifier verifier = JWT.require(algorithm).build();
+            DecodedJWT jwt = verifier.verify(token);
+            return User.Role.valueOf(jwt.getClaim("role").asString());
         } catch (JWTVerificationException e) {
             return null;
         }

@@ -7,8 +7,10 @@ import com.project.allocation.util.JwtUtil;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.http.HttpHeaders;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -34,5 +36,11 @@ public class AuthController {
         } else {
             return ResponseEntity.badRequest().body(dto);
         }
+    }
+
+    @PostMapping("/hello")
+    public ResponseEntity<String> hello(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        String userId = jwtUtil.getUserIdFromToken(token);
+        return ResponseEntity.ok("Hello " + userId);
     }
 }
