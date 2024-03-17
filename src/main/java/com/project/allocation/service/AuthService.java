@@ -1,7 +1,9 @@
 package com.project.allocation.service;
 
+import com.project.allocation.dto.AuthResponseDTO;
+
 public interface AuthService {
-    boolean login(String username, String password);
+    AuthResponseDTO login(String username, String password);
 
     boolean logout();
 }
