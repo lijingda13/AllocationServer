@@ -17,6 +17,7 @@ INSERT INTO projects (staff_user_id, title, description, status, create_time) VA
 -- Sample interest list entries
 INSERT INTO interest_record (project_id, student_user_id) VALUES
     (1, 3),
+    (1, 4),
     (2, 3),
     (2, 4),
     (3, 5),

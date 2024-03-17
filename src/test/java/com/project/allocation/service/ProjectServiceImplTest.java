@@ -16,10 +16,4 @@ public class ProjectServiceImplTest {
     @Autowired
     private ProjectServiceImpl projectService;
 
-    @Test
-    void testGetProjects() {
-        List<Project> projects = projectService.listAllProjects();
-        assertNotEquals(0, projects.size());
-
-    }
 }

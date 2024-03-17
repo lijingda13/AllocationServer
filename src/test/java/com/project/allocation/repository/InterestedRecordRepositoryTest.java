@@ -16,8 +16,14 @@ public class InterestedRecordRepositoryTest {
     private InterestedRecordRepository interestedRecordRepository;
 
     @Test
-    public void testGetInterestedRecords() {
-        List<InterestRecord> interestedRecords = interestedRecordRepository.findAll();
-        assertNotEquals(0, interestedRecords.size());
+    public void testGetInterestedByStudentId() {
+        List<InterestRecord> interestRecords = interestedRecordRepository.findByStudentId(3);
+        assertNotEquals(0, interestRecords.size());
+    }
+
+    @Test
+    public void testGetInterestedByProjectId() {
+        List<InterestRecord> interestRecords = interestedRecordRepository.findByProjectId(1);
+        assertNotEquals(0, interestRecords.size());
     }
 }

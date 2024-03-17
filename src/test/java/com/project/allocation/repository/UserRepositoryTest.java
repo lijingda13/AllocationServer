@@ -97,4 +97,15 @@ public class UserRepositoryTest {
         User updatedUser = userRepository.findByUsername("rwilliams");
         assertEquals("newFirstName", updatedUser.getFirstName());
     }
+
+    @Test
+    public void testExistsByUsername() {
+        boolean exists = userRepository.existsByUsername("rwilliams");
+        assertEquals(true, exists);
+
+        boolean notExists = userRepository.existsByUsername("notExists");
+        assertEquals(false, notExists);
+    }
+
+
 }

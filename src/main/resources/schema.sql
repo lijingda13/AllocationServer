@@ -31,6 +31,7 @@ CREATE TABLE interest_record (
     id INT AUTO_INCREMENT PRIMARY KEY,
     project_id INT,
     student_user_id INT,
+    interest_time TIMESTAMP,
     FOREIGN KEY (project_id) REFERENCES projects (id),
     FOREIGN KEY (student_user_id) REFERENCES users (id)
 );
