@@ -11,16 +11,17 @@ import { PostList, PostEdit, PostCreate } from "./projects";
 import { Dashboard } from "./Dashboard";
 import {authProvider} from "../auth/authProvider";
 import { MyLayout } from "./errorPage";
+import MyLoginPage from "../auth/MyLoginPage";
 
 export const App = () => {
     const role = localStorage.getItem("role")
     console.log("role:", role)
-  
+    
   return (
-      <Admin layout={MyLayout} authProvider={authProvider} dataProvider={dataProvider1} dashboard={Dashboard}>
+      <Admin loginPage={MyLoginPage} layout={MyLayout} authProvider={authProvider} dataProvider={dataProvider1} dashboard={Dashboard}>
         
         <Resource
-              name="projects"
+              name="posts"
               list={PostList}
               edit={PostEdit}
               icon={PostIcon}

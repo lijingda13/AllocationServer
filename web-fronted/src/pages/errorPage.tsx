@@ -8,7 +8,7 @@ export const MyError = () => {
         <div>
             <Title title="Error" />
             <h1><ErrorIcon /> Something Went Wrong </h1>
-            <div>A client error occurred and your request couldn't be completed.</div>
+            <div>A client error occurred and your request couldn't be completed.1111</div>
         </div>
     );
 };
