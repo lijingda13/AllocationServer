@@ -44,4 +44,16 @@ public class AuthController {
         String userId = jwtUtil.getUserIdFromToken(token);
         return ResponseEntity.ok("Hello " + userId);
     }
+
+    @GetMapping("/hello_staff")
+    public ResponseEntity<String> helloStaff(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        String userId = jwtUtil.getUserIdFromToken(token);
+        return ResponseEntity.ok("Hello staff " + userId);
+    }
+
+    @GetMapping("/hello_student")
+    public ResponseEntity<String> helloStudent(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        String userId = jwtUtil.getUserIdFromToken(token);
+        return ResponseEntity.ok("Hello student " + userId);
+    }
 }

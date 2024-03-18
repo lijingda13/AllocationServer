@@ -7,9 +7,11 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
+import org.springframework.security.config.core.GrantedAuthorityDefaults;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.security.web.SecurityFilterChain;
@@ -41,9 +43,13 @@ public class SecurityConfig {
         http.authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
                         .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/error").permitAll() // allow access to /error for debugging
+                        .requestMatchers("/api/auth/hello_staff").hasRole("STAFF")
+                        .requestMatchers("/api/auth/hello_student").hasRole("STUDENT")
                         .anyRequest().authenticated()
         )
             .formLogin(AbstractHttpConfigurer::disable)
+            .anonymous(AbstractHttpConfigurer::disable)
             .httpBasic(AbstractHttpConfigurer::disable)
             .csrf(AbstractHttpConfigurer::disable)
             .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
@@ -54,6 +60,11 @@ public class SecurityConfig {
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
+    }
+
+    @Bean
+    GrantedAuthorityDefaults grantedAuthorityDefaults() {
+        return new GrantedAuthorityDefaults(""); // Remove the ROLE_ prefix
     }
 
     @Bean
