@@ -1,7 +1,10 @@
 package com.project.allocation.controller;
+
 import com.project.allocation.service.ProjectService;
 import com.project.allocation.service.UserService;
+import com.project.allocation.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -21,9 +24,12 @@ public class ProjectController {
 
     private final ProjectService projectService;
 
+    private final JwtUtil jwtUtil;
+
     @Autowired
-    public ProjectController(ProjectService projectService) {
+    public ProjectController(ProjectService projectService, JwtUtil jwtUtil) {
         this.projectService = projectService;
+        this.jwtUtil = jwtUtil;
     }
 
     @GetMapping("/projects")
@@ -39,8 +45,9 @@ public class ProjectController {
     }
 
     @PostMapping("/projects")
-    public ResponseEntity<Project> createProject(@RequestBody Project project) {
+    public ResponseEntity<Project> createProject(@RequestBody Project project, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         Project createdProject = projectService.createProject(project);
+        String userId = jwtUtil.getUserIdFromToken(token);
         return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
     }
 

@@ -5,8 +5,8 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.OneToOne;
+
+import java.sql.Date;
 
 @Entity(name = "projects")
 public class Project extends BaseEntity {
@@ -19,12 +19,14 @@ public class Project extends BaseEntity {
     private User staff; // The staff member who proposed the project
 
     private boolean status;
+    private Date createDate;
 
-    public Project(String title, String description, User staff, boolean status) {
+    public Project(String title, String description, User staff, boolean status, Date createDate) {
         this.title = title;
         this.description = description;
         this.staff = staff;
         this.status = status;
+        this.createDate = createDate;
     }
 
     public Project() {
@@ -63,4 +65,11 @@ public class Project extends BaseEntity {
         this.status = status;
     }
 
+    public Date getCreateDate() {
+        return createDate;
+    }
+
+    public void setCreateDate(Date createDate) {
+        this.createDate = createDate;
+    }
 }

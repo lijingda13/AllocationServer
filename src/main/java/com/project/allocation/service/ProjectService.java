@@ -1,5 +1,7 @@
 package com.project.allocation.service;
 
+import com.project.allocation.dto.StaffProjectDTO;
+import com.project.allocation.dto.StudentProjectDTO;
 import com.project.allocation.model.Project;
 import com.project.allocation.model.User;
 
@@ -59,4 +61,7 @@ public interface ProjectService {
      */
     boolean assignProject(Long projectId, Long userId);
 
+    List<StudentProjectDTO> listAvailableProjects(Long studentId);
+
+    List<StaffProjectDTO> listProposedProjects(Long staffId);
 }

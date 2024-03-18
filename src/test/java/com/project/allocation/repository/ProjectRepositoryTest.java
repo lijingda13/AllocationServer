@@ -79,4 +79,10 @@ public class ProjectRepositoryTest {
         assertEquals(false, project1.get().getStatus());
         assertEquals(staff, project1.get().getStaff());
     }
+
+    @Test
+    public void testFindAllByStatus() {
+        List<Project> projects = projectRepository.findAllByStatus(true);
+        assertNotEquals(projects.size(), 0);
+    }
 }
