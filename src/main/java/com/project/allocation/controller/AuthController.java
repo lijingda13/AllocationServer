@@ -5,6 +5,7 @@ import com.project.allocation.model.User;
 import com.project.allocation.service.AuthService;
 import com.project.allocation.util.JwtUtil;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -38,7 +39,7 @@ public class AuthController {
         }
     }
 
-    @PostMapping("/hello")
+    @GetMapping("/hello")
     public ResponseEntity<String> hello(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         String userId = jwtUtil.getUserIdFromToken(token);
         return ResponseEntity.ok("Hello " + userId);
