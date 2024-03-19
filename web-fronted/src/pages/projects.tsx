@@ -4,88 +4,57 @@ import { List, Datagrid, TextField,
     TextInput,
     Create,
     useRecordContext,
-    BooleanField,
     Toolbar,
     SaveButton,
     required,
     SelectInput,
-    CheckboxGroupInput,
     TopToolbar,
     ExportButton,
     CreateButton,
-    FilterButton,
-    SelectColumnsButton,
-    GetListParams,
     FunctionField,
-    ReferenceInput,
-    useEditContext,
-    FormDataConsumer,
-    Form,
-    maxLength,
-
+    useDataProvider
 } from "react-admin";
-
-import { Link } from "@mui/material";
-import StarBorderIcon from '@mui/icons-material/StarBorder';
-import StarIcon from '@mui/icons-material/Star';
-import "./styles.css";
-import { dataProvider } from "./dataProvider";
+import Stack from '@mui/material/Stack';
+import Button from '@mui/material/Button';
+import '../share/styles.css';
 import { useNotify, useRedirect } from 'react-admin';
-import { findSourceMap } from "module";
-import { FieldValues } from "react-hook-form";
-
+import {  useState } from "react";
+import '../mock/mock.js';
 // interest project
 const Mybutton = () => {
+    const notify = useNotify();
     const record = useRecordContext();
-    const handleCollect = (event:any) => {
+    const dataProvider = useDataProvider();
+    const handleRegisterInterest = (event:any) => {
         event.preventDefault();
         event.stopPropagation();
-        console.log('shoucangle')
         // handle interest
-        const params:GetListParams = { 
-            pagination: { page: 1, perPage: 10 },
-            sort: { field: 'published_at', order: 'DESC' },
-            filter: 2
-        }
-        dataProvider.getList('posts', params)
-
+        dataProvider.registerInterest(record.id).then((res:any) => {
+            notify(res.msg, {type: 'success'});
+            // 自动刷新列表
+        });
     }
-    return record ? (
-        <Link>
-            <div className="customize-collect-bt" onClick={handleCollect}>
-                {
-                    record.status ? 
-                    <StarIcon  sx={{ fontSize: 15, ml: 1 }} />
-                    : 
-                    <StarBorderIcon className="customize-collect-bt" sx={{ fontSize: 15, ml: 1 }} />
-                }
-            </div> 
-        </Link>
-    ) : null;
+    return (
+        <Stack>
+            <Button disabled={record.registerStatus} size="small" variant="outlined" onClick={handleRegisterInterest}>Register Interest</Button>
+        </Stack>
+    )
 };
 
-// project filter
-const postFilters = [
-    <CheckboxGroupInput alwaysOn source="Project" choices={[
-        { id: '1', name: 'My Project' },
-    ]} />
-];
-
 // customize top-right action
-const ListActions = () => (
-    <TopToolbar>
-        <CreateButton/>
-        <ExportButton/>
-    </TopToolbar>
-);
-
-const LongFiled = () => {
-    
+const ListActions = () => {
+    const role = localStorage.getItem("role");
+    return (
+        <TopToolbar>
+            {role === 'staff' ? <CreateButton/> : null}
+            <ExportButton/>
+        </TopToolbar>
+    );
 }
-
 
 // Project List
 export const PostList = () => {
+    const role = localStorage.getItem("role");
     const notify = useNotify();
     const redirect = useRedirect();
 
@@ -93,90 +62,127 @@ export const PostList = () => {
         notify(`Could not load list: server error`);
         redirect('/');
     };
-    
     return (
-    <List actions={<ListActions/>} pagination={false} queryOptions={{ onError }}>
+    <List actions={<ListActions/>} pagination={false} queryOptions={{ onError,  meta: { role } }}>
         <Datagrid bulkActionButtons={false} rowClick="edit">
             <TextField source="id" sortable={false} />
             <TextField source="title" sortable={false}/>
             <TextField source="description" sortable={false} />
+            {role === 'staff'?
+            '':
             <TextField source="staff" sortable={false}/>
-            <TextField source="student" sortable={false}/>
-            <BooleanField source="status" sortable={false}/>
+            }
+            <TextField label="Assigned Student" source="student" sortable={false}/>
+            <FunctionField
+                label="Project Status"
+                render={(record: { status: any; }) => (record.status? 'Available':'Unavailable')}
+            />
             <FunctionField
                 sx={{color: "blue"}}
                 label="Interest Students"
                 render={(record: { interestStudents: string | any[]; }) => `${record.interestStudents.length}`}
             />
-            <Mybutton />
+            {role === 'staff'?
+            '':
+            <TextField source="registerInterestStatus" sortable={false}/>
+            }
+            {(role === 'staff') ? 
+            null: 
+            <Mybutton />}
         </Datagrid>
     </List>
 );}
 
-
-
-let choicesStudents: any[] | undefined = [];
 // cutomize title
 const PostTitle = () => {
     const record = useRecordContext();
-    choicesStudents = record ? record.choicesStudents: [];
-    console.log(record);
     return <span>Project {record ? `"${record.title}"`: ''}</span>
 }
 
 /* in order to get the edit data, we should use the intermediate component */
 const CustomizeForm = (props:any) => {
+    const role = localStorage.getItem("role");
     const record = useRecordContext(props);
-    console.log({ record });
+    const {getAssigendStudent} = props;
+    const handleChange = (e:any) => {
+        getAssigendStudent(e.target.value)
+        setStudentID(e.target.value);
+    }
+    const [studentId, setStudentID] = useState();
     return (
         <>
-            <SimpleForm {...props} toolbar={<PostCreateToolbar />}>
-                <TextInput source="title" readOnly/>
-                <TextInput source="staff" readOnly/>
-                {record.student ? <TextInput source="student" readOnly/> : null}
-                <TextInput source="description" multiline rows={5} readOnly/>
-                {record.student ? null : <SelectInput source="assignStudent" validate={required()} choices={record["interestStudents"]} readOnly={record["student"]?true:false}/>}
+            <SimpleForm toolbar={<PostEditToolbar/>}>
+                <TextInput  sx={{width:"250px"}} source="title" readOnly/>
+                <TextInput  sx={{width:"250px"}} source="staff" readOnly/>
+                {record.student ? <TextInput  sx={{width:"250px"}} source="student" readOnly/> : null}
+                <TextInput  sx={{width:"250px"}} source="description" multiline rows={5} readOnly/>
+                {(role==='student'||record.student) ? 
+                    null : 
+                    <SelectInput sx={{width:"250px"}} onChange={handleChange} source="assignInterestStudents" validate={required()} choices={record["interestStudents"]} readOnly={record["student"]?true:false}/>}
             </SimpleForm>
         </>
     );
 };
 
 // assign student 
-export const PostEdit = () => ( 
-    <Edit title={<PostTitle/>} mutationOptions={{ meta: { foo: 'bar' } }} resource="projects" queryOptions={{ meta: { foo: 'bar' } }}>
-        <CustomizeForm/>  
+export const PostEdit = () => {
+    const [assignStudentId, setAssignStudentId] = useState();
+    const getAssigendStudent = (data: any) => {
+        setAssignStudentId(data)
+    }
+    
+    return( 
+    <Edit title={<PostTitle/>} mutationOptions={{ meta: {student_id: assignStudentId} }} resource="projects">
+        <CustomizeForm getAssigendStudent={getAssigendStudent}/>  
     </Edit>
-);
+);}
 
-
-
-
-
-// customize save btn
-const PostCreateToolbar = (props:any) => {
-
+// customize edit save btn
+const PostEditToolbar = (props:any) => {
+    const role = localStorage.getItem("role");
+    const redirect = useRedirect();
     const record = useRecordContext(props);
-    console.log(record)
-
+    const goBack = () => {
+        redirect("/projects")
+    }
     return(
 
-    <Toolbar>
-        <SaveButton label="save" disabled={record.status?false:true}/>
+    <Toolbar sx={{display: "flex",justifyContent:"space-between"}}>
+            {role==='staff' ?
+            <SaveButton label="save" disabled={record.status?false:true} />:
+            null
+            }
+            <Stack>
+                <Button variant="contained" onClick={goBack}>Go Back</Button>
+            </Stack>
         
-    </Toolbar>);}
+    </Toolbar>);
+}
 
 // create project
 export const PostCreate = () => (
-    <Create>
-        <SimpleForm>
+    <Create resource="/projects">
+        <SimpleForm toolbar={<PostCreateToolbar/>}>
             <TextInput source="title" validate={required()} />
             <TextInput source="description" multiline rows={5} validate={required()}/>
         </SimpleForm>
     </Create>
 );
+// customize create save btn
+const PostCreateToolbar = (props:any) => {
+    const redirect = useRedirect();
+    const record = useRecordContext(props);
+    const goBack = () => {
+        redirect("/projects");
+    }
+    return(
 
-
-
-
-
-
+    <Toolbar sx={{display: "flex",justifyContent:"space-between"}}>
+        
+            <SaveButton label="save"/>
+            <Stack>
+                <Button variant="contained" onClick={goBack}>Go Back</Button>
+            </Stack>
+        
+    </Toolbar>);
+}

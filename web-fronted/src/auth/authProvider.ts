@@ -1,51 +1,60 @@
-import { AuthProvider } from "react-admin";
+import { AuthProvider, useNotify } from "react-admin";
 import {BACKEND_URL} from "../share/env";
 import { DataProvider, fetchUtils } from "react-admin";
 import { stringify } from "query-string";
+import { Url } from "../share/url";
 
 const httpClient = fetchUtils.fetchJson;
+const headers = new Headers();
+headers.append('Content-Type', 'application/json');
 export const authProvider: AuthProvider = {
     
     // called when the user attempts to log in
-    login: ({username, password}) => {
+    login: async ({username, password}) => {
 
-        // return fetch(`${BACKEND_URL}`, {
-        //     method: 'POST',
-        //     headers: {
-        //         'Content-Type': 'application/json',
-        //     },
-        //     body: JSON.stringify({
-        //         username,
-        //         password,
-        //         role:"staff"
-        //     }),
-        // })
-        // .then(response => {
-        //     console.log(response);
-        //     if (response.status === 200) {
-        //         // successed
-        //         localStorage.setItem("username", username);
-        //         return Promise.resolve();
-        //     } else {
-        //         // failed
-        //         throw new Error("Some of your information isn't correct. Please try again.");
-        //     }
-        // });
-
-        localStorage.setItem("username", username);
-        localStorage.setItem("role", "staff");
-        setTimeout(() => {
-            window.location.reload()
-        }, 1000);
-        
-        // accept all username/password combinations
-        return Promise.resolve();
+        return await httpClient(`${BACKEND_URL}${Url.login_post}`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+                username,
+                password
+            }),
+        })
+        .then(response => {
+            if (response.status == 200) {
+                const userdata = response.json;
+                localStorage.setItem("username", userdata.username);
+                localStorage.setItem("userid", userdata.id);
+                localStorage.setItem("role", userdata.role);
+                localStorage.setItem("token", userdata.token);
+                return Promise.resolve();
+            }
+        });
     },
     // called when the user clicks on the logout button
     logout: () => {
-        localStorage.removeItem("username");
-        localStorage.removeItem("role");
-        return Promise.resolve();
+        const token = localStorage.getItem("token");
+        return httpClient(`${BACKEND_URL}${Url.logout_post}`, {
+            method: 'POST',
+            headers,
+            body: JSON.stringify({
+                token
+            }),
+        })
+        .then(response => {
+            console.log(response)
+            if (response.status == 200) {
+                const userdata = response.json;
+                localStorage.removeItem("username");
+                localStorage.removeItem("userid");
+                localStorage.removeItem("role");
+                localStorage.removeItem("token");
+                return Promise.resolve();
+            }
+        }).catch(() => {
+            console.log("logout error")
+            return Promise.reject();
+        });
     },
     // called when the API returns an error
     checkError: ({ status }: { status: number }) => {
@@ -67,7 +76,7 @@ export const authProvider: AuthProvider = {
     // getIdentity:() => Promise.resolve(),
 
     register: async (data:any) => {
-        const result = await httpClient(`http://localhost:5173/mock/register`)
+        const result = await httpClient(`${BACKEND_URL}${Url.users_post}`)
         .then(response => {
             console.log(response);
             if (response.json && response.json.status === 201) {

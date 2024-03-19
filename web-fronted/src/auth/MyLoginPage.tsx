@@ -3,12 +3,15 @@ import { useState } from 'react';
 import { useLogin, useNotify, Notification, Login, fetchUtils, useRedirect } from 'react-admin';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Button from '@mui/material/Button';
+import LoadingButton from '@mui/lab';
 
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
 import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
+import { BACKEND_URL } from '../share/env';
+import { Url } from '../share/url';
 const httpClient = fetchUtils.fetchJson;
 
 
@@ -28,6 +31,7 @@ const MyLoginPage = () => {
     const login = useLogin();
     const notify = useNotify();
     const redirect = useRedirect();
+
     const handleSubmit = async  (e: {[x: string]: any; preventDefault: () => void; }) => {
         e.preventDefault();
         const action = e.target.id;
@@ -47,23 +51,27 @@ const MyLoginPage = () => {
             return;
         }
         setEmailStatus(false);
-
         if (action === 'login') {
             console.log(123)
             // will call authProvider.login({ email, password })
-            login({ username, password }).catch(() =>
-            notify('Invalid email or password')
-            );
+            login({ username, password }).catch(() =>{
+                return notify("Some of your information isn't correct. Please try again.", {type:"error"})
+            });
         } else {
-            
-                const result = await httpClient(`http://localhost:5173/mock/register`)
-                .then((response:any) => {
-                    console.log(response);
-                    if (response.json && response.json.status === 201) {
-                       notify(response.json.data, { type: 'success' });
-                    setValue(0)
-                    }
-                });
+            const params = JSON.stringify({username, password, email, role});
+            const result = await httpClient(BACKEND_URL + Url.users_post, {method: 'POST', body: params})
+            .then((res:any) => {
+                console.log('注册成功：',res);
+                if (res.status === 201) {
+                    notify(res.json.message, { type: 'success' });
+                    setValue(0); // 去登录页签
+                    setEmail('');
+                } else {
+                    notify(res.json.message, { type: 'error' });
+                }
+            }).catch(e => {
+                notify("Registration failed", { type: 'error' });
+            });
         }
     
     };
@@ -133,25 +141,11 @@ const MyLoginPage = () => {
                 </form>
             </div>
         </div>
-        {/* <Login /> */}
-        {successMsg && <div  className='global-alert'>
-            <SimpleAlert/>
-        </div>}
         </>
     );
 };
 
 
-import Alert from '@mui/material/Alert';
-import CheckIcon from '@mui/icons-material/Check';
-
-const SimpleAlert = () => {
-  return (
-    <Alert icon={<CheckIcon fontSize="inherit" />} severity="success">
-      Here is a gentle confirmation that your action was successful.
-    </Alert>
-  );
-}
 
 
 
