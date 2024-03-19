@@ -4,7 +4,6 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 
 import java.sql.Date;
@@ -40,5 +39,13 @@ public class AssignRecord extends BaseEntity {
 
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    public Date getAssignDate() {
+        return assignDate;
+    }
+
+    public void setAssignDate(Date assignDate) {
+        this.assignDate = assignDate;
     }
 }

@@ -10,32 +10,32 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
 @DataJpaTest
-public class AssignedRecordRepositoryTest {
+public class AssignRecordRepositoryTest {
 
     @Autowired
-    private AssignedRecordRepository assignedRecordRepository;
+    private AssignRecordRepository assignRecordRepository;
 
     @Test
     public void testGetAssignedByStudentId() {
-        Optional<AssignRecord> assignRecord = assignedRecordRepository.findByStudentId(3L);
+        Optional<AssignRecord> assignRecord = assignRecordRepository.findByStudentId(3L);
         assertNotEquals(Optional.empty(), assignRecord);
     }
 
     @Test
     public void testGetAssignedByProjectId() {
-        Optional<AssignRecord> assignRecord = assignedRecordRepository.findByProjectId(1L);
+        Optional<AssignRecord> assignRecord = assignRecordRepository.findByProjectId(1L);
         assertNotEquals(Optional.empty(), assignRecord);
     }
 
     @Test
     public void testProjectHasBeenAssignedByProjectId() {
-        boolean exists = assignedRecordRepository.existsByProjectId(1L);
+        boolean exists = assignRecordRepository.existsByProjectId(1L);
         assertNotEquals(false, exists);
     }
 
     @Test
     public void testProjectHasBeenAssignedByStudentUserId() {
-        boolean exists = assignedRecordRepository.existsByStudentId(3L);
+        boolean exists = assignRecordRepository.existsByStudentId(3L);
         assertNotEquals(false, exists);
     }
 }

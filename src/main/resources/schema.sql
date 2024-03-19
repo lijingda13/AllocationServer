@@ -21,7 +21,7 @@ CREATE TABLE projects (
      staff_user_id INT,
      title VARCHAR(255),
      description TEXT,
-     status BOOLEAN, -- true for available, false for assigned
+     status BOOLEAN, -- false for available, true for assigned
      student_user_id INT, -- assigned student id
      create_date TIMESTAMP,
      FOREIGN KEY (staff_user_id) REFERENCES users (id)
@@ -32,7 +32,6 @@ CREATE TABLE interest_record (
     id INT AUTO_INCREMENT PRIMARY KEY,
     project_id INT,
     student_user_id INT,
-    interest_date TIMESTAMP,
     FOREIGN KEY (project_id) REFERENCES projects (id),
     FOREIGN KEY (student_user_id) REFERENCES users (id)
 );

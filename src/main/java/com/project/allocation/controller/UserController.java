@@ -1,6 +1,7 @@
 package com.project.allocation.controller;
 
 import com.project.allocation.service.UserService;
+import com.project.allocation.util.JwtUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -14,20 +15,21 @@ import com.project.allocation.service.impl.UserServiceImpl;
 public class UserController {
 
     private final UserService userService;
+    private final JwtUtil jwtUtil;
 
     @Autowired
-    public UserController(UserService userService) {
+    public UserController(UserService userService, JwtUtil jwtUtil) {
         this.userService = userService;
+        this.jwtUtil = jwtUtil;
     }
 
     @PostMapping("/users")
     public ResponseEntity<String> registerUser(@RequestBody User user) {
-//        String userId = jwtUtil.getUserIdFromToken(token);
         boolean created = userService.createUser(user);
         if (created) {
-            return ResponseEntity.status(201).body("Registration successful");
+            return ResponseEntity.ok("Registration successful");
         } else {
-            return ResponseEntity.status(400).body("Failed: Username has existed");
+            return ResponseEntity.badRequest().body("Failed: Username has existed");
         }
     }
 
