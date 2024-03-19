@@ -1,5 +1,6 @@
 package com.project.allocation.service;
 
+import com.project.allocation.dto.StudentDTO;
 import com.project.allocation.dto.StudentProjectDTO;
 import com.project.allocation.model.User;
 
@@ -13,7 +14,7 @@ public interface UserService {
 
     User updateUserPartially(Long id, User updatedUser);
 
-    User getUserById(Long id);
+    StudentDTO getStudentInfoById(Long userId);
 
     boolean deleteUser(Long id);
 
