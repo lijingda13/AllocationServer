@@ -7,7 +7,6 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToOne;
 
 import java.sql.Date;
-import java.sql.Time;
 
 @Entity(name = "assign_record")
 public class AssignRecord extends BaseEntity {

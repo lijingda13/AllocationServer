@@ -60,4 +60,7 @@ public interface ProjectService {
      * @return boolean
      */
     boolean assignProject(Long projectId, Long userId);
+
+    Project getAssignedProject(Long userId);
+
 }

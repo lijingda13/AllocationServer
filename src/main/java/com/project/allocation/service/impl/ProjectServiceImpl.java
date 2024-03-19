@@ -133,4 +133,13 @@ public class ProjectServiceImpl implements ProjectService {
         projectRepository.save(project);
         return true;
     }
+
+    @Override
+    public Project getAssignedProject(Long studentId) {
+        AssignRecord assignRecord = assignRecordRepository.findByStudentId(studentId).orElse(null);
+        if (assignRecord == null) {
+            return null;
+        }
+        return assignRecord.getProject();
+    }
 }

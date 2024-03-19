@@ -40,16 +40,22 @@ public class ProjectController {
         return new ResponseEntity<>(projects, HttpStatus.OK);
     }
 
-    @GetMapping("/projects/{studentId}")
+    @GetMapping("/projects/{studentId}/available-projects")
     public ResponseEntity<List<StudentProjectDTO>> listAvailableProjects(@PathVariable Long studentId) {
         List<StudentProjectDTO> projects = projectService.listAvailableProjects(studentId);
         return projects != null ? new ResponseEntity<>(projects, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/projects/{staffId}")
+    @GetMapping("/projects/{staffId}/proposed-projects")
     public ResponseEntity<List<StaffProjectDTO>> listStaffProjects(@PathVariable Long staffId) {
         List<StaffProjectDTO> projects = projectService.listProposedProjects(staffId);
         return projects != null ? new ResponseEntity<>(projects, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/projects/{studentId}/assigned-project")
+    public ResponseEntity<Project> getAssignedProject(@PathVariable Long studentId) {
+        Project assignedProject = projectService.getAssignedProject(studentId);
+        return assignedProject != null ? new ResponseEntity<>(assignedProject, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PostMapping("/projects")
@@ -58,20 +64,20 @@ public class ProjectController {
         return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
     }
 
-    @PutMapping("/projects/{id}")
-    public ResponseEntity<Project> updateProject(@PathVariable Long id, @RequestBody Project project) {
-        project.setId(id);
+    @PutMapping("/projects/{projectId}")
+    public ResponseEntity<Project> updateProject(@PathVariable Long projectId, @RequestBody Project project) {
+        project.setId(projectId);
         Project updatedProject = projectService.updateProject(project);
         return updatedProject != null ? new ResponseEntity<>(updatedProject, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @DeleteMapping("/projects/{id}")
-    public ResponseEntity<?> deleteProject(@PathVariable Long id) {
-        boolean deleted = projectService.deleteProject(id);
+    @DeleteMapping("/projects/{projectId}")
+    public ResponseEntity<?> deleteProject(@PathVariable Long projectId) {
+        boolean deleted = projectService.deleteProject(projectId);
         return deleted ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("/projects/{projectId}/interest")
+    @PostMapping("/projects/{projectId}/register-interest")
     public ResponseEntity<?> registerInterest(@PathVariable Long projectId, @AuthenticationPrincipal User user) {
         boolean registered = projectService.registerInterest(projectId, user.getId());
         return registered ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
