@@ -12,6 +12,8 @@ import java.util.List;
 public interface InterestRecordRepository extends JpaRepository<InterestRecord, Long> {
     boolean existsByStudentAndProject(User student, Project project);
 
+    void deleteByProjectId(long projectId);
+
     List<InterestRecord> findByStudentId(long studentId);
 
     List<InterestRecord> findByProjectId(long projectId);

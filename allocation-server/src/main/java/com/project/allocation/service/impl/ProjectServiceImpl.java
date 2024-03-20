@@ -18,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,7 +60,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<StaffProjectDTO> listProposedProjects(Long userId) {
-        List<Project> projects = projectRepository.findAllById(userId);
+        List<Project> projects = projectRepository.findAllByStaffId(userId);
         List<StaffProjectDTO> staffProjectDTOs = new ArrayList<>();
 
         for (Project project : projects) {
@@ -85,12 +86,32 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public Project updateProject(Project project) {
-        return null;
+        if (project == null || project.getId() == null) {
+            return null;
+        }
+        Optional<Project> existingProjectOptional = projectRepository.findById(project.getId());
+        if (existingProjectOptional.isEmpty()) {
+            return null;
+        }
+        Project updatedProject = existingProjectOptional.get();
+        updatedProject.setTitle(project.getTitle());
+        updatedProject.setDescription(project.getDescription());
+        return projectRepository.save(updatedProject);
     }
 
     @Override
     public boolean deleteProject(Long projectId) {
-        return false;
+        Optional<Project> projectOptional = projectRepository.findById(projectId);
+        if (projectOptional.isEmpty()) {
+            return false;
+        }
+        Project project = projectOptional.get();
+        if (project.getStatus()) {
+            return false;
+        }
+        interestRecordRepository.deleteByProjectId(projectId);
+        projectRepository.delete(project);
+        return true;
     }
 
     @Override

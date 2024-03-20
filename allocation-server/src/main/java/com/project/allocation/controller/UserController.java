@@ -17,15 +17,11 @@ import com.project.allocation.model.User;
 public class UserController {
 
     private final UserService userService;
-    private final UserRepository userRepository;
-    private final AssignRecordRepository assignRecordRepository;
     private final JwtUtil jwtUtil;
 
     @Autowired
-    public UserController(UserService userService, UserRepository userRepository, AssignRecordRepository assignRecordRepository, JwtUtil jwtUtil) {
+    public UserController(UserService userService, JwtUtil jwtUtil) {
         this.userService = userService;
-        this.userRepository = userRepository;
-        this.assignRecordRepository = assignRecordRepository;
         this.jwtUtil = jwtUtil;
     }
 

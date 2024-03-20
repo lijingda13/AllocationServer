@@ -6,7 +6,7 @@ import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Entity(name = "projects")
 public class Project extends BaseEntity {

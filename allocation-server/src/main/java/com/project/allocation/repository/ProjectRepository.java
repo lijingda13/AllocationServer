@@ -12,5 +12,5 @@ import java.util.Optional;
 public interface ProjectRepository extends JpaRepository<Project, Long> {
     List<Project> findAllByStatus(boolean status);
 
-    List<Project> findAllById(Long id);
+    List<Project> findAllByStaffId(long id);
 }
