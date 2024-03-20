@@ -13,13 +13,15 @@ public class User extends BaseEntity {
     private String password;
     private String firstname;
     private String lastname;
+    private String email;
     protected Role role; // "STUDENT" or "STAFF"
 
-    public User(String username, String password, String firstname, String lastname) {
-        this.username=username;
-        this.password=password;
-        this.firstname=firstname;
-        this.lastname=lastname;
+    public User(String username, String password, String firstname, String lastname, String email) {
+        this.username = username;
+        this.password = password;
+        this.firstname = firstname;
+        this.lastname = lastname;
+        this.email = email;
     }
 
     public User() {
@@ -60,6 +62,14 @@ public class User extends BaseEntity {
         return lastname;
     }
 
+    public String getEmail() {
+        return email;
+    }
+
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
     public void setRole(Role role) {
         this.role = role;
     }
@@ -67,7 +77,6 @@ public class User extends BaseEntity {
     public Role getRole() {
         return role;
     }
-
 
 
 }

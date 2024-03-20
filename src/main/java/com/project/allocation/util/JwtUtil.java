@@ -28,6 +28,17 @@ public class JwtUtil {
                 .sign(algorithm);
     }
 
+    public boolean validateToken(String token) {
+        token = token.replace("Bearer ", "");
+        try {
+            JWTVerifier verifier = JWT.require(algorithm).build();
+            verifier.verify(token);
+            return true;
+        } catch (JWTVerificationException e) {
+            return false;
+        }
+    }
+
     public String getUserIdFromToken(String token) {
         token = token.replace("Bearer ", "");
         try {

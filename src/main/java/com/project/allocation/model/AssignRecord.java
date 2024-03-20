@@ -4,10 +4,9 @@ import jakarta.persistence.CascadeType;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToOne;
 
-import java.sql.Time;
+import java.sql.Date;
 
 @Entity(name = "assign_record")
 public class AssignRecord extends BaseEntity {
@@ -20,7 +19,7 @@ public class AssignRecord extends BaseEntity {
     @JoinColumn(name = "project_id", referencedColumnName = "id")
     private Project project;
 
-    private Time assignTime;
+    private Date assignDate;
 
     public AssignRecord() {
     }
@@ -39,5 +38,13 @@ public class AssignRecord extends BaseEntity {
 
     public void setProject(Project project) {
         this.project = project;
+    }
+
+    public Date getAssignDate() {
+        return assignDate;
+    }
+
+    public void setAssignDate(Date assignDate) {
+        this.assignDate = assignDate;
     }
 }

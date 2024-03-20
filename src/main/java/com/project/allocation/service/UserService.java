@@ -1,14 +1,20 @@
 package com.project.allocation.service;
 
+import com.project.allocation.dto.StudentDTO;
+import com.project.allocation.dto.StudentProjectDTO;
 import com.project.allocation.model.User;
+
+import java.util.List;
 
 public interface UserService {
 
-    User createUser(User user);
+    boolean createUser(User user);
 
-    User updateUser(User user);
+    User updateUser(Long id, User updatedUser);
 
-    User getUserById(Long id);
+    User updateUserPartially(Long id, User updatedUser);
+
+    StudentDTO getStudentInfoById(Long userId);
 
     boolean deleteUser(Long id);
 
