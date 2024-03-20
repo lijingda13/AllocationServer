@@ -1,11 +1,11 @@
 -- Sample users
-INSERT INTO users (username, role, firstname, lastname, password) VALUES
-    ('rwilliams', 1, 'Rachel', 'Williams', '123456'),
-    ('mjones', 1, 'Michael', 'Jones', '123456'),
-    ('jchen', 0, 'Jenny', 'Chen', '123456'),
-    ('jzhang', 0, 'Jack', 'Zhang', '123456'),
-    ('jdoe', 0, 'John', 'Doe', '123456'),
-    ('asmith', 0, 'Alice', 'Smith', '123456');
+INSERT INTO users (username, role, firstname, lastname, password, email) VALUES
+    ('rwilliams', 1, 'Rachel', 'Williams', '123456', 'rwilliams@gmail.com'),
+    ('mjones', 1, 'Michael', 'Jones', '123456', 'mjones@gmail.com'),
+    ('jchen', 0, 'Jenny', 'Chen', '123456', 'jchen@gmail.com'),
+    ('jzhang', 0, 'Jack', 'Zhang', '123456', 'jzhang@gmail.com'),
+    ('jdoe', 0, 'John', 'Doe', '123456', 'jdoe@gmail.com'),
+    ('asmith', 0, 'Alice', 'Smith', '123456', 'asmith@gmail.com');
 
 -- Sample projects
 INSERT INTO projects (staff_user_id, title, description, status, create_date) VALUES

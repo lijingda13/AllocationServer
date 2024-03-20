@@ -1,18 +1,16 @@
 package com.project.allocation.controller;
 
-import com.project.allocation.dto.StudentDTO;
+import com.project.allocation.dto.StudentInfoDTO;
 import com.project.allocation.repository.AssignRecordRepository;
 import com.project.allocation.repository.UserRepository;
 import com.project.allocation.service.UserService;
 import com.project.allocation.util.JwtUtil;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.project.allocation.model.User;
-import com.project.allocation.service.impl.UserServiceImpl;
 
 @RestController
 @RequestMapping("/api")
@@ -42,9 +40,9 @@ public class UserController {
     }
 
     @GetMapping("/users/{userId}")
-    public ResponseEntity<StudentDTO> getUserInformation(@PathVariable Long userId) {
-        StudentDTO studentDTO = userService.getStudentInfoById(userId);
-        return studentDTO != null ? new ResponseEntity<>(studentDTO, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<User> getUserById(@PathVariable Long userId) {
+        User user = userService.getUserById(userId);
+        return user != null ? new ResponseEntity<>(user, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
     @PutMapping("/users/{userId}")
@@ -57,5 +55,18 @@ public class UserController {
     public ResponseEntity<User> patchUser(@PathVariable Long userId, @RequestBody User userUpdates) {
         User patchedUser = userService.updateUserPartially(userId, userUpdates);
         return patchedUser != null ? new ResponseEntity<>(patchedUser, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @GetMapping("/users/{userId}/student-info")
+    public ResponseEntity<StudentInfoDTO> getStudentProjectInfo(@PathVariable Long userId) {
+        User user = userService.getUserById(userId);
+        if (user == null) {
+            return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        }
+        if (!user.getRole().equals(User.Role.STUDENT)) {
+            return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+        }
+        StudentInfoDTO studentInfo = userService.getStudentInfoById(userId);
+        return studentInfo != null ? new ResponseEntity<>(studentInfo, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

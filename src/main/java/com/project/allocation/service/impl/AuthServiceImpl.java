@@ -32,7 +32,7 @@ public class AuthServiceImpl implements AuthService {
             return AuthResponseDTO.fail("Invalid username or password");
         }
 
-        return AuthResponseDTO.success(jwtUtil.createToken(user));
+        return AuthResponseDTO.success(jwtUtil.createToken(user), user);
     }
 
     @Override

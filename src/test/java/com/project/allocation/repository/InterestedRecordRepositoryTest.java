@@ -13,17 +13,17 @@ import static org.junit.jupiter.api.Assertions.assertNotEquals;
 public class InterestedRecordRepositoryTest {
 
     @Autowired
-    private InterestedRecordRepository interestedRecordRepository;
+    private InterestRecordRepository interestRecordRepository;
 
     @Test
     public void testGetInterestedByStudentId() {
-        List<InterestRecord> interestRecords = interestedRecordRepository.findByStudentId(3);
+        List<InterestRecord> interestRecords = interestRecordRepository.findByStudentId(3);
         assertNotEquals(0, interestRecords.size());
     }
 
     @Test
     public void testGetInterestedByProjectId() {
-        List<InterestRecord> interestRecords = interestedRecordRepository.findByProjectId(1);
+        List<InterestRecord> interestRecords = interestRecordRepository.findByProjectId(1);
         assertNotEquals(0, interestRecords.size());
     }
 }

@@ -12,7 +12,8 @@ public class UserTest {
         String password = "testPass";
         String firstname = "Test";
         String lastname = "User";
-        User user = new User(username, password, firstname, lastname);
+        String email = "test@gmail.com";
+        User user = new User(username, password, firstname, lastname, email);
 
         assertNotNull(user, "User should not be null");
         assertEquals(username, user.getUsername(), "Username should match the one provided to the constructor");

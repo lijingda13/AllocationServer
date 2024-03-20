@@ -4,6 +4,7 @@ import com.project.allocation.repository.UserRepository;
 import com.project.allocation.util.JwtUtil;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -42,7 +43,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http.authorizeHttpRequests(authorizeRequests ->
                 authorizeRequests
-                        .requestMatchers("/api/auth/login").permitAll()
+                        .requestMatchers("/api/auth/login").permitAll() // login endpoint
+                        .requestMatchers(HttpMethod.POST, "/api/users").permitAll() // register endpoint
                         .requestMatchers("/error").permitAll() // allow access to /error for debugging
                         .requestMatchers("/api/auth/hello_staff").hasRole("STAFF")
                         .requestMatchers("/api/auth/hello_student").hasRole("STUDENT")

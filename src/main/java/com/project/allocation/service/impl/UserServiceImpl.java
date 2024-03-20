@@ -1,14 +1,15 @@
 package com.project.allocation.service.impl;
 
-import com.project.allocation.dto.StudentDTO;
+import com.project.allocation.dto.StudentInfoDTO;
+import com.project.allocation.model.AssignRecord;
 import com.project.allocation.model.User;
 import com.project.allocation.repository.AssignRecordRepository;
 import com.project.allocation.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.project.allocation.service.UserService;
+
+import java.util.Optional;
 
 
 @Service
@@ -35,6 +36,11 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    public User getUserById(Long id) {
+        return userRepository.findById(id).orElse(null);
+    }
+
+    @Override
     public User updateUser(Long id, User updatedUser) {
         return userRepository.findById(id).map(user -> {
             user.setUsername(updatedUser.getUsername());
@@ -58,16 +64,18 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public StudentDTO getStudentInfoById(Long userId) {
+    public StudentInfoDTO getStudentInfoById(Long userId) {
         User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
             return null;
         }
-        StudentDTO studentDTO = new StudentDTO();
-        BeanUtils.copyProperties(user, studentDTO);
+        StudentInfoDTO studentInfoDTO = new StudentInfoDTO();
+        BeanUtils.copyProperties(user, studentInfoDTO);
         boolean assigned = assignRecordRepository.existsByStudentId(userId);
-        studentDTO.setAssignedStatus(assigned);
-        return studentDTO;
+        studentInfoDTO.setAssignedStatus(assigned);
+        Optional<AssignRecord> assignRecord = assignRecordRepository.findByStudentId(userId);
+        assignRecord.ifPresent(record -> studentInfoDTO.setAssignedProject(record.getProject()));
+        return studentInfoDTO;
     }
 
     @Override

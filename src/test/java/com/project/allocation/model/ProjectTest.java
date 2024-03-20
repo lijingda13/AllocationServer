@@ -14,7 +14,8 @@ public class ProjectTest {
         String password = "testPass";
         String firstname = "Test";
         String lastname = "User";
-        User staff = new User(username, password, firstname, lastname);
+        String email = "test@gmail.com";
+        User staff = new User(username, password, firstname, lastname, email);
 
         String title = "Test Project";
         String description = "This is a test project";
