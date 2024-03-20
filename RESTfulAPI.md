@@ -1,11 +1,12 @@
 # RESTful API Documentation
 
 ## Todo: Implement
-- [ ] user login
-- [ ] user registration
-- [ ] get user information
-- [ ] user password reset
-- [ ] update user information
+- [x] user login
+- [x] user registration
+- [x] get user information
+- [x] get student information about the project (assigned status, assigned project of the student)
+- [x] update user information
+- [x] partial update user information (which includes update password)
 - [ ] delete user
 - [ ] get all available projects for the student
 - [ ] get all propsed projects for the staff
@@ -13,7 +14,6 @@
 - [ ] staff update project information
 - [ ] student register interest in a project
 - [ ] staff approve student interest and assign student to the project
-- [ ] student get assigned project
 
 ## Introduction
 
