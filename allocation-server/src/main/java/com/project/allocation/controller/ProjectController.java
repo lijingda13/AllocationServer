@@ -40,7 +40,7 @@ public class ProjectController {
         return new ResponseEntity<>(projects, HttpStatus.OK);
     }
 
-    @GetMapping("/student/{studentId}/available-projects")
+    @GetMapping("/students/{studentId}/available-projects")
     public ResponseEntity<List<StudentProjectDTO>> listAvailableProjects(@PathVariable Long studentId) {
         List<StudentProjectDTO> projects = projectService.listAvailableProjects(studentId);
         return projects != null ? new ResponseEntity<>(projects, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -52,7 +52,7 @@ public class ProjectController {
         return projects != null ? new ResponseEntity<>(projects, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/projects/{studentId}/assigned-project")
+    @GetMapping("/students/{studentId}/assigned-project")
     public ResponseEntity<Project> getAssignedProject(@PathVariable Long studentId) {
         Project assignedProject = projectService.getAssignedProject(studentId);
         return assignedProject != null ? new ResponseEntity<>(assignedProject, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
@@ -82,6 +82,13 @@ public class ProjectController {
         Long userId = jwtUtil.getUserIdFromToken(token);
         boolean registered = projectService.registerInterest(projectId, userId);
         return registered ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    @PostMapping("/projects/{projectId}/unregister-interest")
+    public ResponseEntity<?> unregisterInterest(@PathVariable Long projectId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        Long userId = jwtUtil.getUserIdFromToken(token);
+        boolean unregistered = projectService.unregisterInterest(projectId, userId);
+        return unregistered ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
     }
 
     @PostMapping("/projects/{projectId}/assign-project")

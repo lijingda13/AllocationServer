@@ -45,15 +45,11 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public List<StudentProjectDTO> listAvailableProjects(Long userId) {
         List<Project> availableProjects = projectRepository.findAllByStatus(true);
-        User student = userRepository.findById(userId).orElse(null);
-
         return availableProjects.stream().map(project -> {
             StudentProjectDTO dto = new StudentProjectDTO();
             BeanUtils.copyProperties(project, dto);
-
-            boolean isRegistered = interestRecordRepository.existsByStudentAndProject(student, project);
+            boolean isRegistered = interestRecordRepository.existsByStudentIdAndProjectId(userId, project.getId());
             dto.setRegisterStatus(isRegistered);
-
             return dto;
         }).collect(Collectors.toList());
     }
@@ -118,11 +114,10 @@ public class ProjectServiceImpl implements ProjectService {
     public boolean registerInterest(Long projectId, Long userId) {
         Project project = projectRepository.findById(projectId).orElse(null);
         User student = userRepository.findById(userId).orElse(null);
-
         if (project == null || student == null) {
             return false;
         }
-        boolean exists = interestRecordRepository.existsByStudentAndProject(student, project);
+        boolean exists = interestRecordRepository.existsByStudentIdAndProjectId(userId, projectId);
         if (exists) {
             return false;
         }
@@ -137,6 +132,25 @@ public class ProjectServiceImpl implements ProjectService {
         return true;
     }
 
+    @Override
+    public boolean unregisterInterest(Long projectId, Long userId) {
+        Project project = projectRepository.findById(projectId).orElse(null);
+        User student = userRepository.findById(userId).orElse(null);
+        if (project == null || student == null) {
+            return false;
+        }
+        boolean isAssigned = assignRecordRepository.existsByStudentId(userId);
+        if (isAssigned) {
+            return false;
+        }
+        Optional<InterestRecord> interestRecordOptional = interestRecordRepository.findByStudentIdAndProjectId(userId, projectId);
+        if (interestRecordOptional.isEmpty()) {
+            return false;
+        }
+        interestRecordRepository.delete(interestRecordOptional.get());
+        return true;
+    }
+
     @Transactional
     @Override
     public boolean assignProject(Long projectId, Long userId) {
@@ -145,7 +159,6 @@ public class ProjectServiceImpl implements ProjectService {
         if (project == null || student == null || project.getStatus() || assignRecordRepository.findByStudentId(userId).isPresent()) {
             return false;
         }
-
         AssignRecord assignRecord = new AssignRecord();
         assignRecord.setStudent(student);
         assignRecord.setProject(project);

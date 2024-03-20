@@ -7,10 +7,12 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Repository
 public interface InterestRecordRepository extends JpaRepository<InterestRecord, Long> {
-    boolean existsByStudentAndProject(User student, Project project);
+    boolean existsByStudentIdAndProjectId(long studentId, long projectId);
+    Optional<InterestRecord> findByStudentIdAndProjectId(long studentId, long projectId);
 
     void deleteByProjectId(long projectId);
 

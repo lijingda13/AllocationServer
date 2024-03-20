@@ -31,7 +31,6 @@ public class UserController {
         if (userExists) {
             return ResponseEntity.badRequest().body("Failed: Username has existed");
         }
-
         userService.createUser(user);
         return ResponseEntity.ok("Registration successful");
     }

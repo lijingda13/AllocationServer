@@ -52,6 +52,8 @@ public interface ProjectService {
      */
     boolean registerInterest(Long projectId, Long userId);
 
+    boolean unregisterInterest(Long projectId, Long userId);
+
     /**
      * Assign a project to a user
      *
