@@ -16,9 +16,10 @@ import { List, Datagrid, TextField,
 } from "react-admin";
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
+import Tooltip from '@mui/material/Tooltip';
 import '../share/styles.css';
 import { useNotify, useRedirect } from 'react-admin';
-import {  useState } from "react";
+import { useState } from "react";
 import '../mock/mock.js';
 // interest project
 const Mybutton = () => {
@@ -52,6 +53,16 @@ const ListActions = () => {
     );
 }
 
+const LongField = () => {
+    const record = useRecordContext();
+  return (
+    <Tooltip title={record?.description}>
+      <div style={{width:"200px", overflow:"hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}}>{record?.description}</div>
+    </Tooltip>
+  );
+}
+
+
 // Project List
 export const PostList = () => {
     const role = localStorage.getItem("role");
@@ -63,11 +74,12 @@ export const PostList = () => {
         redirect('/');
     };
     return (
-    <List actions={<ListActions/>} pagination={false} queryOptions={{ onError,  meta: { role } }}>
+    <List filters={role === 'student' ? postFilters: undefined} actions={<ListActions/>} pagination={false} queryOptions={{ onError,  meta: { role } }}>
         <Datagrid bulkActionButtons={false} rowClick="edit">
             <TextField source="id" sortable={false} />
             <TextField source="title" sortable={false}/>
-            <TextField source="description" sortable={false} />
+            {/* <TextField source="description" sortable={false} /> */}
+            <LongField/>
             {role === 'staff'?
             '':
             <TextField source="staff" sortable={false}/>
@@ -92,6 +104,13 @@ export const PostList = () => {
         </Datagrid>
     </List>
 );}
+
+const postFilters = [
+    <SelectInput value="1" alwaysOn source="category"  validate={required()} choices={[
+        { id: '1', name: 'Available Projects' },
+        { id: '2', name: 'My Projects' },
+    ]} />
+];
 
 // cutomize title
 const PostTitle = () => {

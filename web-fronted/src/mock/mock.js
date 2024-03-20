@@ -4,7 +4,7 @@ const data = [
     {
         "id": 111,
         "title": "23",
-        "description": "dddddchangj",
+        "description": "dddddchangjdddddchangjdddddchangjdddddchangjdddddchangjdddddchangjdddddchangjdddddchangjdddddchangjdddddchangjdddddchangjdddddchangjdddddchangjdddddchangj",
         "staff": 211,
         "student": null,
         "status": true,
@@ -260,9 +260,9 @@ const users = [
     {id: 311, username:"tom", lastname:"Will", firstname:"tom", password: "123456", role: "student", email:"tom@email.com"},
 ]
 const baseUrl = "http://localhost:5173";
-fetchMock.get(`${baseUrl}/projects?role=staff`, data); 
-// fetchMock.get(`${baseUrl}/projects?role=student&available`, data); 
-fetchMock.get(`${baseUrl}/projects?role=student&available=true`, avai_data); 
+fetchMock.get(`${baseUrl}/projects/staff`, data); 
+fetchMock.get(`${baseUrl}/projects/student/available`, avai_data); 
+fetchMock.get(`${baseUrl}/projects/student/assigned`, [data[0]]); 
 
 const getProjectById = (id) => {
     return data.find(v => v.id == id);
@@ -298,7 +298,7 @@ fetchMock.mock(`${baseUrl}/login`,(url, opts) => {
 //logout
 fetchMock.mock(`${baseUrl}/logout`,(url, opts) => {
     const body = JSON.parse(opts.body);
-    if (body.token === 'wewrwewewewe') {
+    if (true) {
       return { status: 200, body: {message: "logout"} };
     } else {
       return { status: 400, body: { message: 'logout failed' } };

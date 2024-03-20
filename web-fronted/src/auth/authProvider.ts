@@ -84,27 +84,5 @@ export const authProvider: AuthProvider = {
             }
         });
 
-        // {
-        //     // console.log(resource, params)
-        //     // // const =  
-        //     // const { page, perPage } = params.pagination;
-        //     // const { field, order } = params.sort;
-        //     // const query = {
-        //     //     filter: JSON.stringify(params.filter),
-        //     // };
-        //     // const url = `${apiUrl}/${resource}?${stringify(query)}`;
-        //     const url = `http://localhost:5173/mock/get/projects`;
-            
-    
-        //     const result =  httpClient(url).then(({ headers, json }) => {
-        //         console.log(json);
-        //         return ({
-        //         data: json,
-        //         total: json?.length || 0,
-        //     })});
-        //     console.log("result:",result)
-        //     return result
-        // },
-
     }
 };

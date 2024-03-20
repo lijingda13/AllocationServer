@@ -15,10 +15,19 @@ if (token) {
 export const dataProvider1: DataProvider = {
     /** get projects list */
     getList: (resource, params) => {
-        const url = BACKEND_URL + Url.projects_role_get(params.meta.role||'staff');
-        console.log(url)
+        
+        let url;
+        if (localStorage.getItem("role") === 'staff') {
+            url = BACKEND_URL + Url.projects_staff_get;
+        } else {
+            if (params.filter.category === '2') {
+                url = BACKEND_URL + Url.projects_student_assigned_get;
+            } else {
+                url = BACKEND_URL + Url.projects_student_available_get;
+            }
+        }
         const result =  httpClient(url, {method:'GET', headers}).then(({ headers,json }) => {
-            console.log('geList:', json)
+            // console.log('getlist:',params, json, localStorage.getItem("role"))
             return ({
             data: json,
             total: json?.length || 0,

@@ -9,7 +9,6 @@ import { MyLayout } from "./layout";
 import MyLoginPage from "../auth/MyLoginPage";
 import { useEffect, useState } from "react";
 import { Route } from "react-router-dom";
-
 export const App = () => {
   const [role, setRole] = useState('');
   const [token, setToken] = useState('');
@@ -33,7 +32,8 @@ export const App = () => {
               list={PostList}
               edit={PostEdit}
               icon={PostIcon}
-              create={role === "staff"?PostCreate : undefined}
+              create={PostCreate}
+              hasCreate = {role === "staff"}
           /> 
           {/* <Resource
               name="Users"
