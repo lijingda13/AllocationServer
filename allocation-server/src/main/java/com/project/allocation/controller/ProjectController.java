@@ -78,13 +78,15 @@ public class ProjectController {
     }
 
     @PostMapping("/projects/{projectId}/register-interest")
-    public ResponseEntity<?> registerInterest(@PathVariable Long projectId, @AuthenticationPrincipal User user) {
-        boolean registered = projectService.registerInterest(projectId, user.getId());
+    public ResponseEntity<?> registerInterest(@PathVariable Long projectId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        Long userId = jwtUtil.getUserIdFromToken(token);
+        boolean registered = projectService.registerInterest(projectId, userId);
         return registered ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @PostMapping("/projects/{projectId}/assign")
-    public ResponseEntity<?> assignProject(@PathVariable Long projectId, @RequestParam Long userId) {
+    @PostMapping("/projects/{projectId}/assign-project")
+    public ResponseEntity<?> assignProject(@PathVariable Long projectId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
+        Long userId = jwtUtil.getUserIdFromToken(token);
         boolean assigned = projectService.assignProject(projectId, userId);
         return assigned ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

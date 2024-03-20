@@ -51,14 +51,14 @@ public class JwtFilter extends OncePerRequestFilter {
         }
 
         // Get the user id from the token
-        String userId = jwtUtil.getUserIdFromToken(token);
+        Long userId = jwtUtil.getUserIdFromToken(token);
         if (userId == null) {
             filterChain.doFilter(request, response);
             return;
         }
 
         // Get the user from the database
-        User user = userRepository.findById(Long.parseLong(userId));
+        User user = userRepository.findById(userId).orElse(null);
         if (user == null) {
             filterChain.doFilter(request, response);
             return;
