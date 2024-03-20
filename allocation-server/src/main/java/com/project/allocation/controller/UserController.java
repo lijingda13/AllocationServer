@@ -27,12 +27,13 @@ public class UserController {
 
     @PostMapping("/users")
     public ResponseEntity<String> registerUser(@RequestBody User user) {
-        boolean created = userService.createUser(user);
-        if (created) {
-            return ResponseEntity.ok("Registration successful");
-        } else {
+        boolean userExists = userService.existsByUsername(user.getUsername());
+        if (userExists) {
             return ResponseEntity.badRequest().body("Failed: Username has existed");
         }
+
+        userService.createUser(user);
+        return ResponseEntity.ok("Registration successful");
     }
 
     @GetMapping("/users/{userId}")

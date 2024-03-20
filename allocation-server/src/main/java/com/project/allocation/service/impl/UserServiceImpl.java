@@ -25,14 +25,8 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public boolean createUser(User user) {
-        boolean userExists = getUserByUsername(user.getUsername()) != null;
-        if (!userExists) {
-            userRepository.save(user);
-            return true;
-        } else {
-            return false;
-        }
+    public void createUser(User user) {
+        userRepository.save(user);
     }
 
     @Override
@@ -91,5 +85,10 @@ public class UserServiceImpl implements UserService {
     @Override
     public boolean updateUserPassword(Long id, String oldPassword, String newPassword) {
         return false;
+    }
+
+    @Override
+    public boolean existsByUsername(String username) {
+        return userRepository.existsByUsername(username);
     }
 }

@@ -5,7 +5,7 @@ import com.project.allocation.model.User;
 
 public interface UserService {
 
-    boolean createUser(User user);
+    void createUser(User user);
 
     User getUserById(Long id);
 
@@ -20,4 +20,6 @@ public interface UserService {
     User getUserByUsername(String username);
 
     boolean updateUserPassword(Long id, String oldPassword, String newPassword);
+
+    boolean existsByUsername(String username);
 }
