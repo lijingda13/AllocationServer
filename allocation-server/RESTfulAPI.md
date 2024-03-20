@@ -296,8 +296,42 @@ curl --location 'http://localhost:8080/api/users/3/student-info' \
             "lastName": "Williams"
         },
         "status": true,
-        "createDate": "2024-01-01"
+        "createDate": "2024-01-01T10:00:00.000+00:00"
     },
+    "interestProjects": [
+        {
+            "id": 1,
+            "title": "AI in Education",
+            "description": "Exploring the use of AI to personalize learning experiences.",
+            "staff": {
+                "id": 1,
+                "username": "rwilliams",
+                "password": "123456",
+                "email": "rwilliams@gmail.com",
+                "role": "STAFF",
+                "firstName": "Rachel",
+                "lastName": "Williams"
+            },
+            "status": true,
+            "createDate": "2024-01-01T10:00:00.000+00:00"
+        },
+        {
+            "id": 2,
+            "title": "Sustainable Computing",
+            "description": "Investigating energy-efficient computing techniques for a sustainable future.",
+            "staff": {
+                "id": 1,
+                "username": "rwilliams",
+                "password": "123456",
+                "email": "rwilliams@gmail.com",
+                "role": "STAFF",
+                "firstName": "Rachel",
+                "lastName": "Williams"
+            },
+            "status": false,
+            "createDate": "2024-01-02T11:00:00.000+00:00"
+        }
+    ],
     "firstName": "Jenny",
     "lastName": "Chen"
 }

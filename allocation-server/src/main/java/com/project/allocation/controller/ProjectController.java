@@ -40,13 +40,13 @@ public class ProjectController {
         return new ResponseEntity<>(projects, HttpStatus.OK);
     }
 
-    @GetMapping("/projects/{studentId}/available-projects")
+    @GetMapping("/student/{studentId}/available-projects")
     public ResponseEntity<List<StudentProjectDTO>> listAvailableProjects(@PathVariable Long studentId) {
         List<StudentProjectDTO> projects = projectService.listAvailableProjects(studentId);
         return projects != null ? new ResponseEntity<>(projects, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/projects/{staffId}/proposed-projects")
+    @GetMapping("/staff/{staffId}/proposed-projects")
     public ResponseEntity<List<StaffProjectDTO>> listStaffProjects(@PathVariable Long staffId) {
         List<StaffProjectDTO> projects = projectService.listProposedProjects(staffId);
         return projects != null ? new ResponseEntity<>(projects, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);

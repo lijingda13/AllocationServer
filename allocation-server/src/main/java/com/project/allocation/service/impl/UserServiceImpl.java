@@ -2,14 +2,19 @@ package com.project.allocation.service.impl;
 
 import com.project.allocation.dto.StudentInfoDTO;
 import com.project.allocation.model.AssignRecord;
+import com.project.allocation.model.InterestRecord;
+import com.project.allocation.model.Project;
 import com.project.allocation.model.User;
 import com.project.allocation.repository.AssignRecordRepository;
+import com.project.allocation.repository.InterestRecordRepository;
 import com.project.allocation.repository.UserRepository;
 import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 import com.project.allocation.service.UserService;
 
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -17,11 +22,12 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
     private final AssignRecordRepository assignRecordRepository;
+    private final InterestRecordRepository interestRecordRepository;
 
-
-    public UserServiceImpl(UserRepository userRepository, AssignRecordRepository assignRecordRepository) {
+    public UserServiceImpl(UserRepository userRepository, AssignRecordRepository assignRecordRepository, InterestRecordRepository interestRecordRepository) {
         this.userRepository = userRepository;
         this.assignRecordRepository = assignRecordRepository;
+        this.interestRecordRepository = interestRecordRepository;
     }
 
     @Override
@@ -68,6 +74,10 @@ public class UserServiceImpl implements UserService {
         boolean assigned = assignRecordRepository.existsByStudentId(userId);
         studentInfoDTO.setAssignedStatus(assigned);
         Optional<AssignRecord> assignRecord = assignRecordRepository.findByStudentId(userId);
+
+        List<InterestRecord> records = interestRecordRepository.findByStudentId(userId);
+        List<Project> interestProjects = records.stream().map(InterestRecord::getProject).collect(Collectors.toList());
+        studentInfoDTO.setInterestProjects(interestProjects);
         assignRecord.ifPresent(record -> studentInfoDTO.setAssignedProject(record.getProject()));
         return studentInfoDTO;
     }
