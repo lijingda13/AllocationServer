@@ -11,7 +11,8 @@ import com.terminal.util.HttpClientUtil;
 public class StaffClient extends UserClient{
     private Scanner scanner = new Scanner(System.in);
 
-    public void showMenu() throws Exception {
+    public void showMenu(Long id) throws Exception {
+        super.showMenu(id);
         while (true) {
             System.out.println("\nStaff Dashboard:");
             System.out.println("1. View All Projects");
@@ -20,7 +21,8 @@ public class StaffClient extends UserClient{
             System.out.println("4. Assign a Project to a Student");
             System.out.println("5. Change Password");
             System.out.println("6. Change Email");
-            System.out.println("7. Logout");
+            System.out.println("7. User Information");
+            System.out.println("8. Logout");
 
             System.out.print("Enter your choice: ");
             int choice = scanner.nextInt();
@@ -60,7 +62,9 @@ public class StaffClient extends UserClient{
                     changeEmail(email);
                     break;
                 case 7:
-                    logout();
+                    getUserInformation();
+                    break;
+                case 8:
                     return;  // Exit the method, leading to logout or program termination
                 default:
                     System.out.println("Invalid option, please try again.");
@@ -75,19 +79,7 @@ public class StaffClient extends UserClient{
             System.out.println("Projects List:");
             for (int i = 0; i < projects.length(); i++) {
                 JSONObject project = projects.getJSONObject(i);
-                String id = project.getString("id");
-                String title = project.getString("title");
-                boolean assignStatus = project.getBoolean("assign_status");
-    
-                System.out.println("ID: " + id + ", Title: " + title + ", Status: " + (assignStatus ? "Assigned" : "Unassigned"));
-    
-                // If the project is not assigned, display the interested student's information
-                if (!assignStatus && project.has("student")) {
-                    JSONObject student = project.getJSONObject("student");
-                    String studentId = student.getString("id");
-                    String username = student.getString("username");
-                    System.out.println("  - Interested Student ID: " + studentId + ", Username: " + username);
-                }
+                printProjectDetails(project);
             }
         } else {
             System.out.println("Failed to get projects.");
@@ -106,7 +98,7 @@ public class StaffClient extends UserClient{
             JSONArray interestedStudents = project.getJSONArray("interestedStudents");
             for (int i = 0; i < interestedStudents.length(); i++) {
                 JSONObject student = interestedStudents.getJSONObject(i);
-                String studentId = student.getString("id");
+                Long studentId = student.getLong("id");
                 String username = student.getString("username");
                 System.out.println(" - ID: " + studentId + ", Username: " + username);
             }
@@ -120,7 +112,7 @@ public class StaffClient extends UserClient{
         json.put("title", title);
         json.put("description", description);
 
-        HttpResponse<String> response = HttpClientUtil.sendPostWithToken("http://example.com/api/projects", json.toString());
+        HttpResponse<String> response = HttpClientUtil.sendPostWithToken("http://example.com/api/projects/" + id, json.toString());
         if (response.statusCode() == 201) {
             System.out.println("Project created successfully.");
         } else {
@@ -137,6 +129,21 @@ public class StaffClient extends UserClient{
             System.out.println("Project assigned successfully to student ID: " + studentId);
         } else {
             System.out.println("Failed to assign project.");
+        }
+    }
+
+    private void printProjectDetails(JSONObject project) {
+        Long id = project.getLong("id");
+        String title = project.getString("title");
+        boolean assignStatus = project.getBoolean("assign_status");
+        System.out.println("ID: " + id + ", Title: " + title + ", Status: " + (assignStatus ? "Assigned" : "Unassigned"));
+    
+                // If the project is not assigned, display the interested student's information
+        if (!assignStatus && project.has("student")) {
+            JSONObject student = project.getJSONObject("student");
+            Long studentId = student.getLong("id");
+            String username = student.getString("username");
+            System.out.println("  - Interested Student ID: " + studentId + ", Username: " + username);
         }
     }
 }

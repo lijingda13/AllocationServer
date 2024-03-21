@@ -6,13 +6,15 @@ import org.json.JSONObject;
 import com.terminal.util.HttpClientUtil;
 import com.terminal.util.Token;
 public class UserClient {
-
+    protected static Long id;
+    public void showMenu(Long id) throws Exception{
+    UserClient.id = id;
+    };
     public static void changePassword(String newPassword) throws Exception {
         JSONObject json = new JSONObject();
-        json.put("Password", newPassword);
+        json.put("password", newPassword); // 将密码字段设为小写
 
-        // Use PATCH instead of POST for partial update
-        HttpResponse<String> response = HttpClientUtil.sendPatchWithToken("http://example.com/api/users/password", json.toString());
+        HttpResponse<String> response = HttpClientUtil.sendPatchWithToken("http://localhost:8080/api/users/" + id, json.toString()); // 使用PATCH请求
         if (response.statusCode() == 200) {
             System.out.println("Password changed successfully.");
         } else {
@@ -20,12 +22,12 @@ public class UserClient {
         }
     }
 
+    // 更新用户邮箱
     public static void changeEmail(String newEmail) throws Exception {
         JSONObject json = new JSONObject();
-        json.put("Email", newEmail);
+        json.put("email", newEmail); // 将电子邮件字段设为小写
 
-        // Use PATCH instead of POST for partial update
-        HttpResponse<String> response = HttpClientUtil.sendPatchWithToken("http://example.com/api/users/email", json.toString());
+        HttpResponse<String> response = HttpClientUtil.sendPatchWithToken("http://localhost:8080/api/users/" + id, json.toString()); // 使用PATCH请求
         if (response.statusCode() == 200) {
             System.out.println("Email changed successfully.");
         } else {
@@ -33,14 +35,36 @@ public class UserClient {
         }
     }
 
+    public void getUserInformation() {
+        String requestUri = "http://localhost:8080/api/users/" + id;
 
-    public static void logout() throws Exception {
-        HttpResponse<String> response = HttpClientUtil.sendPostWithToken("http://example.com/api/logout", "");
-        if (response.statusCode() == 200) {
-            System.out.println("Logout successful.");
-            Token.setAuthToken(null); // Clear the token
-        } else {
-            System.out.println("Logout failed.");
+        try {
+            HttpResponse<String> response = HttpClientUtil.sendGetWithToken(requestUri);
+            switch (response.statusCode()) {
+                case 200:
+                    // 请求成功，打印用户信息
+                    System.out.println("User information retrieved successfully:");
+                    JSONObject userJson = new JSONObject(response.body());
+                    System.out.println("ID: " + userJson.getInt("id"));
+                    System.out.println("Username: " + userJson.getString("username"));
+                    System.out.println("Role: " + userJson.getString("role"));
+                    System.out.println("First Name: " + userJson.getString("firstName"));
+                    System.out.println("Last Name: " + userJson.getString("lastName"));
+                    System.out.println("Email: " + userJson.getString("email"));
+                    break;
+                case 403:
+                    System.out.println("User is not authorized to access the resource.");
+                    break;
+                case 404:
+                    System.out.println("User not found.");
+                    break;
+                default:
+                    System.out.println("An error occurred. Status code: " + response.statusCode());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
+    
+
 }
