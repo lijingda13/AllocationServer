@@ -35,7 +35,7 @@ public class ProjectController {
     }
 
     @GetMapping("/projects")
-    public ResponseEntity<List<Project>> listProjects() {
+    public ResponseEntity<List<Project>> listAllProjects() {
         List<Project> projects = projectService.listAllProjects();
         return new ResponseEntity<>(projects, HttpStatus.OK);
     }
@@ -47,7 +47,7 @@ public class ProjectController {
     }
 
     @GetMapping("/staff/{staffId}/proposed-projects")
-    public ResponseEntity<List<StaffProjectDTO>> listStaffProjects(@PathVariable Long staffId) {
+    public ResponseEntity<List<StaffProjectDTO>> listProposedProjects(@PathVariable Long staffId) {
         List<StaffProjectDTO> projects = projectService.listProposedProjects(staffId);
         return projects != null ? new ResponseEntity<>(projects, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }

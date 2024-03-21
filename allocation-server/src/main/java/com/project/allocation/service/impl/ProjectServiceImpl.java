@@ -39,7 +39,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<Project> listAllProjects() {
-        return List.of();
+        return projectRepository.findAll();
     }
 
     @Override
