@@ -1,6 +1,7 @@
 package com.project.allocation.model;
 
 import jakarta.persistence.Entity;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity(name = "users")
 public class User extends BaseEntity {
@@ -9,19 +10,26 @@ public class User extends BaseEntity {
         STUDENT, STAFF
     }
 
+    @NotBlank(message = "Username cannot be blank")
     private String username;
+    @NotBlank(message = "Password cannot be blank")
     private String password;
+    @NotBlank(message = "First name cannot be blank")
     private String firstname;
+    @NotBlank(message = "Last name cannot be blank")
     private String lastname;
+    @NotBlank(message = "Email cannot be blank")
     private String email;
+    @NotBlank(message = "Role cannot be blank")
     protected Role role; // "STUDENT" or "STAFF"
 
-    public User(String username, String password, String firstname, String lastname, String email) {
+    public User(String username, String password, String firstname, String lastname, String email, Role role) {
         this.username = username;
         this.password = password;
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
+        this.role = role;
     }
 
     public User() {

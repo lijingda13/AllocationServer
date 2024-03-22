@@ -3,20 +3,14 @@ package com.project.allocation.controller;
 import com.project.allocation.dto.StaffProjectDTO;
 import com.project.allocation.dto.StudentProjectDTO;
 import com.project.allocation.service.ProjectService;
-import com.project.allocation.service.UserService;
 import com.project.allocation.util.JwtUtil;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
-
 import com.project.allocation.model.Project;
-import com.project.allocation.model.User;
-import com.project.allocation.model.User.Role;
-import com.project.allocation.service.impl.ProjectServiceImpl;
-import com.project.allocation.service.impl.UserServiceImpl;
 
 import java.util.List;
 
@@ -59,7 +53,7 @@ public class ProjectController {
     }
 
     @PostMapping("/projects")
-    public ResponseEntity<Project> createProject(@RequestBody Project project) {
+    public ResponseEntity<Project> createProject(@Valid @RequestBody Project project) {
         Project createdProject = projectService.createProject(project);
         return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
     }

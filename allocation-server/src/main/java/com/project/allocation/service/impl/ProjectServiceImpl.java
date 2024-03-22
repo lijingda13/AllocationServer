@@ -2,6 +2,7 @@ package com.project.allocation.service.impl;
 
 import com.project.allocation.dto.StaffProjectDTO;
 import com.project.allocation.dto.StudentProjectDTO;
+import com.project.allocation.exception.DataIntegrityViolationException;
 import com.project.allocation.model.AssignRecord;
 import com.project.allocation.model.Project;
 import com.project.allocation.model.User;
@@ -83,11 +84,11 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Project updateProject(Project project) {
         if (project == null || project.getId() == null) {
-            return null;
+            throw new NullPointerException("Project is null.");
         }
         Optional<Project> existingProjectOptional = projectRepository.findById(project.getId());
         if (existingProjectOptional.isEmpty()) {
-            return null;
+            throw new NullPointerException("Project not found.");
         }
         Project updatedProject = existingProjectOptional.get();
         updatedProject.setTitle(project.getTitle());
@@ -99,11 +100,11 @@ public class ProjectServiceImpl implements ProjectService {
     public boolean deleteProject(Long projectId) {
         Optional<Project> projectOptional = projectRepository.findById(projectId);
         if (projectOptional.isEmpty()) {
-            return false;
+            throw new NullPointerException("Project not found.");
         }
         Project project = projectOptional.get();
         if (project.getStatus()) {
-            return false;
+            throw new DataIntegrityViolationException("Project already assigned to a student.");
         }
         interestRecordRepository.deleteByProjectId(projectId);
         projectRepository.delete(project);
@@ -113,17 +114,20 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public boolean registerInterest(Long projectId, Long userId) {
         Project project = projectRepository.findById(projectId).orElse(null);
+        if (project == null) {
+            throw new NullPointerException("Project not found.");
+        }
         User student = userRepository.findById(userId).orElse(null);
-        if (project == null || student == null) {
-            return false;
+        if (student == null) {
+            throw new NullPointerException("User not found.");
         }
         boolean exists = interestRecordRepository.existsByStudentIdAndProjectId(userId, projectId);
         if (exists) {
-            return false;
+            throw new DataIntegrityViolationException("Interest already registered.");
         }
         boolean isAssigned = assignRecordRepository.existsByStudentId(userId);
         if (isAssigned) {
-            return false;
+            throw new DataIntegrityViolationException("Student already assigned to a project.");
         }
         InterestRecord interestRecord = new InterestRecord();
         interestRecord.setStudent(student);
@@ -135,17 +139,20 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public boolean unregisterInterest(Long projectId, Long userId) {
         Project project = projectRepository.findById(projectId).orElse(null);
+        if (project == null) {
+            throw new NullPointerException("Project not found.");
+        }
         User student = userRepository.findById(userId).orElse(null);
-        if (project == null || student == null) {
-            return false;
+        if (student == null) {
+            throw new NullPointerException("User not found.");
         }
         boolean isAssigned = assignRecordRepository.existsByStudentId(userId);
         if (isAssigned) {
-            return false;
+            throw new DataIntegrityViolationException("Student already assigned to a project.");
         }
         Optional<InterestRecord> interestRecordOptional = interestRecordRepository.findByStudentIdAndProjectId(userId, projectId);
         if (interestRecordOptional.isEmpty()) {
-            return false;
+            throw new NullPointerException("Interest not registered.");
         }
         interestRecordRepository.delete(interestRecordOptional.get());
         return true;
@@ -155,9 +162,18 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public boolean assignProject(Long projectId, Long userId) {
         Project project = projectRepository.findById(projectId).orElse(null);
+        if (project == null) {
+            throw new NullPointerException("Project not found.");
+        }
         User student = userRepository.findById(userId).orElse(null);
-        if (project == null || student == null || project.getStatus() || assignRecordRepository.findByStudentId(userId).isPresent()) {
-            return false;
+        if (student == null) {
+            throw new NullPointerException("User not found.");
+        }
+        if (project.getStatus()) {
+            throw new DataIntegrityViolationException("Project already assigned to a student.");
+        }
+        if (assignRecordRepository.findByStudentId(userId).isPresent()) {
+            throw new DataIntegrityViolationException("Student already assigned to a project.");
         }
         AssignRecord assignRecord = new AssignRecord();
         assignRecord.setStudent(student);
@@ -172,7 +188,7 @@ public class ProjectServiceImpl implements ProjectService {
     public Project getAssignedProject(Long studentId) {
         AssignRecord assignRecord = assignRecordRepository.findByStudentId(studentId).orElse(null);
         if (assignRecord == null) {
-            return null;
+            throw new NullPointerException("Student not assigned");
         }
         return assignRecord.getProject();
     }

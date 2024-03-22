@@ -5,6 +5,7 @@ import com.project.allocation.repository.AssignRecordRepository;
 import com.project.allocation.repository.UserRepository;
 import com.project.allocation.service.UserService;
 import com.project.allocation.util.JwtUtil;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -26,7 +27,7 @@ public class UserController {
     }
 
     @PostMapping("/users")
-    public ResponseEntity<String> registerUser(@RequestBody User user) {
+    public ResponseEntity<String> registerUser(@Valid @RequestBody User user) {
         boolean userExists = userService.existsByUsername(user.getUsername());
         if (userExists) {
             return ResponseEntity.badRequest().body("Failed: Username has existed");

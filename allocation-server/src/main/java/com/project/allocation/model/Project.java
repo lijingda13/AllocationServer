@@ -5,20 +5,23 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.validation.constraints.NotBlank;
+
 
 import java.util.Date;
 
 @Entity(name = "projects")
 public class Project extends BaseEntity {
-
+    @NotBlank(message = "Title cannot be blank")
     private String title;
+    @NotBlank(message = "Description cannot be blank")
     private String description;
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "staff_user_id", referencedColumnName = "id")
     private User staff; // The staff member who proposed the project
 
-    private boolean status;
+    private boolean status = false;
     private Date createDate;
 
     public Project(String title, String description, User staff, boolean status, Date createDate) {
