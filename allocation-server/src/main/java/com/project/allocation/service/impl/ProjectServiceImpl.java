@@ -77,7 +77,12 @@ public class ProjectServiceImpl implements ProjectService {
     }
 
     @Override
-    public Project createProject(Project project) {
+    public Project createProject(Project project, Long staffId) {
+        User staff = userRepository.findById(staffId).orElse(null);
+        if (staff == null) {
+            throw new NullPointerException("User not found.");
+        }
+        project.setStaff(staff);
         return projectRepository.save(project);
     }
 
