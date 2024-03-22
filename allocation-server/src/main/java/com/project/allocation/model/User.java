@@ -18,18 +18,15 @@ public class User extends BaseEntity {
     private String firstname;
     @NotBlank(message = "Last name cannot be blank")
     private String lastname;
-    @NotBlank(message = "Email cannot be blank")
     private String email;
-    @NotBlank(message = "Role cannot be blank")
     protected Role role; // "STUDENT" or "STAFF"
 
-    public User(String username, String password, String firstname, String lastname, String email, Role role) {
+    public User(String username, String password, String firstname, String lastname, String email) {
         this.username = username;
         this.password = password;
         this.firstname = firstname;
         this.lastname = lastname;
         this.email = email;
-        this.role = role;
     }
 
     public User() {
