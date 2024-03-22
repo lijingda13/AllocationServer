@@ -1,5 +1,5 @@
-DROP TABLE IF EXISTS assigned_list;
-DROP TABLE IF EXISTS interest_list;
+DROP TABLE IF EXISTS interest_record;
+DROP TABLE IF EXISTS assign_record;
 DROP TABLE IF EXISTS projects;
 DROP TABLE IF EXISTS users;
 
