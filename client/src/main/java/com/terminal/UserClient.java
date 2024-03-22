@@ -4,7 +4,7 @@ import java.net.http.HttpResponse;
 import org.json.JSONObject;
 
 import com.terminal.util.HttpClientUtil;
-import com.terminal.util.Token;
+
 public class UserClient {
     protected static Long id;
     public void showMenu(Long id) throws Exception{
@@ -12,9 +12,9 @@ public class UserClient {
     };
     public static void changePassword(String newPassword) throws Exception {
         JSONObject json = new JSONObject();
-        json.put("password", newPassword); // 将密码字段设为小写
+        json.put("password", newPassword); 
 
-        HttpResponse<String> response = HttpClientUtil.sendPatchWithToken("http://localhost:8080/api/users/" + id, json.toString()); // 使用PATCH请求
+        HttpResponse<String> response = HttpClientUtil.sendPatchWithToken("http://localhost:8080/api/users/" + id, json.toString()); 
         if (response.statusCode() == 200) {
             System.out.println("Password changed successfully.");
         } else {
@@ -22,12 +22,11 @@ public class UserClient {
         }
     }
 
-    // 更新用户邮箱
     public static void changeEmail(String newEmail) throws Exception {
         JSONObject json = new JSONObject();
-        json.put("email", newEmail); // 将电子邮件字段设为小写
+        json.put("email", newEmail); 
 
-        HttpResponse<String> response = HttpClientUtil.sendPatchWithToken("http://localhost:8080/api/users/" + id, json.toString()); // 使用PATCH请求
+        HttpResponse<String> response = HttpClientUtil.sendPatchWithToken("http://localhost:8080/api/users/" + id, json.toString()); 
         if (response.statusCode() == 200) {
             System.out.println("Email changed successfully.");
         } else {
@@ -42,7 +41,7 @@ public class UserClient {
             HttpResponse<String> response = HttpClientUtil.sendGetWithToken(requestUri);
             switch (response.statusCode()) {
                 case 200:
-                    // 请求成功，打印用户信息
+
                     System.out.println("User information retrieved successfully:");
                     JSONObject userJson = new JSONObject(response.body());
                     System.out.println("ID: " + userJson.getInt("id"));

@@ -1,12 +1,8 @@
 package com.project.allocation.model;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.OneToOne;
+import jakarta.persistence.*;
 
-import java.sql.Date;
+import java.util.Date;
 
 @Entity(name = "assign_record")
 public class AssignRecord extends BaseEntity {
@@ -20,6 +16,11 @@ public class AssignRecord extends BaseEntity {
     private Project project;
 
     private Date assignDate;
+
+    @PrePersist
+    protected void onAssign() {
+        this.assignDate = new java.util.Date();
+    }
 
     public AssignRecord() {
     }
