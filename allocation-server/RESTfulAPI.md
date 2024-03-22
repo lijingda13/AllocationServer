@@ -22,7 +22,7 @@
 
 This document describes the RESTful API for the **Allocation** Application. The API is designed based on the REST principles to provide HTTP interfaces for the client to interact with the server. 
 
-#### Login
+### Login
 This API is used to authenticate the user and provide a JWT token for the user to access the protected resources.
 - **Endpoint**: `POST /api/auth/login`
 - **Request Body**: 
@@ -70,7 +70,7 @@ curl --location 'http://localhost:8080/api/auth/login' \
 ```
 
 
-#### Register a new user
+### Register a new user
 
 This API is used to register a new user in the Allocation Application.
 
@@ -114,7 +114,7 @@ curl --location 'http://localhost:8080/api/users' \
 "Failed: Username has existed"
 ```
 
-#### Get user information
+### Get user information
 
 - Endpoint: `GET /api/users/{userId}`
 - Request Header:
@@ -151,7 +151,7 @@ curl --location 'http://localhost:8080/api/users/1' \
 }
 ```
 
-#### Update user information(All information)
+### Update user information(All information)
 
 - Endpoint: `PUT /api/users/{userId}`
 - Request Header
@@ -206,7 +206,7 @@ curl --location --request PUT 'http://localhost:8080/api/users/1' \
 }
 ```
 
-#### Update user information(Partial information)
+### Update user information(Partial information)
 - Endpoint: `PATCH /api/users/{userId}`
 - Request Header
 - Authorization : "Bearer { JWT token }"
@@ -248,7 +248,7 @@ curl --location --request PATCH 'http://localhost:8080/api/users/1' \
     "lastName": "Williams"
 }
 ```
-#### get student information about the project
+### get student information about the project
 - Endpoint: `GET /api/users/{userId}/student-info`
 - Request Header
 - Authorization : "Bearer { JWT token }"
@@ -339,3 +339,145 @@ curl --location 'http://localhost:8080/api/users/3/student-info' \
     "lastName": "Chen"
 }
 ```
+
+### Get all projects
+This API is used to retrieve a list of all projects in the Allocation Application.
+
+- Endpoint: `GET /api/projects`
+- Request Header:
+  - Authorization: "Bearer {JWT token}"
+- Response:
+  - Status Code:
+    - 200: Successfully retrieved the list of projects.
+  - Response Body: A list of projects with their details.
+
+### Get all available projects for the student
+This API provides the list of all available projects that a student can register interest in.
+
+- Endpoint: `GET /api/students/{studentId}/available-projects`
+- Path Variable:
+  - studentId: The ID of the student.
+- Request Header:
+  - Authorization: "Bearer {JWT token}"
+- Response:
+  - Status Code:
+    - 200: Successfully retrieved the list of available projects.
+    - 404: No available projects found or student not found.
+  - Response Body: A list of available projects for the student.
+
+### Get all proposed projects for the staff
+This API fetches all the projects proposed by a particular staff member.
+
+- Endpoint: `GET /api/staff/{staffId}/proposed-projects`
+- Path Variable:
+  - staffId: The ID of the staff member.
+- Request Header:
+  - Authorization: "Bearer {JWT token}"
+- Response:
+  - Status Code:
+    - 200: Successfully retrieved the list of proposed projects.
+    - 404: Staff member not found or no projects proposed by the staff.
+  - Response Body: A list of projects proposed by the staff member.
+
+### Get assigned project for the student
+This API retrieves the project assigned to a particular student.
+
+- Endpoint: `GET /api/students/{studentId}/assigned-project`
+- Path Variable:
+  - studentId: The ID of the student.
+- Request Header:
+  - Authorization: "Bearer {JWT token}"
+- Response:
+  - Status Code:
+    - 200: Successfully retrieved the assigned project.
+    - 404: Student not found or no project assigned to the student.
+  - Response Body: Details of the project assigned to the student.
+
+### Staff propose a project
+This API is used by staff to propose a new project.
+
+- Endpoint: `POST /api/projects`
+- Request Header:
+  - Authorization: "Bearer {JWT token}"
+- Request Body:
+  - title: Title of the project. (Required)
+  - description: Description of the project. (Required)
+- Response:
+  - Status Code:
+    - 201: Project successfully created.
+    - 400: Bad request, missing title or description.
+  - Response Body: Details of the created project.
+
+### Staff update a project information
+This API allows staff to update the information of an existing project.
+
+- Endpoint: `PUT /api/projects/{projectId}`
+- Path Variable:
+  - projectId: The ID of the project to be updated.
+- Request Header:
+  - Authorization: "Bearer {JWT token}"
+- Request Body:
+  - title: Updated title of the project. (Optional)
+  - description: Updated description of the project. (Optional)
+- Response:
+  - Status Code:
+    - 200: Project information successfully updated.
+    - 404: Project not found.
+  - Response Body: Details of the updated project.
+
+### Staff delete a project
+This API is used by staff to delete a project.
+
+- Endpoint: `DELETE /api/projects/{projectId}`
+- Path Variable:
+  - projectId: The ID of the project to be deleted.
+- Request Header:
+  - Authorization: "Bearer {JWT token}"
+- Response:
+  - Status Code:
+    - 200: Project successfully deleted.
+    - 404: Project not found or already assigned and cannot be deleted.
+
+### Student register interest in a project
+This API allows a student to register their interest in an available project.
+
+- Endpoint: `POST /api/projects/{projectId}/register-interest`
+- Path Variable:
+  - projectId: The ID of the project.
+- Request Header:
+  - Authorization: "Bearer {JWT token}"
+- Response:
+  - Status Code:
+    - 200: Successfully registered interest in the project.
+    - 404: Project not found or user not found.
+    - 409: Interest already registered or user already assigned to another project.
+
+### Student unregister interest in a project
+This API allows a student to unregister their interest in a project they previously showed interest in.
+
+- Endpoint: `POST /api/projects/{projectId}/unregister-interest`
+- Path Variable:
+  - projectId: The ID of the project.
+- Request Header:
+  - Authorization: "Bearer {JWT token}"
+- Response:
+  - Status Code:
+    - 200: Successfully unregistered interest in the project.
+    - 404: Project not found, user not found, or interest record not found.
+    - 400: User already assigned to a project, cannot unregister interest.
+
+### Staff approve student interest and assign student to the project
+This API is used by staff to approve a student's interest in a project and assign the project to the student.
+
+- Endpoint: `POST /api/projects/{projectId}/assign-project`
+- Path Variable:
+  - projectId: The ID of the project to assign.
+- Request Header:
+  - Authorization: "Bearer {JWT token}"
+- Request Body:
+  userId: The ID of the student to assign the project to.
+- Response:
+  - Status Code:
+    - 200: Successfully assigned the project to the student.
+    - 404: Project not found, user not found, or interest record not found.
+    - 409: Project already assigned to another student or student already assigned to another project.
