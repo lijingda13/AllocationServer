@@ -46,11 +46,11 @@ public class ProjectController {
         return projects != null ? new ResponseEntity<>(projects, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    @GetMapping("/students/{studentId}/assigned-project")
-    public ResponseEntity<Project> getAssignedProject(@PathVariable Long studentId) {
-        Project assignedProject = projectService.getAssignedProject(studentId);
-        return assignedProject != null ? new ResponseEntity<>(assignedProject, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+//    @GetMapping("/students/{studentId}/assigned-project")
+//    public ResponseEntity<Project> getAssignedProject(@PathVariable Long studentId) {
+//        Project assignedProject = projectService.getAssignedProject(studentId);
+//        return assignedProject != null ? new ResponseEntity<>(assignedProject, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+//    }
 
     @PostMapping("/projects")
     public ResponseEntity<Project> createProject(@Valid @RequestBody Project project) {

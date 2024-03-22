@@ -398,25 +398,42 @@ This API fetches all the projects proposed by a particular staff member.
     - `interestedStudents`: List of students who registered interest.
     - `assignedStudent`: Student assigned to the project.
 
-### Get assigned project for the student
-This API retrieves the project assigned to a particular student.
+[//]: # (### Get assigned project for the student)
 
-- **Endpoint:** `GET /api/students/{studentId}/assigned-project`
-- **Path Variable:**
-  - `studentId`: The ID of the student.
-- **Request Header:**
-  - Authorization: "Bearer {JWT token}"
-- **Response:**
-  - Status Code:
-    - `200`: Successfully retrieved the assigned project.
-    - `404`: Student not found or no project assigned to the student.
-  - Response Body: Details of the project assigned to the student.
-    - `id`: Project id.
-    - `title`: Title of the project.
-    - `description`: Description of the project.
-    - `staff`: Staff who proposed the project.
-    - `status`: Status of the project.
-    - `createDate`: Propose date of the project.
+[//]: # (This API retrieves the project assigned to a particular student.)
+
+[//]: # ()
+[//]: # (- **Endpoint:** `GET /api/students/{studentId}/assigned-project`)
+
+[//]: # (- **Path Variable:**)
+
+[//]: # (  - `studentId`: The ID of the student.)
+
+[//]: # (- **Request Header:**)
+
+[//]: # (  - Authorization: "Bearer {JWT token}")
+
+[//]: # (- **Response:**)
+
+[//]: # (  - Status Code:)
+
+[//]: # (    - `200`: Successfully retrieved the assigned project.)
+
+[//]: # (    - `404`: Student not found or no project assigned to the student.)
+
+[//]: # (  - Response Body: Details of the project assigned to the student.)
+
+[//]: # (    - `id`: Project id.)
+
+[//]: # (    - `title`: Title of the project.)
+
+[//]: # (    - `description`: Description of the project.)
+
+[//]: # (    - `staff`: Staff who proposed the project.)
+
+[//]: # (    - `status`: Status of the project.)
+
+[//]: # (    - `createDate`: Propose date of the project.)
 
 ### Staff propose a project
 This API is used by staff to propose a new project.
@@ -428,8 +445,6 @@ This API is used by staff to propose a new project.
   - `title`: Title of the project. (Required)
   - `description`: Description of the project. (Required)
   - `staff`: Staff who proposed the project. (Required)
-  - `status`: Status of the project. (Default as `false`)
-  - `createDate`: Propose date of the project. (Optional)
 - **Response:**
   - Status Code:
     - `201`: Project successfully created.

@@ -1,10 +1,6 @@
 package com.project.allocation.model;
 
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 
@@ -25,16 +21,20 @@ public class Project extends BaseEntity {
     private boolean status = false;
     private Date createDate;
 
-    public Project(String title, String description, User staff, boolean status, Date createDate) {
+    public Project(String title, String description, User staff, boolean status) {
         this.title = title;
         this.description = description;
         this.staff = staff;
         this.status = status;
-        this.createDate = createDate;
     }
 
     public Project() {
 
+    }
+
+    @PrePersist
+    protected void onCreate() {
+        this.createDate = new Date();
     }
 
     public String getTitle() {
@@ -71,9 +71,5 @@ public class Project extends BaseEntity {
 
     public Date getCreateDate() {
         return createDate;
-    }
-
-    public void setCreateDate(Date createDate) {
-        this.createDate = createDate;
     }
 }
