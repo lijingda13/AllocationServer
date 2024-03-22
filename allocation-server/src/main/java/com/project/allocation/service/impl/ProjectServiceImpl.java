@@ -45,7 +45,7 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Override
     public List<StudentProjectDTO> listAvailableProjects(Long userId) {
-        List<Project> availableProjects = projectRepository.findAllByStatus(true);
+        List<Project> availableProjects = projectRepository.findAllByStatus(false);
         return availableProjects.stream().map(project -> {
             StudentProjectDTO dto = new StudentProjectDTO();
             BeanUtils.copyProperties(project, dto);
