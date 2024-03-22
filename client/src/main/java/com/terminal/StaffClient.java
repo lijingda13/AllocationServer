@@ -16,13 +16,15 @@ public class StaffClient extends UserClient{
         while (true) {
             System.out.println("\nStaff Dashboard:");
             System.out.println("1. View All Projects");
-            System.out.println("2. Get Project Information");
+            System.out.println("2. Get Proposed Project Information");
             System.out.println("3. Create a New Project");
             System.out.println("4. Assign a Project to a Student");
             System.out.println("5. Change Password");
             System.out.println("6. Change Email");
             System.out.println("7. User Information");
-            System.out.println("8. Logout");
+            System.out.println("8. Update Project Information");
+            System.out.println("9. Delete Project");
+            System.out.println("10. Logout");
 
             System.out.print("Enter your choice: ");
             int choice = scanner.nextInt();
@@ -33,22 +35,21 @@ public class StaffClient extends UserClient{
                     getAllProjects();
                     break;
                 case 2:
-                    System.out.print("Enter Project ID for more info: ");
-                    String projectIdForInfo = scanner.nextLine();
-                    getProjectInformation(projectIdForInfo);
+                    System.out.print("Get Proposed Project Information");
+                    getProjectInformation(id);
                     break;
                 case 3:
                     System.out.print("Enter Title for the new project: ");
                     String title = scanner.nextLine();
                     System.out.print("Enter Description for the new project: ");
                     String description = scanner.nextLine();
-                    createProject(title, description);
+                    createProject(title, description,id);
                     break;
                 case 4:
                     System.out.print("Enter Project ID to assign: ");
-                    String projectIdToAssign = scanner.nextLine();
+                    Long projectIdToAssign = scanner.nextLong();
                     System.out.print("Enter Student ID to assign to the project: ");
-                    String studentId = scanner.nextLine();
+                    Long studentId = scanner.nextLong();
                     assignProjectToStudent(projectIdToAssign, studentId);
                     break;
                 case 5:
@@ -65,6 +66,20 @@ public class StaffClient extends UserClient{
                     getUserInformation();
                     break;
                 case 8:
+                    System.out.print("Enter Project Id to change: ");
+                    Long projectId = scanner.nextLong();
+                    System.out.print("Enter title to change: ");
+                    String title1 = scanner.nextLine();
+                    System.out.print("Enter description to change: ");
+                    String description1 = scanner.nextLine();
+                    updateProjectInformation(projectId, title1, description1, id);
+                    break;
+                case 9:
+                    System.out.print("Enter Project Id to delete: ");
+                    Long projectId1 = scanner.nextLong();
+                    deleteProject(projectId1);
+                    break;
+                case 10:
                     return;  // Exit the method, leading to logout or program termination
                 default:
                     System.out.println("Invalid option, please try again.");
@@ -73,62 +88,110 @@ public class StaffClient extends UserClient{
     }
 
     public void getAllProjects() throws Exception {
-        HttpResponse<String> response = HttpClientUtil.sendGetWithToken("http://example.com/api/projects");
+        HttpResponse<String> response = HttpClientUtil.sendGetWithToken("http://localhost:8080/api/projects");
+    
         if (response.statusCode() == 200) {
             JSONArray projects = new JSONArray(response.body());
             System.out.println("Projects List:");
             for (int i = 0; i < projects.length(); i++) {
                 JSONObject project = projects.getJSONObject(i);
                 printProjectDetails(project);
+                System.out.println("----------------------------");
             }
         } else {
-            System.out.println("Failed to get projects.");
+            System.out.println("Failed to get projects. Status code: " + response.statusCode());
         }
     }
 
-    public void getProjectInformation(String projectId) throws Exception {
-        HttpResponse<String> response = HttpClientUtil.sendGetWithToken("http://example.com/api/projects/" + projectId);
-        if (response.statusCode() == 200) {
-            JSONObject project = new JSONObject(response.body());
-            String title = project.getString("title");
-    
-            System.out.println("Project Title: " + title);
-            System.out.println("Interested Students:");
-    
-            JSONArray interestedStudents = project.getJSONArray("interestedStudents");
-            for (int i = 0; i < interestedStudents.length(); i++) {
-                JSONObject student = interestedStudents.getJSONObject(i);
-                Long studentId = student.getLong("id");
-                String username = student.getString("username");
-                System.out.println(" - ID: " + studentId + ", Username: " + username);
-            }
-        } else {
-            System.out.println("Failed to get project information.");
+    public void getProjectInformation(Long staffId) throws Exception {
+        HttpResponse<String> response = HttpClientUtil.sendGetWithToken("http://localhost:8080/api/staff/" + staffId + "/proposed-projects");
+
+    if (response.statusCode() == 200) {
+        JSONArray projects = new JSONArray(response.body());
+        System.out.println("List of Proposed Projects by Staff ID " + staffId + ":");
+        for (int i = 0; i < projects.length(); i++) {
+            JSONObject project = projects.getJSONObject(i);
+            printProjectDetails(project);  // Call your method to print project details
+            System.out.println("----------------------------");
         }
+    } else if (response.statusCode() == 404) {
+        System.out.println("Staff member not found or no projects proposed by the staff.");
+    } else {
+        System.out.println("Failed to get proposed projects. Status code: " + response.statusCode());
+    }
     }
 
-    public void createProject(String title, String description) throws Exception {
+    public void updateProjectInformation(Long projectId, String title, String description, Long staffId) throws Exception {
+    JSONObject json = new JSONObject();
+    json.put("id", projectId);
+    json.put("title", title);
+    json.put("description", description);
+    json.put("staff", staffId);
+    // 发送PUT请求到特定的项目ID端点
+    HttpResponse<String> response = HttpClientUtil.sendPutWithToken("http://localhost:8080/api/projects/" + projectId, json.toString());
+
+    if (response.statusCode() == 200) {
+        System.out.println("Project information successfully updated.");
+        // 可选：打印更新后的项目详情
+        System.out.println("Updated Project: " + response.body());
+    } else if (response.statusCode() == 404) {
+        System.out.println("Project not found.");
+    } else {
+        System.out.println("Failed to update project information. Status code: " + response.statusCode());
+    }
+}
+
+    public void createProject(String title, String description, Long staffId) throws Exception {
         JSONObject json = new JSONObject();
         json.put("title", title);
         json.put("description", description);
-
-        HttpResponse<String> response = HttpClientUtil.sendPostWithToken("http://example.com/api/projects/" + id, json.toString());
+        json.put("staff", staffId); // 假设API需要负责员工的ID
+        json.put("status", false); // 默认项目状态为false
+    
+        // 发送POST请求到 /api/projects 端点，不需要在URL中添加项目ID
+        HttpResponse<String> response = HttpClientUtil.sendPostWithToken("http://localhost:8080/api/projects", json.toString());
+        
         if (response.statusCode() == 201) {
             System.out.println("Project created successfully.");
+            // 可选：打印创建的项目详情
+            System.out.println("Created Project: " + response.body());
         } else {
-            System.out.println("Failed to create project.");
+            System.out.println("Failed to create project. Status code: " + response.statusCode());
         }
     }
 
-    public void assignProjectToStudent(String projectId, String studentId) throws Exception {
+    public void assignProjectToStudent(Long projectIdToAssign, Long userId) throws Exception {
         JSONObject json = new JSONObject();
-        json.put("student_id", studentId);
+        json.put("userId", userId); 
 
-        HttpResponse<String> response = HttpClientUtil.sendPostWithToken("http://example.com/api/projects/" + projectId + "/assign", json.toString());
+        HttpResponse<String> response = HttpClientUtil.sendPostWithToken("http://localhost:8080/api/projects/" + projectIdToAssign + "/assign-project", json.toString());
+
+        switch (response.statusCode()) {
+            case 200:
+                System.out.println("Project ID " + projectIdToAssign + " assigned successfully to student ID: " + userId);
+                break;
+            case 404:
+                System.out.println("Project not found, user not found, or interest record not found.");
+                break;
+            case 409:
+                System.out.println("Project already assigned to another student or student already assigned to another project.");
+                break;
+            default:
+                System.out.println("Failed to assign project. Status code: " + response.statusCode());
+                break;
+        }
+    }
+    
+    public void deleteProject(Long projectId) throws Exception {
+        // 发送DELETE请求到特定的项目ID端点
+        HttpResponse<String> response = HttpClientUtil.sendDeleteWithToken("http://localhost:8080/api/projects/" + projectId);
+    
         if (response.statusCode() == 200) {
-            System.out.println("Project assigned successfully to student ID: " + studentId);
+            System.out.println("Project successfully deleted.");
+        } else if (response.statusCode() == 404) {
+            System.out.println("Project not found or already assigned and cannot be deleted.");
         } else {
-            System.out.println("Failed to assign project.");
+            System.out.println("Failed to delete project. Status code: " + response.statusCode());
         }
     }
 
@@ -144,6 +207,8 @@ public class StaffClient extends UserClient{
             Long studentId = student.getLong("id");
             String username = student.getString("username");
             System.out.println("  - Interested Student ID: " + studentId + ", Username: " + username);
-        }
+          
+        }  
+        System.out.println("Create Date: " + project.getString("createDate"));
     }
 }

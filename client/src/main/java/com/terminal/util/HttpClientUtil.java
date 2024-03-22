@@ -52,5 +52,25 @@ public class HttpClientUtil {
         return client.send(request, HttpResponse.BodyHandlers.ofString());
     }
 
-    // Similar methods for GET, PUT, DELETE, etc. that require token can be added
+    public static HttpResponse<String> sendPutWithToken(String uri, String data) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(uri))
+                .header("Authorization", "Bearer " + Token.getAuthToken()) // Include the token in the Authorization header
+                .header("Content-Type", "application/json") // Set the Content-Type header to application/json
+                .PUT(HttpRequest.BodyPublishers.ofString(data)) // This is a PUT request with the provided data as the body
+                .build();
+    
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
+    public static HttpResponse<String> sendDeleteWithToken(String uri) throws Exception {
+        HttpRequest request = HttpRequest.newBuilder()
+                .uri(URI.create(uri))
+                .header("Authorization", "Bearer " + Token.getAuthToken()) // Include the token in the Authorization header
+                .method("DELETE", HttpRequest.BodyPublishers.noBody()) // This is a DELETE request with no body
+                .build();
+    
+        return client.send(request, HttpResponse.BodyHandlers.ofString());
+    }
+
 }
