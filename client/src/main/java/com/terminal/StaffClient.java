@@ -127,12 +127,10 @@ public class StaffClient extends UserClient{
     json.put("title", title);
     json.put("description", description);
     json.put("staff", staffId);
-    // 发送PUT请求到特定的项目ID端点
     HttpResponse<String> response = HttpClientUtil.sendPutWithToken("http://localhost:8080/api/projects/" + projectId, json.toString());
 
     if (response.statusCode() == 200) {
         System.out.println("Project information successfully updated.");
-        // 可选：打印更新后的项目详情
         System.out.println("Updated Project: " + response.body());
     } else if (response.statusCode() == 404) {
         System.out.println("Project not found.");
@@ -145,15 +143,13 @@ public class StaffClient extends UserClient{
         JSONObject json = new JSONObject();
         json.put("title", title);
         json.put("description", description);
-        json.put("staff", staffId); // 假设API需要负责员工的ID
-        json.put("status", false); // 默认项目状态为false
-    
-        // 发送POST请求到 /api/projects 端点，不需要在URL中添加项目ID
+        json.put("staff", staffId); 
+        json.put("status", false); 
+
         HttpResponse<String> response = HttpClientUtil.sendPostWithToken("http://localhost:8080/api/projects", json.toString());
         
         if (response.statusCode() == 201) {
             System.out.println("Project created successfully.");
-            // 可选：打印创建的项目详情
             System.out.println("Created Project: " + response.body());
         } else {
             System.out.println("Failed to create project. Status code: " + response.statusCode());
@@ -183,7 +179,6 @@ public class StaffClient extends UserClient{
     }
     
     public void deleteProject(Long projectId) throws Exception {
-        // 发送DELETE请求到特定的项目ID端点
         HttpResponse<String> response = HttpClientUtil.sendDeleteWithToken("http://localhost:8080/api/projects/" + projectId);
     
         if (response.statusCode() == 200) {
@@ -199,7 +194,7 @@ public class StaffClient extends UserClient{
         Long id = project.getLong("id");
         String title = project.getString("title");
         boolean assignStatus = project.getBoolean("assign_status");
-        System.out.println("ID: " + id + ", Title: " + title + ", Status: " + (assignStatus ? "Assigned" : "Unassigned"));
+        System.out.println("ID: " + id + ", Title: " + title + ", Status: " + (assignStatus ? "Unavailable" : "Available"));
     
                 // If the project is not assigned, display the interested student's information
         if (!assignStatus && project.has("student")) {
