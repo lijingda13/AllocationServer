@@ -17,6 +17,7 @@ public class Project extends BaseEntity {
     @NotBlank(message = "Description cannot be blank")
     private String description;
 
+    @NotBlank(message = "Staff cannot be blank")
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "staff_user_id", referencedColumnName = "id")
     private User staff; // The staff member who proposed the project

@@ -350,6 +350,12 @@ This API is used to retrieve a list of all projects in the Allocation Applicatio
   - Status Code:
     - 200: Successfully retrieved the list of projects.
   - Response Body: A list of projects with their details.
+    - id: Project id.
+    - title: Title of the project.
+    - description: Description of the project.
+    - staff: Staff who proposed the project.
+    - status: Status of the project.
+    - createDate: Propose date of the project.
 
 ### Get all available projects for the student
 This API provides the list of all available projects that a student can register interest in.
@@ -364,6 +370,13 @@ This API provides the list of all available projects that a student can register
     - 200: Successfully retrieved the list of available projects.
     - 404: No available projects found or student not found.
   - Response Body: A list of available projects for the student.
+    - id: Project id.
+    - title: Title of the project.
+    - description: Description of the project.
+    - staff: Staff who proposed the project.
+    - status: Status of the project.
+    - createDate: Propose date of the project.
+    - registerStatus: Status of interest registration.
 
 ### Get all proposed projects for the staff
 This API fetches all the projects proposed by a particular staff member.
@@ -378,6 +391,14 @@ This API fetches all the projects proposed by a particular staff member.
     - 200: Successfully retrieved the list of proposed projects.
     - 404: Staff member not found or no projects proposed by the staff.
   - Response Body: A list of projects proposed by the staff member.
+    - id: Project id.
+    - title: Title of the project.
+    - description: Description of the project.
+    - staff: Staff who proposed the project.
+    - status: Status of the project.
+    - createDate: Propose date of the project.
+    - interestedStudents: List of students who registered interest.
+    - assignedStudent: Student assigned to the project.
 
 ### Get assigned project for the student
 This API retrieves the project assigned to a particular student.
@@ -392,6 +413,12 @@ This API retrieves the project assigned to a particular student.
     - 200: Successfully retrieved the assigned project.
     - 404: Student not found or no project assigned to the student.
   - Response Body: Details of the project assigned to the student.
+    - id: Project id.
+    - title: Title of the project.
+    - description: Description of the project.
+    - staff: Staff who proposed the project.
+    - status: Status of the project.
+    - createDate: Propose date of the project.
 
 ### Staff propose a project
 This API is used by staff to propose a new project.
@@ -400,13 +427,23 @@ This API is used by staff to propose a new project.
 - Request Header:
   - Authorization: "Bearer {JWT token}"
 - Request Body:
+  - id: Project id. (Required)
   - title: Title of the project. (Required)
   - description: Description of the project. (Required)
+  - staff: Staff who proposed the project. (Required)
+  - status: Status of the project. (Default as `false`)
+  - createDate: Propose date of the project. (Optional)
 - Response:
   - Status Code:
     - 201: Project successfully created.
     - 400: Bad request, missing title or description.
   - Response Body: Details of the created project.
+    - id: Project id.
+    - title: Title of the project.
+    - description: Description of the project.
+    - staff: Staff who proposed the project.
+    - status: Status of the project.
+    - createDate: Propose date of the project.
 
 ### Staff update a project information
 This API allows staff to update the information of an existing project.
@@ -417,13 +454,19 @@ This API allows staff to update the information of an existing project.
 - Request Header:
   - Authorization: "Bearer {JWT token}"
 - Request Body:
-  - title: Updated title of the project. (Optional)
-  - description: Updated description of the project. (Optional)
+  - title: Title of the project. (Optional)
+  - description: Description of the project. (Optional)
 - Response:
   - Status Code:
     - 200: Project information successfully updated.
     - 404: Project not found.
   - Response Body: Details of the updated project.
+    - id: Project id.
+    - title: Title of the project.
+    - description: Description of the project.
+    - staff: Staff who proposed the project.
+    - status: Status of the project.
+    - createDate: Propose date of the project.
 
 ### Staff delete a project
 This API is used by staff to delete a project.
@@ -475,7 +518,7 @@ This API is used by staff to approve a student's interest in a project and assig
 - Request Header:
   - Authorization: "Bearer {JWT token}"
 - Request Body:
-  userId: The ID of the student to assign the project to.
+  - userId: The ID of the student to assign the project to.
 - Response:
   - Status Code:
     - 200: Successfully assigned the project to the student.
