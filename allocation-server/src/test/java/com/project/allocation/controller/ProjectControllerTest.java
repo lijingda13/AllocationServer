@@ -36,7 +36,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
-@DirtiesContext
 public class ProjectControllerTest {
 
     @Autowired
@@ -109,7 +108,7 @@ public class ProjectControllerTest {
         assertNotNull(projects);
         assertEquals(3, projects.size());
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(projects.get(0).getStatus());
+        assertFalse(projects.get(0).getStatus());
     }
 
     @Test

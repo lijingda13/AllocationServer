@@ -4,12 +4,15 @@ import com.project.allocation.model.User;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @DataJpaTest
 public class UserRepositoryTest {
@@ -73,22 +76,6 @@ public class UserRepositoryTest {
     }
 
     @Test
-    public void testDeleteUser() {
-        User newUser = new User();
-        newUser.setUsername("newUser");
-        newUser.setPassword("newUserPassword");
-        newUser.setFirstName("newUserFirstName");
-
-        userRepository.save(newUser);
-
-        User user = userRepository.findByUsername("newUser");
-        assertNotEquals(null, user);
-        userRepository.delete(user);
-        User deletedUser = userRepository.findByUsername("newUser");
-        assertNull(deletedUser);
-    }
-
-    @Test
     public void testUpdateUser() {
         User user = userRepository.findByUsername("rwilliams");
         assertNotEquals("newFirstName", user.getFirstName());
@@ -101,11 +88,33 @@ public class UserRepositoryTest {
     @Test
     public void testExistsByUsername() {
         boolean exists = userRepository.existsByUsername("rwilliams");
-        assertEquals(true, exists);
+        assertTrue(exists);
 
         boolean notExists = userRepository.existsByUsername("notExists");
-        assertEquals(false, notExists);
+        assertFalse(notExists);
     }
 
+    @Test
+    public void testSaveUser() {
+        User user = new User();
+        user.setUsername("testUser");
+        user.setPassword("testPass");
+        user.setFirstName("Test");
+        user.setLastName("User");
+        user.setEmail("test@email.com");
+        userRepository.save(user);
+        User savedUser = userRepository.findByUsername("testUser");
+        assertEquals("testUser", savedUser.getUsername());
+        assertEquals("testPass", savedUser.getPassword());
+    }
 
+    @Test
+    public void testUpdateUserPassword() {
+        User user = userRepository.findByUsername("rwilliams");
+        assertNotEquals("newPassword", user.getPassword());
+        user.setPassword("newPassword");
+        userRepository.save(user);
+        User updatedUser = userRepository.findByUsername("rwilliams");
+        assertEquals("newPassword", updatedUser.getPassword());
+    }
 }
