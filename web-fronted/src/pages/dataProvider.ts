@@ -1,4 +1,4 @@
-import { DataProvider, fetchUtils } from "react-admin";
+import { DataProvider, GetOneParams, GetOneResult, fetchUtils } from "react-admin";
 import { BACKEND_URL } from "../share/env.js";
 import { Url } from "../share/url.js";
 import '../mock/mock.js';
@@ -21,26 +21,27 @@ export const dataProvider1: DataProvider = {
             url = BACKEND_URL + Url.projects_staff_get(localStorage.getItem("userid"));
         } else {
             if (params.filter.category === '2') {
-                url = BACKEND_URL + Url.projects_student_assigned_get;
+                url = BACKEND_URL + Url.projects_student_assigned_get(localStorage.getItem('userid'));
             } else {
                 url = BACKEND_URL + Url.projects_student_available_get(localStorage.getItem('userid'));
             }
         }
         const result =  httpClient(url, {method:'GET', headers}).then(({ headers,json }) => {
+            const resData = params.filter.category === '2' ? (json.assignedProject ? [json.assignedProject] : []) : json;
             // console.log('getlist:',params, json, localStorage.getItem("role"))
             return ({
-            data: json,
-            total: json?.length || 0,
+            data: resData,
+            total: resData?.length || 0,
         })});
         return result
     },
 
     /** get one project by id */
-    getOne: async (resource, params) => {
-            const url = BACKEND_URL + Url.projects_id_get(params.id);
-            const { json } = await httpClient(url, {method:'GET', headers});
-            return { data: json };
-        },
+    getOne: async (resource: string, params: GetOneParams<any>): Promise<GetOneResult<any>> => {
+        console.log(resource, params);
+        // const json: any = {id:1, name: "123" };
+        return { data: params };
+    },
 
     getMany: () => {
         const url = `${BACKEND_URL}/test`;
@@ -57,18 +58,19 @@ export const dataProvider1: DataProvider = {
 
     /** assign student */
     update: (resource, params) =>{
-        const resData = {...params.data};
-        resData.student = resData.assignInterestStudents;
-        delete resData.assignInterestStudents;
-        const student = {student_id: params.meta.student_id};
-        const url = `${BACKEND_URL}/projects/${params.id}/assign`;
+        const token = localStorage.getItem("token")||'';
+        if (!headers.has('Authorization')) {
+            headers.append('Authorization', `Bearer ${token}`);
+        }
+        const student = {userId: params.meta.studentId};
+        const url = BACKEND_URL + Url.projects_id_assign_post(params.meta.projectId);
        return httpClient(url, {
             method: 'POST',
             headers,
             body: JSON.stringify(student),
         }).then(({ json }) => {
-            console.log('json:',json)
-            json.id=111; // 勿删：必要！
+            // console.log('json:',json)
+            json.id=params.meta.projectId; // 勿删：必要！
             return {data: json }
         });
 },
@@ -81,14 +83,19 @@ export const dataProvider1: DataProvider = {
 
     /** create a project */
     create: (resource, params) =>{
-        const url = BACKEND_URL + Url.projects_post;
+        const userid = localStorage.getItem("userid")
+        const token = localStorage.getItem("token")||'';
+        if (!headers.has('Authorization')) {
+            headers.append('Authorization', `Bearer ${token}`);
+        }
+        const url = BACKEND_URL + Url.projects_create_uesrid_post(userid);
         return httpClient(url, {
             method: 'POST',
             headers,
             body: JSON.stringify(params.data),
         }).then(({json}) => {
             console.log(json)
-            json.id=2444444; // 勿删: id必要！
+            // json.id=2444444; // 勿删: id必要！
             return {data: json};
         })
     },
@@ -150,13 +157,47 @@ export const dataProvider1: DataProvider = {
 
     /** student register interest */
     registerInterest: (id:any) => {
-        const user = {student_id: 315}
-        const url = `${BACKEND_URL}/projects/${id}/interest`;
+        const token = localStorage.getItem("token") || '';
+        if (!headers.has("Authorization")) {
+            headers.append("Authorization", `Bearer ${token}`);
+        }
+        // const user = {student_id: 315}
+        const url = BACKEND_URL + Url.projects_id_registerinterest_post(id);
         const result = fetch(url, {
             method: 'POST',
-            headers,
-            body: toJsonString(user)
-        }).then((response:any) => response.json());
+            headers
+        }).then((response:any) => {
+            if (!response.ok) {
+                return response.text().then((data: any) => {
+                    return Promise.reject(data)
+                });
+            } else {
+                response.text();
+            }
+        });
+        return result;
+    },
+
+    /** student cancel interest */
+    cancelInterest: (id:any) => {
+        const token = localStorage.getItem("token") || '';
+        if (!headers.has("Authorization")) {
+            headers.append("Authorization", `Bearer ${token}`);
+        }
+        // const user = {student_id: 315}
+        const url = BACKEND_URL + Url.projects_id_unregisterinterest_post(id);
+        const result = fetch(url, {
+            method: 'POST',
+            headers
+        }).then((response:any) => {
+            if (!response.ok) {
+                return response.text().then((data: any) => {
+                    return Promise.reject(data)
+                });
+            } else {
+                response.text();
+            }
+        });
         return result;
     }
 };

@@ -30,7 +30,7 @@ export const App = () => {
         <Resource
               name="projects"
               list={PostList}
-              edit={PostEdit}
+              // edit={PostEdit}
               icon={PostIcon}
               create={PostCreate}
               hasCreate = {role === "STAFF"}
@@ -41,6 +41,7 @@ export const App = () => {
               icon={UserIcon}
           /> */}
           <CustomRoutes>
+            <Route path="/projects/edit" element={<PostEdit/>} />
             <Route path="/user" element={<UserList />} />
         </CustomRoutes>
       </Admin>

@@ -8,10 +8,16 @@ export const Url = {
 
     projects_staff_get: (id: any) => `/api/staff/${id}/proposed-projects`, // get staff's projects.
     projects_student_available_get: (id: any) => `/api/students/${id}/available-projects`, // get available projects.
-    projects_student_assigned_get: "/projects/student/assigned", // get student's assigned projects .
+    projects_student_assigned_get: (id: any) => `/api/users/${id}/student-info`, // get student's assigned projects .
     projects_id_get: (id: any) => `/projects/${id}`, // get project by project id.
-    projects_post: "/projects", // create a project
-    projects_id_assign_post: (id: any) => `/projects/${id}/assign`, // asign a project to a student
+    projects_create_uesrid_post: (staffId: any) => `/api/staff/${staffId}/create-project`, // create a project
+    projects_id_assign_post: (projectId: any) => `/api/projects/${projectId}/assign-project`, // asign a project to a student
 
+    projects_id_registerinterest_post: (projectId: any) => `/api/projects/${projectId}/register-interest`,  // student register interest
+    projects_id_unregisterinterest_post: (projectId: any) => `/api/projects/${projectId}/unregister-interest`,  // student cancel interest
     
 }
+// /api/projects/{projectId}/register-interest
+// /api/projects/{projectId}/unregister-interest
+// /api/staff/{staffId}/create-project
+// /api/projects/{projectId}/assign-project
