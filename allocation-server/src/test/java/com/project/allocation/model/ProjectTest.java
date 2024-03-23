@@ -19,7 +19,7 @@ public class ProjectTest {
 
         String title = "Test Project";
         String description = "This is a test project";
-        Project project = new Project(title, description, staff, false, null);
+        Project project = new Project(title, description, staff, false);
 
 
         assertNotNull(project, "Project should not be null");

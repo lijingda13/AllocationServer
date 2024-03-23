@@ -106,19 +106,19 @@ public class StaffClient extends UserClient{
     public void getProjectInformation(Long staffId) throws Exception {
         HttpResponse<String> response = HttpClientUtil.sendGetWithToken("http://localhost:8080/api/staff/" + staffId + "/proposed-projects");
 
-    if (response.statusCode() == 200) {
-        JSONArray projects = new JSONArray(response.body());
-        System.out.println("List of Proposed Projects by Staff ID " + staffId + ":");
-        for (int i = 0; i < projects.length(); i++) {
-            JSONObject project = projects.getJSONObject(i);
-            printProjectDetails(project);  // Call your method to print project details
-            System.out.println("----------------------------");
+        if (response.statusCode() == 200) {
+            JSONArray projects = new JSONArray(response.body());
+            System.out.println("List of Proposed Projects by Staff ID " + staffId + ":");
+            for (int i = 0; i < projects.length(); i++) {
+                JSONObject project = projects.getJSONObject(i);
+                printProjectDetails(project);  // Call your method to print project details
+                System.out.println("----------------------------");
+            }
+        } else if (response.statusCode() == 404) {
+            System.out.println("Staff member not found or no projects proposed by the staff.");
+        } else {
+            System.out.println("Failed to get proposed projects. Status code: " + response.statusCode());
         }
-    } else if (response.statusCode() == 404) {
-        System.out.println("Staff member not found or no projects proposed by the staff.");
-    } else {
-        System.out.println("Failed to get proposed projects. Status code: " + response.statusCode());
-    }
     }
 
     public void updateProjectInformation(Long projectId, String title, String description, Long staffId) throws Exception {
