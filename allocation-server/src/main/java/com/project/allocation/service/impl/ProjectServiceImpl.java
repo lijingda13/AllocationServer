@@ -12,6 +12,7 @@ import com.project.allocation.repository.InterestRecordRepository;
 import com.project.allocation.repository.ProjectRepository;
 import com.project.allocation.repository.UserRepository;
 import com.project.allocation.service.ProjectService;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -89,7 +90,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Project updateProject(Project project) {
         if (project == null || project.getId() == null) {
-            throw new NullPointerException("Project is null.");
+            throw new NullPointerException("Project not found.");
         }
         Optional<Project> existingProjectOptional = projectRepository.findById(project.getId());
         if (existingProjectOptional.isEmpty()) {
@@ -134,6 +135,9 @@ public class ProjectServiceImpl implements ProjectService {
         if (isAssigned) {
             throw new DataIntegrityViolationException("Student already assigned to a project.");
         }
+        if (project.getStatus()) {
+            throw new DataIntegrityViolationException("Project already assigned to a student.");
+        }
         InterestRecord interestRecord = new InterestRecord();
         interestRecord.setStudent(student);
         interestRecord.setProject(project);
@@ -155,29 +159,34 @@ public class ProjectServiceImpl implements ProjectService {
         if (isAssigned) {
             throw new DataIntegrityViolationException("Student already assigned to a project.");
         }
-        Optional<InterestRecord> interestRecordOptional = interestRecordRepository.findByStudentIdAndProjectId(userId, projectId);
-        if (interestRecordOptional.isEmpty()) {
-            throw new NullPointerException("Interest not registered.");
+        if (project.getStatus()) {
+            throw new DataIntegrityViolationException("Project already assigned to a student.");
         }
-        interestRecordRepository.delete(interestRecordOptional.get());
+        boolean exists = interestRecordRepository.existsByStudentIdAndProjectId(userId, projectId);
+        if (!exists) {
+            throw new DataIntegrityViolationException("Interest not registered.");
+        }
+        InterestRecord interestRecord = interestRecordRepository.findByStudentIdAndProjectId(userId, projectId)
+                .orElseThrow(() -> new NullPointerException("Interest record not found."));
+        interestRecordRepository.delete(interestRecord);
         return true;
     }
 
     @Transactional
     @Override
-    public boolean assignProject(Long projectId, Long userId) {
+    public boolean assignProject(Long projectId, User user) {
         Project project = projectRepository.findById(projectId).orElse(null);
         if (project == null) {
             throw new NullPointerException("Project not found.");
         }
-        User student = userRepository.findById(userId).orElse(null);
+        User student = userRepository.findById(user.getId()).orElse(null);
         if (student == null) {
             throw new NullPointerException("User not found.");
         }
         if (project.getStatus()) {
             throw new DataIntegrityViolationException("Project already assigned to a student.");
         }
-        if (assignRecordRepository.findByStudentId(userId).isPresent()) {
+        if (assignRecordRepository.findByStudentId(user.getId()).isPresent()) {
             throw new DataIntegrityViolationException("Student already assigned to a project.");
         }
         AssignRecord assignRecord = new AssignRecord();
