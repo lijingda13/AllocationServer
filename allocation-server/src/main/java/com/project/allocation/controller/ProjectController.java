@@ -59,7 +59,7 @@ public class ProjectController {
         return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
     }
 
-    @PutMapping("/projects/{projectId}")
+    @PatchMapping("/projects/{projectId}")
     public ResponseEntity<Project> updateProject(@PathVariable Long projectId, @RequestBody Project project) {
         project.setId(projectId);
         Project updatedProject = projectService.updateProject(project);

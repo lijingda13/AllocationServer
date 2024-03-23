@@ -567,18 +567,14 @@ curl --location 'http://localhost:8080/api/staff/1/create-project' \
 
 This API allows staff to update the information of an existing project.
 
-- **Endpoint:** `PUT /api/projects/{projectId}`
+- **Endpoint:** `PATCH /api/projects/{projectId}`
 - **Path Variable:**
     - `projectId`: The ID of the project to be updated.
 - **Request Header:**
     - Authorization: "Bearer {JWT token}"
 - **Request Body:**
-    - `id`: Project id.
     - `title`: Title of the project.
     - `description`: Description of the project.
-    - `staff`: Staff who proposed the project.
-    - `status`: Status of the project.
-    - `createDate`: Propose date of the project.
 - **Response:**
     - Status Code:
         - `200`: Project information successfully updated.

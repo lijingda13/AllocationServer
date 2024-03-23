@@ -162,6 +162,10 @@ public class ProjectServiceImpl implements ProjectService {
         if (project.getStatus()) {
             throw new DataIntegrityViolationException("Project already assigned to a student.");
         }
+        boolean exists = interestRecordRepository.existsByStudentIdAndProjectId(userId, projectId);
+        if (exists) {
+            throw new DataIntegrityViolationException("Interest already registered.");
+        }
         Optional<InterestRecord> interestRecordOptional = interestRecordRepository.findByStudentIdAndProjectId(userId, projectId);
         if (interestRecordOptional.isEmpty()) {
             throw new EntityNotFoundException("Interest not registered.");
