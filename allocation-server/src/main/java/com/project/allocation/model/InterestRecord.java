@@ -9,11 +9,11 @@ import jakarta.persistence.ManyToOne;
 @Entity(name = "interest_record")
 public class InterestRecord extends BaseEntity {
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "student_user_id", referencedColumnName = "id")
     private User student;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name = "project_id", referencedColumnName = "id")
     private Project project;
 

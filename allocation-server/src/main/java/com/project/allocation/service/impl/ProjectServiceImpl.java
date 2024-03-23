@@ -81,7 +81,7 @@ public class ProjectServiceImpl implements ProjectService {
     public Project createProject(Project project, Long staffId) {
         User staff = userRepository.findById(staffId).orElse(null);
         if (staff == null) {
-            throw new EntityNotFoundException("User not found.");
+            throw new NullPointerException("User not found.");
         }
         project.setStaff(staff);
         return projectRepository.save(project);
@@ -90,11 +90,11 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Project updateProject(Project project) {
         if (project == null || project.getId() == null) {
-            throw new EntityNotFoundException("Project not found.");
+            throw new NullPointerException("Project not found.");
         }
         Optional<Project> existingProjectOptional = projectRepository.findById(project.getId());
         if (existingProjectOptional.isEmpty()) {
-            throw new EntityNotFoundException("Project not found.");
+            throw new NullPointerException("Project not found.");
         }
         Project updatedProject = existingProjectOptional.get();
         updatedProject.setTitle(project.getTitle());
@@ -106,7 +106,7 @@ public class ProjectServiceImpl implements ProjectService {
     public boolean deleteProject(Long projectId) {
         Optional<Project> projectOptional = projectRepository.findById(projectId);
         if (projectOptional.isEmpty()) {
-            throw new EntityNotFoundException("Project not found.");
+            throw new NullPointerException("Project not found.");
         }
         Project project = projectOptional.get();
         if (project.getStatus()) {
@@ -121,11 +121,11 @@ public class ProjectServiceImpl implements ProjectService {
     public boolean registerInterest(Long projectId, Long userId) {
         Project project = projectRepository.findById(projectId).orElse(null);
         if (project == null) {
-            throw new EntityNotFoundException("Project not found.");
+            throw new NullPointerException("Project not found.");
         }
         User student = userRepository.findById(userId).orElse(null);
         if (student == null) {
-            throw new EntityNotFoundException("User not found.");
+            throw new NullPointerException("User not found.");
         }
         boolean exists = interestRecordRepository.existsByStudentIdAndProjectId(userId, projectId);
         if (exists) {
@@ -149,11 +149,11 @@ public class ProjectServiceImpl implements ProjectService {
     public boolean unregisterInterest(Long projectId, Long userId) {
         Project project = projectRepository.findById(projectId).orElse(null);
         if (project == null) {
-            throw new EntityNotFoundException("Project not found.");
+            throw new NullPointerException("Project not found.");
         }
         User student = userRepository.findById(userId).orElse(null);
         if (student == null) {
-            throw new EntityNotFoundException("User not found.");
+            throw new NullPointerException("User not found.");
         }
         boolean isAssigned = assignRecordRepository.existsByStudentId(userId);
         if (isAssigned) {
@@ -163,14 +163,12 @@ public class ProjectServiceImpl implements ProjectService {
             throw new DataIntegrityViolationException("Project already assigned to a student.");
         }
         boolean exists = interestRecordRepository.existsByStudentIdAndProjectId(userId, projectId);
-        if (exists) {
-            throw new DataIntegrityViolationException("Interest already registered.");
+        if (!exists) {
+            throw new DataIntegrityViolationException("Interest not registered.");
         }
-        Optional<InterestRecord> interestRecordOptional = interestRecordRepository.findByStudentIdAndProjectId(userId, projectId);
-        if (interestRecordOptional.isEmpty()) {
-            throw new EntityNotFoundException("Interest not registered.");
-        }
-        interestRecordRepository.delete(interestRecordOptional.get());
+        InterestRecord interestRecord = interestRecordRepository.findByStudentIdAndProjectId(userId, projectId)
+                .orElseThrow(() -> new NullPointerException("Interest record not found."));
+        interestRecordRepository.delete(interestRecord);
         return true;
     }
 
@@ -179,11 +177,11 @@ public class ProjectServiceImpl implements ProjectService {
     public boolean assignProject(Long projectId, User user) {
         Project project = projectRepository.findById(projectId).orElse(null);
         if (project == null) {
-            throw new EntityNotFoundException("Project not found.");
+            throw new NullPointerException("Project not found.");
         }
         User student = userRepository.findById(user.getId()).orElse(null);
         if (student == null) {
-            throw new EntityNotFoundException("User not found.");
+            throw new NullPointerException("User not found.");
         }
         if (project.getStatus()) {
             throw new DataIntegrityViolationException("Project already assigned to a student.");
@@ -204,7 +202,7 @@ public class ProjectServiceImpl implements ProjectService {
     public Project getAssignedProject(Long studentId) {
         AssignRecord assignRecord = assignRecordRepository.findByStudentId(studentId).orElse(null);
         if (assignRecord == null) {
-            throw new EntityNotFoundException("Student not assigned");
+            throw new NullPointerException("Student not assigned");
         }
         return assignRecord.getProject();
     }
