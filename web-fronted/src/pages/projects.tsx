@@ -12,7 +12,8 @@ import { List, Datagrid, TextField,
     ExportButton,
     CreateButton,
     FunctionField,
-    useDataProvider
+    useDataProvider,
+    WrapperField
 } from "react-admin";
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
@@ -47,21 +48,11 @@ const ListActions = () => {
     const role = localStorage.getItem("role");
     return (
         <TopToolbar>
-            {role === 'staff' ? <CreateButton/> : null}
+            {role === 'STAFF' ? <CreateButton/> : null}
             <ExportButton/>
         </TopToolbar>
     );
 }
-
-const LongField = () => {
-    const record = useRecordContext();
-  return (
-    <Tooltip title={record?.description}>
-      <div style={{width:"200px", overflow:"hidden", whiteSpace: "nowrap", textOverflow: "ellipsis"}}>{record?.description}</div>
-    </Tooltip>
-  );
-}
-
 
 // Project List
 export const PostList = () => {
@@ -78,29 +69,56 @@ export const PostList = () => {
         <Datagrid bulkActionButtons={false} rowClick="edit">
             <TextField source="id" sortable={false} />
             <TextField source="title" sortable={false}/>
-            {/* <TextField source="description" sortable={false} /> */}
-            <LongField/>
-            {role === 'staff'?
-            '':
-            <TextField source="staff" sortable={false}/>
+            <FunctionField
+                label="Description"
+                render={(record: any) => (
+                    <Tooltip title={record?.description}>
+                        <div style={{ width: "200px", overflow: "hidden", whiteSpace: "nowrap", textOverflow: "ellipsis" }}>{record?.description}</div>
+                    </Tooltip>
+                )}
+            />
+            {
+                role === 'STAFF'?
+                '':
+                // <TextField source="staff." sortable={false}/>
+                <FunctionField
+                    label="Staff"
+                    render={(record: any) => `${record.staff?.firstName} ${record.staff?.lastName}`}
+                />
             }
-            <TextField label="Assigned Student" source="student" sortable={false}/>
+            {
+               role === 'STAFF'?
+               <TextField label="Assigned Student" source="student" sortable={false}/> :
+               ''
+            }
+            
             <FunctionField
                 label="Project Status"
                 render={(record: { status: any; }) => (record.status? 'Available':'Unavailable')}
             />
-            <FunctionField
-                sx={{color: "blue"}}
-                label="Interest Students"
-                render={(record: { interestStudents: string | any[]; }) => `${record.interestStudents.length}`}
-            />
-            {role === 'staff'?
-            '':
-            <TextField source="registerInterestStatus" sortable={false}/>
+            {
+                role === 'STAFF'?
+                <FunctionField
+                    sx={{color: "blue"}}
+                    label="Interest Students"
+                    render={(record: { interestStudents: string | any[]; }) => `${record.interestStudents.length}`}
+                /> :
+                ''
             }
-            {(role === 'staff') ? 
-            null: 
-            <Mybutton />}
+            
+            {
+                role === 'STAFF'?
+                '':
+                <FunctionField
+                    label="Register Interest Status"
+                    render={(record: any) => (record.registerInterest ? 'Registered' : 'Unregistered')}
+                />
+            }
+            {
+                role === 'STAFF' ? 
+                null: 
+                <Mybutton />
+            }
         </Datagrid>
     </List>
 );}
@@ -167,7 +185,7 @@ const PostEditToolbar = (props:any) => {
     return(
 
     <Toolbar sx={{display: "flex",justifyContent:"space-between"}}>
-            {role==='staff' ?
+            {role==='STAFF' ?
             <SaveButton label="save" disabled={record.status?false:true} />:
             null
             }

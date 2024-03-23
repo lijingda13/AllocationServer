@@ -8,22 +8,22 @@ const userid = localStorage.getItem("username");
 const token = localStorage.getItem("token");
 const headers = new Headers();
 headers.append('Content-Type', 'application/json');
-if (token) {
-    headers.append('Authorization', token);
-}
  
 export const dataProvider1: DataProvider = {
     /** get projects list */
     getList: (resource, params) => {
-        
+        const token = (localStorage.getItem("token") || '');
+        if (!headers.has("Authorization")) {
+            headers.append("Authorization", `Bearer ${token}`);
+        }
         let url;
-        if (localStorage.getItem("role") === 'staff') {
-            url = BACKEND_URL + Url.projects_staff_get;
+        if (localStorage.getItem("role") === 'STAFF') {
+            url = BACKEND_URL + Url.projects_staff_get(localStorage.getItem("userid"));
         } else {
             if (params.filter.category === '2') {
                 url = BACKEND_URL + Url.projects_student_assigned_get;
             } else {
-                url = BACKEND_URL + Url.projects_student_available_get;
+                url = BACKEND_URL + Url.projects_student_available_get(localStorage.getItem('userid'));
             }
         }
         const result =  httpClient(url, {method:'GET', headers}).then(({ headers,json }) => {
@@ -111,9 +111,9 @@ export const dataProvider1: DataProvider = {
     /** get user by id */
     getUser: () => {
         const userid = localStorage.getItem("userid")
-        const token = localStorage.getItem("token");
-        if (token) {
-            headers.append('Authorization', token);
+        const token = localStorage.getItem("token")||'';
+        if (!headers.has('Authorization')) {
+            headers.append('Authorization', `Bearer ${token}`);
         }
         const url = `${BACKEND_URL}${Url.user_id_get(userid)}`;
         const result = fetch(url, {
@@ -125,18 +125,26 @@ export const dataProvider1: DataProvider = {
     },
 
     /** update user */
-    saveUser: (data: any) => {
+    saveUser: async (data: any) => {
         const userid = localStorage.getItem("userid")
-        const token = localStorage.getItem("token");
-        if (token) {
-            headers.append('Authorization', token);
+        const token = localStorage.getItem("token") || '';
+        if (!headers.has("Authorization")) {
+            headers.append("Authorization", `Bearer ${token}`);
         }
         const url = `${BACKEND_URL}${Url.user_id_patch(userid)}`;
-        const result = fetch(url, {
+        const result = await fetch(url, {
             method: 'PATCH',
             headers,
             body: toJsonString(data)
-        }).then((response:any) => response.json());
+        }).then((response:any) => {
+            if (!response.ok) {
+                return response.json().then((data: any) => {
+                    return Promise.reject(data.message);
+                });
+            } else {
+                return response.json();
+            }
+        });
         return result;
     },
 

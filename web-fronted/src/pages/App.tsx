@@ -33,7 +33,7 @@ export const App = () => {
               edit={PostEdit}
               icon={PostIcon}
               create={PostCreate}
-              hasCreate = {role === "staff"}
+              hasCreate = {role === "STAFF"}
           /> 
           {/* <Resource
               name="Users"

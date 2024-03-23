@@ -73,6 +73,9 @@
     margin-bottom: 4px !important;
     width: 100% !important;
 }
+.login-main-field div .password-icon {
+    width: 60px !important;
+}
 
 .tab-btn {
     flex: 1 !important;

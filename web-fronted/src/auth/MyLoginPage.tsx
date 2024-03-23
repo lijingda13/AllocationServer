@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useLogin, useNotify, Notification, Login, fetchUtils, useRedirect } from 'react-admin';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Button from '@mui/material/Button';
-import LoadingButton from '@mui/lab';
 
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
@@ -12,25 +11,48 @@ import Box from '@mui/material/Box';
 import TextField from '@mui/material/TextField';
 import { BACKEND_URL } from '../share/env';
 import { Url } from '../share/url';
+
+import IconButton from '@mui/material/IconButton';
+import FilledInput from '@mui/material/FilledInput';
+import InputLabel from '@mui/material/InputLabel';
+import InputAdornment from '@mui/material/InputAdornment';
+import FormControl from '@mui/material/FormControl';
+import Visibility from '@mui/icons-material/Visibility';
+import VisibilityOff from '@mui/icons-material/VisibilityOff';
+import FormHelperText from '@mui/material/FormHelperText';
 const httpClient = fetchUtils.fetchJson;
 
 
 const MyLoginPage = () => {
-
+    const headers = new Headers();
+    headers.append('Content-Type', 'application/json');
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [email, setEmail] = useState('');
-    const [role, setRole] = useState('');
-    let [usernameStatus, setUsernameStatus] = useState(false);
-    let [passwordStatus, setPasswordStatus] = useState(false);
-    let [emailStatus, setEmailStatus] = useState(false);
-    let [roleStatus, setRoleStatus] = useState(false);
+    const [role, setRole] = useState('STAFF');
+    const [firstName, setFirstName] = useState('');
+    const [lastName, setLastName] = useState('');
+    const [usernameStatus, setUsernameStatus] = useState(false);
+    const [passwordStatus, setPasswordStatus] = useState(false);
+    const [emailStatus, setEmailStatus] = useState(false);
+    const [roleStatus, setRoleStatus] = useState(false);
+    const [firstNameStatus, setFirstNameStatus] = useState(false);
+    const [lastNameStatus, setLastNameStatus] = useState(false);
     const [value, setValue] = useState(0);
 
     const [successMsg, setSuccessMsg] = useState(false);
     const login = useLogin();
     const notify = useNotify();
     const redirect = useRedirect();
+
+
+    const [showPassword, setShowPassword] = useState(false);
+
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    };
 
     const handleSubmit = async  (e: {[x: string]: any; preventDefault: () => void; }) => {
         e.preventDefault();
@@ -41,16 +63,31 @@ const MyLoginPage = () => {
             return;
         }
         setUsernameStatus(false);
+
         if (!password.trim()) {
             setPasswordStatus(true);
             return;
         }
         setPasswordStatus(false);
+
         if (!email.trim() && action === 'register') {
             setEmailStatus(true);
             return;
         }
         setEmailStatus(false);
+
+        if (!firstName.trim() && action === 'register') {
+            setFirstNameStatus(true);
+            return;
+        }
+        setFirstNameStatus(false);
+
+        if (!lastName.trim() && action === 'register') {
+            setLastNameStatus(true);
+            return;
+        }
+        setLastNameStatus(false);
+
         if (action === 'login') {
             console.log(123)
             // will call authProvider.login({ email, password })
@@ -58,19 +95,24 @@ const MyLoginPage = () => {
                 return notify("Some of your information isn't correct. Please try again.", {type:"error"})
             });
         } else {
-            const params = JSON.stringify({username, password, email, role});
-            const result = await httpClient(BACKEND_URL + Url.users_post, {method: 'POST', body: params})
-            .then((res:any) => {
-                console.log('注册成功：',res);
-                if (res.status === 201) {
-                    notify(res.json.message, { type: 'success' });
-                    setValue(0); // 去登录页签
-                    setEmail('');
-                } else {
-                    notify(res.json.message, { type: 'error' });
-                }
+            const params = JSON.stringify({username, password, email, role, firstName, lastName});
+            console.log(params)
+            const result = await fetch(BACKEND_URL + Url.users_post, {method: 'POST', headers, body: params}).then(response => {
+                if (response.status == 400) {
+                    return response.text().then(data => {
+                      return Promise.reject(data);
+                    });
+                  } else {
+                    return response.text();
+                  }
+            }).then(res => {
+                notify(res, { type: 'success' });
+                setValue(0); // go to login tab
+                setEmail('');
+                setFirstName('');
+                setLastName('');
             }).catch(e => {
-                notify("Registration failed", { type: 'error' });
+                notify(e, { type: 'error' });
             });
         }
     
@@ -79,6 +121,7 @@ const MyLoginPage = () => {
     // handle tab
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
+        setRole("STAFF");
     };
     function a11yProps(index: number) {
     return {
@@ -110,11 +153,43 @@ const MyLoginPage = () => {
                         
                         autoComplete="off"
                         >
+
+
+
+
                         <TextField error={usernameStatus} helperText={usernameStatus ? "username is required" : ''} className='customize-field' id="filled-basic1" label="Username" variant="filled" required onChange={e => {setUsername(e.target.value); setUsernameStatus(!e.target.value.trim())}}/><br/>
-                        <TextField error={passwordStatus} helperText={passwordStatus ? "password is required" : ''} id="filled-basic2" label="Password" variant="filled" required  onChange={e => {setPassword(e.target.value); ; setPasswordStatus(!e.target.value.trim())}}/><br/>
+                        {/* <TextField error={passwordStatus} helperText={passwordStatus ? "password is required" : ''} id="filled-basic2" label="Password" variant="filled" required  onChange={e => {setPassword(e.target.value); ; setPasswordStatus(!e.target.value.trim())}}/><br/> */}
+                        <FormControl error={passwordStatus} sx={{ m: 1, width: '25ch' }} variant="filled">
+                            <InputLabel  required htmlFor="filled-adornment-password">Password</InputLabel>
+                            <FilledInput
+                                onChange={e => {setPassword(e.target.value); ; setPasswordStatus(!e.target.value.trim())}}
+                                id="filled-adornment-password"
+                                type={showPassword ? 'text' : 'password'}
+                                endAdornment={
+                                <InputAdornment className="password-icon" position="end">
+                                    <IconButton
+                                    aria-label="toggle password visibility"
+                                    onClick={handleClickShowPassword}
+                                    onMouseDown={handleMouseDownPassword}
+                                    edge="end"
+                                    >
+                                    {showPassword ? <VisibilityOff /> : <Visibility />}
+                                    </IconButton>
+                                </InputAdornment>
+                                }
+                            />
+                            <FormHelperText sx={{display: passwordStatus ? "inherit" : "none"}} id="component-error-text">password is required</FormHelperText>
+                        </FormControl><br/>
                         {value==1? 
                             <>
-                                <TextField error={emailStatus} helperText={emailStatus ? "email is required" : ''} id="filled-basic3" label="Email" variant="filled" required   onChange={e => {setEmail(e.target.value); setEmailStatus(!e.target.value.trim())}}/><br/>
+                                <TextField error={emailStatus} helperText={emailStatus ? "email is required" : ''} id="filled-basic3" label="Email" variant="filled" required onChange={e => {setEmail(e.target.value); setEmailStatus(!e.target.value.trim())}}/><br/>
+                                <TextField error={firstNameStatus} helperText={firstNameStatus ? "first name is required" : ''}  id="filled-basic5" label="First Name" variant="filled" required onChange={e => {setFirstName(e.target.value); setFirstNameStatus(!e.target.value.trim())}} /><br/>
+                                <TextField error={lastNameStatus} helperText={lastNameStatus ? "last name is required" : ''}  id="filled-basic6" label="Last Name" variant="filled" required onChange={e => {setLastName(e.target.value); setLastNameStatus(!e.target.value.trim())}} /><br/>
+
+
+
+
+
                                 <TextField error={roleStatus} helperText={roleStatus ? "role is required" : ''}  required  onChange={e => {setRole(e.target.value); setRoleStatus(!e.target.value.trim())}}
                                     id="filled-select-currency-native"
                                     select
@@ -124,7 +199,7 @@ const MyLoginPage = () => {
                                     }}
                                     variant="filled"
                                     >
-                                    {[{id:"staff", role:"staff"}, {id:"student", role:"student"}].map((option) => (
+                                    {[{id:"STAFF", role:"STAFF"}, {id:"STUDENT", role:"STUDENT"}].map((option) => (
                                         <option key={option.id} value={option.role}>
                                         {option.role}
                                         </option>
