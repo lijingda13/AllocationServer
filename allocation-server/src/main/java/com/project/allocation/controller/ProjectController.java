@@ -2,6 +2,7 @@ package com.project.allocation.controller;
 
 import com.project.allocation.dto.StaffProjectDTO;
 import com.project.allocation.dto.StudentProjectDTO;
+import com.project.allocation.model.User;
 import com.project.allocation.service.ProjectService;
 import com.project.allocation.util.JwtUtil;
 import jakarta.validation.Valid;
@@ -37,13 +38,13 @@ public class ProjectController {
     @GetMapping("/students/{studentId}/available-projects")
     public ResponseEntity<List<StudentProjectDTO>> listAvailableProjects(@PathVariable Long studentId) {
         List<StudentProjectDTO> projects = projectService.listAvailableProjects(studentId);
-        return projects != null ? new ResponseEntity<>(projects, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(projects, HttpStatus.OK);
     }
 
     @GetMapping("/staff/{staffId}/proposed-projects")
     public ResponseEntity<List<StaffProjectDTO>> listProposedProjects(@PathVariable Long staffId) {
         List<StaffProjectDTO> projects = projectService.listProposedProjects(staffId);
-        return projects != null ? new ResponseEntity<>(projects, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        return new ResponseEntity<>(projects, HttpStatus.OK);
     }
 
 //    @GetMapping("/students/{studentId}/assigned-project")
@@ -52,9 +53,9 @@ public class ProjectController {
 //        return assignedProject != null ? new ResponseEntity<>(assignedProject, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
 //    }
 
-    @PostMapping("/projects")
-    public ResponseEntity<Project> createProject(@Valid @RequestBody Project project) {
-        Project createdProject = projectService.createProject(project);
+    @PostMapping("/staff/{staffId}/create-project")
+    public ResponseEntity<Project> createProject(@PathVariable Long staffId, @Valid @RequestBody Project project) {
+        Project createdProject = projectService.createProject(project, staffId);
         return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
     }
 
@@ -68,7 +69,11 @@ public class ProjectController {
     @DeleteMapping("/projects/{projectId}")
     public ResponseEntity<?> deleteProject(@PathVariable Long projectId) {
         boolean deleted = projectService.deleteProject(projectId);
-        return deleted ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+        if (deleted) {
+            return ResponseEntity.ok("Project deleted successfully.");
+        } else {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("Project not found.");
+        }
     }
 
     @PostMapping("/projects/{projectId}/register-interest")
@@ -86,9 +91,8 @@ public class ProjectController {
     }
 
     @PostMapping("/projects/{projectId}/assign-project")
-    public ResponseEntity<?> assignProject(@PathVariable Long projectId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        Long userId = jwtUtil.getUserIdFromToken(token);
-        boolean assigned = projectService.assignProject(projectId, userId);
+    public ResponseEntity<?> assignProject(@PathVariable Long projectId, @RequestBody User user) {
+        boolean assigned = projectService.assignProject(projectId, user);
         return assigned ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

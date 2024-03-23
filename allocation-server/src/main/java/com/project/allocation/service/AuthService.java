@@ -4,6 +4,4 @@ import com.project.allocation.dto.AuthResponseDTO;
 
 public interface AuthService {
     AuthResponseDTO login(String username, String password);
-
-    boolean logout();
 }

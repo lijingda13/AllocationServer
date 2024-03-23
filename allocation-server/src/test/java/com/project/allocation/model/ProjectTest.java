@@ -9,7 +9,7 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 public class ProjectTest {
 
     @Test
-    void createProjectWithConstructorAndValidateFields() {
+    void testProjectConstructAndMethod() {
         String username = "testUser";
         String password = "testPass";
         String firstname = "Test";
