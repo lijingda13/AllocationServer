@@ -379,6 +379,20 @@ This API is used to retrieve a list of all projects in the Allocation Applicatio
         - `status`: Status of the project.
         - `createDate`: Propose date of the project.
 
+#### **Example:**
+
+- Request:
+
+```shell
+
+```
+
+- Response:
+
+```json
+
+```
+
 ### Get all available projects for the student
 
 This API provides the list of all available projects that a student can register interest in.
@@ -400,6 +414,20 @@ This API provides the list of all available projects that a student can register
         - `status`: Status of the project.
         - `createDate`: Propose date of the project.
         - `registerStatus`: Status of interest registration.
+
+#### **Example:**
+
+- Request:
+
+```shell
+
+```
+
+- Response:
+
+```json
+
+```
 
 ### Get all proposed projects for the staff
 
@@ -423,6 +451,20 @@ This API fetches all the projects proposed by a particular staff member.
         - `createDate`: Propose date of the project.
         - `interestedStudents`: List of students who registered interest.
         - `assignedStudent`: Student assigned to the project.
+
+#### **Example:**
+
+- Request:
+
+```shell
+
+```
+
+- Response:
+
+```json
+
+```
 
 [//]: # (### Get assigned project for the student)
 
@@ -486,8 +528,10 @@ This API is used by staff to propose a new project.
         - `staff`: Staff who proposed the project.
         - `status`: Status of the project.
         - `createDate`: Propose date of the project.
-- **Example:**
-    - Request:
+
+#### **Example:**
+
+- Request:
 
 ```shell
 curl --location 'http://localhost:8080/api/staff/1/create-project' \
@@ -547,6 +591,20 @@ This API allows staff to update the information of an existing project.
         - `status`: Status of the project.
         - `createDate`: Propose date of the project.
 
+#### **Example:**
+
+- Request:
+
+```shell
+
+```
+
+- Response:
+
+```json
+
+```
+
 ### Staff delete a project
 
 This API is used by staff to delete a project.
@@ -560,6 +618,20 @@ This API is used by staff to delete a project.
     - Status Code:
         - `200`: Project successfully deleted.
         - `404`: Project not found or already assigned and cannot be deleted.
+
+#### **Example:**
+
+- Request:
+
+```shell
+
+```
+
+- Response:
+
+```json
+
+```
 
 ### Student register interest in a project
 
@@ -576,6 +648,20 @@ This API allows a student to register their interest in an available project.
         - `404`: Project not found or user not found.
         - `409`: Interest already registered or user already assigned to another project.
 
+#### **Example:**
+
+- Request:
+
+```shell
+
+```
+
+- Response:
+
+```json
+
+```
+
 ### Student unregister interest in a project
 
 This API allows a student to unregister their interest in a project they previously showed interest in.
@@ -591,6 +677,20 @@ This API allows a student to unregister their interest in a project they previou
         - `404`: Project not found, user not found, or interest record not found.
         - `400`: User already assigned to a project, cannot unregister interest.
 
+#### **Example:**
+
+- Request:
+
+```shell
+
+```
+
+- Response:
+
+```json
+
+```
+
 ### Staff approve student interest and assign student to the project
 
 This API is used by staff to approve a student's interest in a project and assign the project to the student.
@@ -601,9 +701,28 @@ This API is used by staff to approve a student's interest in a project and assig
 - **Request Header:**
     - Authorization: "Bearer {JWT token}"
 - **Request Body:**
-    - `userId`: The ID of the student to assign the project to.
+    - `id`: The user id.
+    - `username`: The username of the user.
+    - `role`: The role of the user.
+    - `firstName`: The first name of the user.
+    - `lastName`: The last name of the user.
+    - `email`: The email address of the user.
 - **Response:**
     - Status Code:
         - `200`: Successfully assigned the project to the student.
         - `404`: Project not found, user not found, or interest record not found.
         - `409`: Project already assigned to another student or student already assigned to another project.
+
+#### **Example:**
+
+- Request:
+
+```shell
+
+```
+
+- Response:
+
+```json
+
+```
