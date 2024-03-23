@@ -3,7 +3,6 @@ package com.project.allocation.model;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
-
 import java.util.Date;
 
 @Entity(name = "projects")
@@ -13,8 +12,7 @@ public class Project extends BaseEntity {
     @NotBlank(message = "Description cannot be blank")
     private String description;
 
-    @NotBlank(message = "Staff cannot be blank")
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
+    @ManyToOne(cascade = CascadeType.MERGE, fetch = FetchType.EAGER)
     @JoinColumn(name = "staff_user_id", referencedColumnName = "id")
     private User staff; // The staff member who proposed the project
 

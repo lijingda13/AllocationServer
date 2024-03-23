@@ -52,9 +52,9 @@ public class ProjectController {
 //        return assignedProject != null ? new ResponseEntity<>(assignedProject, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
 //    }
 
-    @PostMapping("/projects")
-    public ResponseEntity<Project> createProject(@Valid @RequestBody Project project) {
-        Project createdProject = projectService.createProject(project);
+    @PostMapping("/staff/{staffId}/create-project")
+    public ResponseEntity<Project> createProject(@PathVariable Long staffId, @Valid @RequestBody Project project) {
+        Project createdProject = projectService.createProject(project, staffId);
         return new ResponseEntity<>(createdProject, HttpStatus.CREATED);
     }
 

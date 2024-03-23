@@ -35,8 +35,4 @@ public class AuthServiceImpl implements AuthService {
         return AuthResponseDTO.success(jwtUtil.createToken(user), user);
     }
 
-    @Override
-    public boolean logout() {
-        return false;
-    }
 }

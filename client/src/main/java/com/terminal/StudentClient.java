@@ -66,7 +66,6 @@ public class StudentClient extends UserClient{
     }
     
     public void getAllAvailableProjects(Long studentId) throws Exception {
-        // 更新API端点以匹配新的要求
         HttpResponse<String> response = HttpClientUtil.sendGetWithToken("http://localhost:8080/api/students/" + studentId + "/available-projects");
     
         if (response.statusCode() == 200) {
@@ -82,7 +81,6 @@ public class StudentClient extends UserClient{
     }
 
     public void registerInterestToProject(Long projectId) throws Exception {
-        // 更新API端点以匹配新的要求
         HttpResponse<String> response = HttpClientUtil.sendPostWithToken("http://localhost:8080/api/projects/" + projectId + "/register-interest", "");
     
         switch (response.statusCode()) {
@@ -127,13 +125,9 @@ public class StudentClient extends UserClient{
     }
 
     public void unregisterInterestFromProject(Long projectId1) throws Exception {
-        // 构造请求URL，包含项目ID
         String url = "http://localhost:8080/api/projects/" + projectId1 + "/unregister-interest";
     
-        // 使用HttpClientUtil.sendPostWithToken方法发送POST请求，无需请求体
         HttpResponse<String> response = HttpClientUtil.sendPostWithToken(url, "");
-    
-        // 根据响应状态码处理结果
         switch (response.statusCode()) {
             case 200:
                 System.out.println("Successfully unregistered interest from project ID: " + projectId1);

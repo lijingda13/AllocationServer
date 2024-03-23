@@ -25,7 +25,7 @@ public interface ProjectService {
      * @param project Project to propose
      * @return Proposed project
      */
-    Project createProject(Project project);
+    Project createProject(Project project, Long staffId);
 
     /**
      * Update a project

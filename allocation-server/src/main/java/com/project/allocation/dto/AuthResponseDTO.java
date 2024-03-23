@@ -14,6 +14,9 @@ public class AuthResponseDTO {
 
     private User user;
 
+    public AuthResponseDTO() {
+    }
+
     public AuthResponseDTO(boolean result, String message, String token, User user) {
         this.result = result;
         this.message = message;
