@@ -21,7 +21,9 @@ import com.project.allocation.util.JwtUtil;
 import jakarta.persistence.EntityNotFoundException;
 
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.MethodOrderer;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.TestMethodOrder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -58,7 +60,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 public class ProjectControllerTest {
@@ -101,7 +103,7 @@ public class ProjectControllerTest {
     private User student;
     private String studentToken;
     private String staffToken;
-    private Long projectID;
+    private static Long projectID;
 
 
     @BeforeEach
@@ -110,17 +112,18 @@ public class ProjectControllerTest {
         AuthResponseDTO staff = authService.login("rwilliams", "123456");
         AuthResponseDTO student = authService.login("jchen", "123456");
 
-        project1 = new Project();
-        project1.setTitle("Project 1");
-        project1.setDescription("Description 1");
-        project1.setStaff(staff.getUser());
-        project1.setStatus(true);
+        // project1 = new Project();
+        // project1.setTitle("Project 1");
+        // project1.setDescription("Description 1");
+        // project1.setStaff(staff.getUser());
+        // project1.setStatus(true);
 
-        project2 = new Project();
-        project2.setTitle("Project 2");
-        project2.setDescription("Description 2");
-        project2.setStaff(staff.getUser());
-        project2.setStatus(true);
+        // project2 = new Project();
+        // project2.setTitle("Project 2");
+        // project2.setDescription("Description 2");
+        // project2.setStaff(staff.getUser());
+        // project2.setStatus(true);
+
 
     }
 
@@ -179,7 +182,58 @@ public class ProjectControllerTest {
                     
     }
 
+    @Test
+public void testUpdateProjectWithMockMvc() throws Exception {
+    String updatedProjectJson = "{\"title\":\"Updated Project Title\",\"description\":\"Updated Description\"}";
 
+    when(projectService.updateProject(any(Project.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+    mockMvc.perform(patch("/api/projects/{projectId}", projectID)
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(updatedProjectJson)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + staffToken))
+            .andExpect(status().isOk())
+            .andExpect(jsonPath("$.title").value("Updated Project Title"))
+            .andExpect(jsonPath("$.description").value("Updated Description"));
+
+    verify(projectService).updateProject(any(Project.class));
+}
+
+@Test
+public void testRegisterInterestWithMockMvc() throws Exception {
+    // Assume the registerInterest method in the service returns true indicating successful registration
+    when(projectService.registerInterest(projectID, anyLong())).thenReturn(true);
+
+    mockMvc.perform(post("/api/projects/{projectId}/register-interest", projectID)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + studentToken)) // Using studentToken assuming a student is registering interest
+            .andExpect(status().isOk());
+
+    // Verify that the service method was called with the expected parameters
+    verify(projectService).registerInterest(eq(projectID), anyLong());
+}
+
+@Test
+public void testUnregisterInterestWithMockMvc() throws Exception {
+    when(projectService.unregisterInterest(projectID, anyLong())).thenReturn(true);
+
+    mockMvc.perform(post("/api/projects/{projectId}/unregister-interest", projectID)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + studentToken))
+            .andExpect(status().isOk());
+
+    verify(projectService).unregisterInterest(eq(projectID), anyLong());
+}
+
+@Test
+public void testDeleteProjectWithMockMvc() throws Exception {
+    when(projectService.deleteProject(projectID)).thenReturn(true);
+
+    mockMvc.perform(delete("/api/projects/{projectId}", projectID)
+            .header(HttpHeaders.AUTHORIZATION, "Bearer " + staffToken))
+            .andExpect(status().isOk())
+            .andExpect(content().string(contains("Project deleted successfully")));
+
+    verify(projectService).deleteProject(projectID);
+}
 
 
     
