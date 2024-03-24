@@ -1,11 +1,8 @@
 import { DataProvider, GetOneParams, GetOneResult, fetchUtils } from "react-admin";
 import { BACKEND_URL } from "../share/env.js";
 import { Url } from "../share/url.js";
-import '../mock/mock.js';
 
 const httpClient = fetchUtils.fetchJson;
-const userid = localStorage.getItem("username");
-const token = localStorage.getItem("token");
 const headers = new Headers();
 headers.append('Content-Type', 'application/json');
  
@@ -13,9 +10,7 @@ export const dataProvider1: DataProvider = {
     /** get projects list */
     getList: (resource, params) => {
         const token = (localStorage.getItem("token") || '');
-        if (!headers.has("Authorization")) {
-            headers.append("Authorization", `Bearer ${token}`);
-        }
+        headers.set("Authorization", `Bearer ${token}`);
         let url;
         if (localStorage.getItem("role") === 'STAFF') {
             url = BACKEND_URL + Url.projects_staff_get(localStorage.getItem("userid"));
@@ -28,7 +23,6 @@ export const dataProvider1: DataProvider = {
         }
         const result =  httpClient(url, {method:'GET', headers}).then(({ headers,json }) => {
             const resData = params.filter.category === '2' ? (json.assignedProject ? [json.assignedProject] : []) : json;
-            // console.log('getlist:',params, json, localStorage.getItem("role"))
             return ({
             data: resData,
             total: resData?.length || 0,
@@ -38,8 +32,6 @@ export const dataProvider1: DataProvider = {
 
     /** get one project by id */
     getOne: async (resource: string, params: GetOneParams<any>): Promise<GetOneResult<any>> => {
-        console.log(resource, params);
-        // const json: any = {id:1, name: "123" };
         return { data: params };
     },
 
@@ -59,21 +51,19 @@ export const dataProvider1: DataProvider = {
     /** assign student */
     update: (resource, params) =>{
         const token = localStorage.getItem("token")||'';
-        if (!headers.has('Authorization')) {
-            headers.append('Authorization', `Bearer ${token}`);
-        }
-        const student = {userId: params.meta.studentId};
+        headers.set("Authorization", `Bearer ${token}`);
+        const student = {...params.meta.student};
+        delete student.password;
         const url = BACKEND_URL + Url.projects_id_assign_post(params.meta.projectId);
        return httpClient(url, {
             method: 'POST',
             headers,
             body: JSON.stringify(student),
         }).then(({ json }) => {
-            // console.log('json:',json)
-            json.id=params.meta.projectId; // 勿删：必要！
+            json.id=params.meta.projectId; 
             return {data: json }
         });
-},
+    },
 
     updateMany: () => {
         return httpClient(`${BACKEND_URL}/test`, {
@@ -85,22 +75,17 @@ export const dataProvider1: DataProvider = {
     create: (resource, params) =>{
         const userid = localStorage.getItem("userid")
         const token = localStorage.getItem("token")||'';
-        if (!headers.has('Authorization')) {
-            headers.append('Authorization', `Bearer ${token}`);
-        }
+        headers.set("Authorization", `Bearer ${token}`);
         const url = BACKEND_URL + Url.projects_create_uesrid_post(userid);
         return httpClient(url, {
             method: 'POST',
             headers,
             body: JSON.stringify(params.data),
         }).then(({json}) => {
-            console.log(json)
-            // json.id=2444444; // 勿删: id必要！
             return {data: json};
         })
     },
 
-    /** delete:  */
     delete: (resource, params) =>
         httpClient(`${BACKEND_URL}/test`, {
             method: 'DELETE',
@@ -119,9 +104,7 @@ export const dataProvider1: DataProvider = {
     getUser: () => {
         const userid = localStorage.getItem("userid")
         const token = localStorage.getItem("token")||'';
-        if (!headers.has('Authorization')) {
-            headers.append('Authorization', `Bearer ${token}`);
-        }
+        headers.set("Authorization", `Bearer ${token}`);
         const url = `${BACKEND_URL}${Url.user_id_get(userid)}`;
         const result = fetch(url, {
             method: 'GET',
@@ -135,9 +118,7 @@ export const dataProvider1: DataProvider = {
     saveUser: async (data: any) => {
         const userid = localStorage.getItem("userid")
         const token = localStorage.getItem("token") || '';
-        if (!headers.has("Authorization")) {
-            headers.append("Authorization", `Bearer ${token}`);
-        }
+        headers.set("Authorization", `Bearer ${token}`);
         const url = `${BACKEND_URL}${Url.user_id_patch(userid)}`;
         const result = await fetch(url, {
             method: 'PATCH',
@@ -158,9 +139,7 @@ export const dataProvider1: DataProvider = {
     /** student register interest */
     registerInterest: (id:any) => {
         const token = localStorage.getItem("token") || '';
-        if (!headers.has("Authorization")) {
-            headers.append("Authorization", `Bearer ${token}`);
-        }
+        headers.set("Authorization", `Bearer ${token}`);
         // const user = {student_id: 315}
         const url = BACKEND_URL + Url.projects_id_registerinterest_post(id);
         const result = fetch(url, {
@@ -181,13 +160,30 @@ export const dataProvider1: DataProvider = {
     /** student cancel interest */
     cancelInterest: (id:any) => {
         const token = localStorage.getItem("token") || '';
-        if (!headers.has("Authorization")) {
-            headers.append("Authorization", `Bearer ${token}`);
-        }
-        // const user = {student_id: 315}
+        headers.set("Authorization", `Bearer ${token}`);
         const url = BACKEND_URL + Url.projects_id_unregisterinterest_post(id);
         const result = fetch(url, {
             method: 'POST',
+            headers
+        }).then((response:any) => {
+            if (!response.ok) {
+                return response.text().then((data: any) => {
+                    return Promise.reject(data)
+                });
+            } else {
+                response.text();
+            }
+        });
+        return result;
+    },
+
+    /** staff delete project by id */
+    deleteProject: (projectId: any) => {
+        const token = localStorage.getItem("token") || '';
+        headers.set("Authorization", `Bearer ${token}`);
+        const url = BACKEND_URL + Url.project_id_delete(projectId);
+        const result = fetch(url, {
+            method: 'DELETE',
             headers
         }).then((response:any) => {
             if (!response.ok) {

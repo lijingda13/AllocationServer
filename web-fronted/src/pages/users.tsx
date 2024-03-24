@@ -8,9 +8,7 @@ export const UserList = () => {
     const [email, setEmail] = useState();
     const dataProvider = useDataProvider();
     useEffect(() => {
-        console.log("user useEffect")
         dataProvider.getUser().then((res: any) => {
-            console.log(res)
             setDefaultValue(res);
         })
     }, []); 

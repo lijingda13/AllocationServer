@@ -89,14 +89,12 @@ const MyLoginPage = () => {
         setLastNameStatus(false);
 
         if (action === 'login') {
-            console.log(123)
             // will call authProvider.login({ email, password })
             login({ username, password }).catch(() =>{
                 return notify("Some of your information isn't correct. Please try again.", {type:"error"})
             });
         } else {
             const params = JSON.stringify({username, password, email, role, firstName, lastName});
-            console.log(params)
             const result = await fetch(BACKEND_URL + Url.users_post, {method: 'POST', headers, body: params}).then(response => {
                 if (response.status == 400) {
                     return response.text().then(data => {

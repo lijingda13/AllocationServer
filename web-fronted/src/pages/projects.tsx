@@ -13,8 +13,6 @@ import { List, Datagrid, TextField,
     CreateButton,
     FunctionField,
     useDataProvider,
-    WrapperField,
-    useGetOne
 } from "react-admin";
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
@@ -24,24 +22,22 @@ import { useNotify, useRedirect } from 'react-admin';
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
-import '../mock/mock.js';
-import { dataProvider1 } from "./dataProvider";
-// interest project
+import { useRefresh } from 'react-admin';
+
 const Mybutton = () => {
     const notify = useNotify();
     const record = useRecordContext();
     const dataProvider = useDataProvider();
+    const refresh = useRefresh();
     const handleRegisterInterest = (event:any) => {
         event.preventDefault();
         event.stopPropagation();
         // handle interest
         dataProvider.registerInterest(record.id).then((res:any) => {
-            console.log(res)
-            // notify(res.msg, {type: 'success'});
-            // 自动刷新列表
-            // dataProvider1.getList('projects', ) // bug：需要检查！！
+            notify('Register successfully', {type: 'success'});
+            refresh();
         }).catch((e: any) => {
-            console.log(e);
+            notify('Failed to register interest', {type: 'error'});
         });
     }
     const handleCancelInterest = (event:any) => {
@@ -49,11 +45,10 @@ const Mybutton = () => {
         event.stopPropagation();
         // handle interest
         dataProvider.cancelInterest(record.id).then((res:any) => {
-            console.log(res)
-            // notify(res.msg, {type: 'success'});
-            // 自动刷新列表
+            notify('Cancel successfully', {type: 'success'});
+            refresh();
         }).catch((e: any) => {
-            console.log(e);
+            notify('Failed to cancel interest', {type: 'error'});
         });
     }
     return (
@@ -62,7 +57,6 @@ const Mybutton = () => {
                 record.registerStatus ? 
                 <Button size="small" variant="contained" onClick={handleCancelInterest}>Cancel Interest</Button>:
                 <Button size="small" variant="outlined" onClick={handleRegisterInterest}>Register Interest</Button>
-
             }
         </Stack>
     )
@@ -71,20 +65,28 @@ const Mybutton = () => {
 const Staffbutton = () => {
     const record = useRecordContext();
     const navigate = useNavigate();
-
-    const viewProject = (event:any) => {
-        navigate('/projects/edit', { state: Object.assign({record}, {action: 'view'}) });
-
-    }
+    const dataProvider = useDataProvider();
+    const notify = useNotify();
+    const refresh = useRefresh();
     const assignStudent = (event: any) => {
         event.preventDefault();
         event.stopPropagation();
         navigate('/projects/edit', { state: Object.assign(record, {action: 'assign'}) });
     }
+    const deleteProject = (event: any) => {
+        event.preventDefault();
+        event.stopPropagation();
+        dataProvider.deleteProject(record.id).then((res:any) => {
+            notify('delete successfully', {type: 'success'});
+            refresh();
+        }).catch((e: any) => {
+            notify('Failed to delete', {type: 'error'});
+        });
+    }
     return (
-        <Stack>
-            {/* <Button size="small" variant="outlined" onClick={viewProject}>View Detail</Button> */}
-            <Button disabled={!!record.assignedStudent} size="small" variant="outlined" onClick={assignStudent}>Assign Student</Button>
+        <Stack sx={{flexDirection: "row"}}>
+            <Button sx={{marginRight: "10px"}} disabled={!(!record.assignedStudent && record.interestStudents?.length)} size="small" variant="outlined" onClick={assignStudent}>Assign Student</Button>
+            <Button size="small" variant="outlined" onClick={deleteProject} disabled={!!record.assignedStudent}>Delete</Button>
         </Stack>
     )
 };
@@ -114,10 +116,7 @@ export const PostList = () => {
     const navigate = useNavigate();
 
     const transferRowData = (record: any) => {
-        console.log(record);
-        navigate('/projects/edit', { state: Object.assign(record, {action: 'view'}) })
-      
-        // redirect('/projects/edit', 'posts', 1, {}, { record: record });
+        navigate('/projects/edit', { state: Object.assign(record, {action: 'view'}) });
     }
     return (
         
@@ -138,7 +137,6 @@ export const PostList = () => {
             {
                 role === 'STAFF'?
                 '':
-                // <TextField source="staff." sortable={false}/>
                 <FunctionField
                     label="Staff"
                     render={(record: any) => `${record.staff?.firstName} ${record.staff?.lastName}`}
@@ -209,7 +207,6 @@ const CustomizeForm = (props:any) => {
     // setStudentID(undefined);
     const location = useLocation();
     const postDefaultValue = location.state;
-    console.log(location.state);
     const role = localStorage.getItem("role");
     const record = useRecordContext(props);
     const {getAssigendStudent} = props;
@@ -217,6 +214,7 @@ const CustomizeForm = (props:any) => {
         getAssigendStudent(e.target.value)
         setStudentID(e.target.value);
     }
+    const optionRenderer = (choice: any) => `${choice.firstName} ${choice.lastName}`;
     return (
         <>
             <SimpleForm toolbar={<PostEditToolbar/>} defaultValues={postDefaultValue}>
@@ -244,7 +242,7 @@ const CustomizeForm = (props:any) => {
                         validate={required()} 
                         choices={postDefaultValue["interestStudents"]} 
                         readOnly={postDefaultValue["student"]?true:false}
-                        optionText="firstName"
+                        optionText={optionRenderer}
                         optionValue="id"
                     />
                 }
@@ -256,12 +254,14 @@ const CustomizeForm = (props:any) => {
 // assign student 
 export const PostEdit = (props: any) => {
     const location = useLocation();
-    const [assignStudentId, setAssignStudentId] = useState();
-    const getAssigendStudent = (data: any) => {
-        setAssignStudentId(data)
+    const [assignStudent, setAssignStudent] = useState();
+    const getAssigendStudent = (id: any) => {
+        const student = location.state.interestStudents.find((v: any) => v.id == id);
+        setAssignStudent(student);
+
     }
     return( 
-    <Edit title={<PostTitle/>} mutationOptions={{ meta: {studentId: assignStudentId, projectId: location.state.id} }} resource="projects">
+    <Edit  mutationMode="optimistic" title={<PostTitle/>} mutationOptions={{ meta: {student: assignStudent, projectId: location.state.id} }} resource="projects">
         <CustomizeForm  getAssigendStudent={getAssigendStudent}/>  
     </Edit>
 );}
@@ -281,7 +281,7 @@ const PostEditToolbar = (props:any) => {
 
     <Toolbar sx={{display: "flex",justifyContent:"space-between"}}>
             {role==='STAFF' ?
-            <SaveButton label="save" disabled={postDefaultValue.status} />:
+            <SaveButton label="save" disabled={postDefaultValue.status}/>:
             null
             }
             <Stack>
