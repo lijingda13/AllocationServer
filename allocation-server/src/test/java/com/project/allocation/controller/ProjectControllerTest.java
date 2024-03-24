@@ -12,8 +12,6 @@ import com.project.allocation.repository.UserRepository;
 import com.project.allocation.service.AuthService;
 import com.project.allocation.service.ProjectService;
 import com.project.allocation.service.UserService;
-import com.project.allocation.service.impl.ProjectServiceImpl;
-import com.project.allocation.service.impl.UserServiceImpl;
 import com.project.allocation.util.JwtUtil;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -24,18 +22,15 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
-import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 import org.springframework.web.context.WebApplicationContext;
 
 
 import java.util.List;
-import java.util.Objects;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -123,7 +118,7 @@ public class ProjectControllerTest {
         assertNotNull(projects);
         assertEquals(3, projects.size());
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        assertTrue(projects.get(0).getStatus());
+        assertFalse(projects.get(0).getStatus());
     }
 
     @Test

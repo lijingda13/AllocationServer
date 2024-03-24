@@ -1,6 +1,6 @@
 package com.project.allocation.util;
 
-import com.project.allocation.config.SecurityConfig;
+import com.project.allocation.security.SecurityConfig;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;

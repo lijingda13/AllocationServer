@@ -1,4 +1,4 @@
-package com.project.allocation.config;
+package com.project.allocation.security;
 
 
 import com.project.allocation.model.User;
@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.util.List;
 
 @Component
+
 public class JwtFilter extends OncePerRequestFilter {
 
     private final JwtUtil jwtUtil;
@@ -76,6 +77,5 @@ public class JwtFilter extends OncePerRequestFilter {
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
         filterChain.doFilter(request, response);
-
     }
 }

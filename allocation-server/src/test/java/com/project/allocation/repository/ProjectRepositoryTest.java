@@ -86,4 +86,10 @@ public class ProjectRepositoryTest {
         List<Project> projects = projectRepository.findAllByStatus(true);
         assertNotEquals(projects.size(), 0);
     }
+
+    @Test
+    public void testFindAllByStaffId() {
+        List<Project> projects = projectRepository.findAllByStaffId(1L);
+        assertEquals(2, projects.size());
+    }
 }
