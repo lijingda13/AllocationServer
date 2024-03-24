@@ -12,7 +12,6 @@ import com.project.allocation.repository.InterestRecordRepository;
 import com.project.allocation.repository.ProjectRepository;
 import com.project.allocation.repository.UserRepository;
 import com.project.allocation.service.ProjectService;
-import jakarta.persistence.EntityNotFoundException;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -102,6 +101,7 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.save(updatedProject);
     }
 
+    @Transactional
     @Override
     public boolean deleteProject(Long projectId) {
         Optional<Project> projectOptional = projectRepository.findById(projectId);
