@@ -29,8 +29,7 @@ public class TerminalClient {
         }
     }
 
-    private static void register() throws Exception {
-        Scanner scanner = new Scanner(System.in);
+    public static void register() throws Exception {
         System.out.println("Enter username:");
         String username = scanner.nextLine();
         System.out.println("Enter password:");

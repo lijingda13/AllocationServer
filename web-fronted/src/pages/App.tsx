@@ -11,17 +11,10 @@ import { useEffect, useState } from "react";
 import { Route } from "react-router-dom";
 export const App = () => {
   const [role, setRole] = useState('');
-  const [token, setToken] = useState('');
   useEffect(() => {
     const storedRole = localStorage.getItem('role');
-    const storedToken = localStorage.getItem('token');
-
     if (storedRole !== null) {
       setRole(storedRole);
-    }
-
-    if (storedToken !== null) {
-      setToken(storedToken);
     }
   }, []);
     
@@ -30,16 +23,10 @@ export const App = () => {
         <Resource
               name="projects"
               list={PostList}
-              // edit={PostEdit}
               icon={PostIcon}
               create={PostCreate}
               hasCreate = {role === "STAFF"}
           /> 
-          {/* <Resource
-              name="Users"
-              list={UserList}
-              icon={UserIcon}
-          /> */}
           <CustomRoutes>
             <Route path="/projects/edit" element={<PostEdit/>} />
             <Route path="/user" element={<UserList />} />
