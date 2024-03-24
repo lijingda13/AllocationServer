@@ -62,7 +62,8 @@ export const dataProvider1: DataProvider = {
         if (!headers.has('Authorization')) {
             headers.append('Authorization', `Bearer ${token}`);
         }
-        const student = {userId: params.meta.studentId};
+        const student = {...params.meta.student};
+        delete student.password;
         const url = BACKEND_URL + Url.projects_id_assign_post(params.meta.projectId);
        return httpClient(url, {
             method: 'POST',
@@ -188,6 +189,28 @@ export const dataProvider1: DataProvider = {
         const url = BACKEND_URL + Url.projects_id_unregisterinterest_post(id);
         const result = fetch(url, {
             method: 'POST',
+            headers
+        }).then((response:any) => {
+            if (!response.ok) {
+                return response.text().then((data: any) => {
+                    return Promise.reject(data)
+                });
+            } else {
+                response.text();
+            }
+        });
+        return result;
+    },
+
+    /** staff delete project by id */
+    deleteProject: (projectId: any) => {
+        const token = localStorage.getItem("token") || '';
+        if (!headers.has("Authorization")) {
+            headers.append("Authorization", `Bearer ${token}`);
+        }
+        const url = BACKEND_URL + Url.project_id_delete(projectId);
+        const result = fetch(url, {
+            method: 'DELETE',
             headers
         }).then((response:any) => {
             if (!response.ok) {

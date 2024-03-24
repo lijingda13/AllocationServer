@@ -15,9 +15,5 @@ export const Url = {
 
     projects_id_registerinterest_post: (projectId: any) => `/api/projects/${projectId}/register-interest`,  // student register interest
     projects_id_unregisterinterest_post: (projectId: any) => `/api/projects/${projectId}/unregister-interest`,  // student cancel interest
-    
+    project_id_delete: (projectId: any) => `/api/projects/${projectId}`, // staff delete project by id
 }
-// /api/projects/{projectId}/register-interest
-// /api/projects/{projectId}/unregister-interest
-// /api/staff/{staffId}/create-project
-// /api/projects/{projectId}/assign-project
