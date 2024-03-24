@@ -20,7 +20,6 @@ export const authProvider: AuthProvider = {
             }),
         })
         .then(response => {
-            console.log(response)
             if (response.status == 200) {
                 const userdata = response.json;
                 localStorage.setItem("username", userdata.user.username);
@@ -33,28 +32,6 @@ export const authProvider: AuthProvider = {
     },
     // called when the user clicks on the logout button
     logout: () => {
-        // const token = localStorage.getItem("token");
-        // return httpClient(`${BACKEND_URL}${Url.logout_post}`, {
-        //     method: 'POST',
-        //     headers,
-        //     body: JSON.stringify({
-        //         token
-        //     }),
-        // })
-        // .then(response => {
-        //     console.log(response)
-        //     if (response.status == 200) {
-        //         const userdata = response.json;
-        //         localStorage.removeItem("username");
-        //         localStorage.removeItem("userid");
-        //         localStorage.removeItem("role");
-        //         localStorage.removeItem("token");
-        //         return Promise.resolve();
-        //     }
-        // }).catch(() => {
-        //     console.log("logout error")
-        //     return Promise.reject();
-        // });
         localStorage.removeItem("username");
         localStorage.removeItem("userid");
         localStorage.removeItem("role");
@@ -78,20 +55,4 @@ export const authProvider: AuthProvider = {
     },
     // called when the user navigates to a new location, to check for permissions / roles
     getPermissions: () => Promise.resolve(),
-    // getIdentity:() => Promise.resolve(),
-
-    // register: async (data:any) => {
-
-    //     const result = await httpClient(`${BACKEND_URL}${Url.users_post}`,{
-    //         method: 'POST',
-
-    //     })
-    //     .then(response => {
-    //         console.log(response);
-    //         if (response.json && response.json.status === 201) {
-    //             return response.json;
-    //         }
-    //     });
-
-    // }
 };

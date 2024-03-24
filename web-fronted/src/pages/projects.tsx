@@ -13,9 +13,6 @@ import { List, Datagrid, TextField,
     CreateButton,
     FunctionField,
     useDataProvider,
-    WrapperField,
-    useGetOne,
-    useGetList
 } from "react-admin";
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
@@ -25,9 +22,8 @@ import { useNotify, useRedirect } from 'react-admin';
 import { useState } from "react";
 import { useNavigate } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
-import '../mock/mock.js';
 import { useRefresh } from 'react-admin';
-// interest project
+
 const Mybutton = () => {
     const notify = useNotify();
     const record = useRecordContext();
@@ -72,12 +68,6 @@ const Staffbutton = () => {
     const dataProvider = useDataProvider();
     const notify = useNotify();
     const refresh = useRefresh();
-
-    console.log(record)
-    const viewProject = (event:any) => {
-        navigate('/projects/edit', { state: Object.assign({record}, {action: 'view'}) });
-
-    }
     const assignStudent = (event: any) => {
         event.preventDefault();
         event.stopPropagation();
@@ -96,7 +86,7 @@ const Staffbutton = () => {
     return (
         <Stack sx={{flexDirection: "row"}}>
             <Button sx={{marginRight: "10px"}} disabled={!(!record.assignedStudent && record.interestStudents?.length)} size="small" variant="outlined" onClick={assignStudent}>Assign Student</Button>
-            <Button size="small" variant="outlined" onClick={deleteProject}>Delete</Button>
+            <Button size="small" variant="outlined" onClick={deleteProject} disabled={!!record.assignedStudent}>Delete</Button>
         </Stack>
     )
 };
@@ -217,7 +207,6 @@ const CustomizeForm = (props:any) => {
     // setStudentID(undefined);
     const location = useLocation();
     const postDefaultValue = location.state;
-    console.log(location.state);
     const role = localStorage.getItem("role");
     const record = useRecordContext(props);
     const {getAssigendStudent} = props;
