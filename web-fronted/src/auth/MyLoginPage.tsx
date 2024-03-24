@@ -1,6 +1,6 @@
 import * as React from 'react';
 import { useState } from 'react';
-import { useLogin, useNotify, Notification, Login, fetchUtils, useRedirect } from 'react-admin';
+import { useLogin, useNotify } from 'react-admin';
 import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Button from '@mui/material/Button';
 
@@ -20,7 +20,6 @@ import FormControl from '@mui/material/FormControl';
 import Visibility from '@mui/icons-material/Visibility';
 import VisibilityOff from '@mui/icons-material/VisibilityOff';
 import FormHelperText from '@mui/material/FormHelperText';
-const httpClient = fetchUtils.fetchJson;
 
 
 const MyLoginPage = () => {
@@ -39,11 +38,8 @@ const MyLoginPage = () => {
     const [firstNameStatus, setFirstNameStatus] = useState(false);
     const [lastNameStatus, setLastNameStatus] = useState(false);
     const [value, setValue] = useState(0);
-
-    const [successMsg, setSuccessMsg] = useState(false);
     const login = useLogin();
     const notify = useNotify();
-    const redirect = useRedirect();
 
 
     const [showPassword, setShowPassword] = useState(false);
@@ -141,7 +137,6 @@ const MyLoginPage = () => {
                 </Tabs>
                 <form onSubmit={handleSubmit}>
                     <div className="login-main-field">
-                        {/* <BasicTextFields data-value={value}/> */}
                         <Box
                         component="form"
                         sx={{
@@ -151,12 +146,7 @@ const MyLoginPage = () => {
                         
                         autoComplete="off"
                         >
-
-
-
-
                         <TextField error={usernameStatus} helperText={usernameStatus ? "username is required" : ''} className='customize-field' id="filled-basic1" label="Username" variant="filled" required onChange={e => {setUsername(e.target.value); setUsernameStatus(!e.target.value.trim())}}/><br/>
-                        {/* <TextField error={passwordStatus} helperText={passwordStatus ? "password is required" : ''} id="filled-basic2" label="Password" variant="filled" required  onChange={e => {setPassword(e.target.value); ; setPasswordStatus(!e.target.value.trim())}}/><br/> */}
                         <FormControl error={passwordStatus} sx={{ m: 1, width: '25ch' }} variant="filled">
                             <InputLabel  required htmlFor="filled-adornment-password">Password</InputLabel>
                             <FilledInput
@@ -183,10 +173,6 @@ const MyLoginPage = () => {
                                 <TextField error={emailStatus} helperText={emailStatus ? "email is required" : ''} id="filled-basic3" label="Email" variant="filled" required onChange={e => {setEmail(e.target.value); setEmailStatus(!e.target.value.trim())}}/><br/>
                                 <TextField error={firstNameStatus} helperText={firstNameStatus ? "first name is required" : ''}  id="filled-basic5" label="First Name" variant="filled" required onChange={e => {setFirstName(e.target.value); setFirstNameStatus(!e.target.value.trim())}} /><br/>
                                 <TextField error={lastNameStatus} helperText={lastNameStatus ? "last name is required" : ''}  id="filled-basic6" label="Last Name" variant="filled" required onChange={e => {setLastName(e.target.value); setLastNameStatus(!e.target.value.trim())}} /><br/>
-
-
-
-
 
                                 <TextField error={roleStatus} helperText={roleStatus ? "role is required" : ''}  required  onChange={e => {setRole(e.target.value); setRoleStatus(!e.target.value.trim())}}
                                     id="filled-select-currency-native"
