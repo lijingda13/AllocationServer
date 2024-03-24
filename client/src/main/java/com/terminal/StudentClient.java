@@ -57,6 +57,7 @@ public class StudentClient extends UserClient{
                     System.out.print("Enter Project ID to unregister: ");
                     Long projectId1 = scanner.nextLong();
                     unregisterInterestFromProject(projectId1);
+                    break;
                 case 8:
                     return;  // Exit the method, leading to logout or program termination
                 default:
