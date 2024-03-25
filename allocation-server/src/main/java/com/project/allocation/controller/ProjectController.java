@@ -47,12 +47,6 @@ public class ProjectController {
         return new ResponseEntity<>(projects, HttpStatus.OK);
     }
 
-//    @GetMapping("/students/{studentId}/assigned-project")
-//    public ResponseEntity<Project> getAssignedProject(@PathVariable Long studentId) {
-//        Project assignedProject = projectService.getAssignedProject(studentId);
-//        return assignedProject != null ? new ResponseEntity<>(assignedProject, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//    }
-
     @PostMapping("/staff/{staffId}/create-project")
     public ResponseEntity<Project> createProject(@PathVariable Long staffId, @Valid @RequestBody Project project) {
         Project createdProject = projectService.createProject(project, staffId);

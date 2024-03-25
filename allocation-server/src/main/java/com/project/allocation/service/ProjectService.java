@@ -59,11 +59,8 @@ public interface ProjectService {
      * Assign a project to a user
      *
      * @param projectId Project id
-     * @param user    User
+     * @param user      User
      * @return boolean
      */
     boolean assignProject(Long projectId, User user);
-
-    Project getAssignedProject(Long userId);
-
 }

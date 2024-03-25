@@ -197,13 +197,4 @@ public class ProjectServiceImpl implements ProjectService {
         projectRepository.save(project);
         return true;
     }
-
-    @Override
-    public Project getAssignedProject(Long studentId) {
-        AssignRecord assignRecord = assignRecordRepository.findByStudentId(studentId).orElse(null);
-        if (assignRecord == null) {
-            throw new NullPointerException("Student not assigned");
-        }
-        return assignRecord.getProject();
-    }
 }

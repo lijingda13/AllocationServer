@@ -1,8 +1,6 @@
 package com.project.allocation.controller;
 
 import com.project.allocation.dto.StudentInfoDTO;
-import com.project.allocation.repository.AssignRecordRepository;
-import com.project.allocation.repository.UserRepository;
 import com.project.allocation.service.UserService;
 import com.project.allocation.util.JwtUtil;
 import jakarta.validation.Valid;
