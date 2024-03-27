@@ -1,5 +1,6 @@
 package com.project.allocation.dto;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.project.allocation.model.Project;
 import com.project.allocation.model.User;
 
@@ -7,6 +8,7 @@ import java.util.Date;
 import java.util.List;
 
 public class StaffProjectDTO extends Project {
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createDate;
 
     private List<User> interestStudents;
