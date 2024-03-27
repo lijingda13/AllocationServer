@@ -37,7 +37,7 @@ const Mybutton = () => {
             notify('Register successfully', {type: 'success'});
             refresh();
         }).catch((e: any) => {
-            notify('Failed to register interest', {type: 'error'});
+            notify('Failed to register interest. ' + e, {type: 'error'});
         });
     }
     const handleCancelInterest = (event:any) => {
@@ -48,7 +48,7 @@ const Mybutton = () => {
             notify('Cancel successfully', {type: 'success'});
             refresh();
         }).catch((e: any) => {
-            notify('Failed to cancel interest', {type: 'error'});
+            notify('Failed to cancel interest. ' + e, {type: 'error'});
         });
     }
     return (
