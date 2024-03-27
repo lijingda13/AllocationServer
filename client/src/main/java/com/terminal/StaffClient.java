@@ -158,7 +158,8 @@ public class StaffClient extends UserClient{
         // Handle the response based on the status code
         if (response.statusCode() == 200) {
             System.out.println("Project information successfully updated.");
-            System.out.println("Updated Project: " + response.body());
+            JSONObject newProject = new JSONObject(response.body());
+            printProjectDetails(newProject);
         } else if (response.statusCode() == 404) {
             System.out.println("Project not found.");
         } else {
@@ -179,7 +180,8 @@ public class StaffClient extends UserClient{
     // Handle the response based on the status code
     if (response.statusCode() == 201) {
         System.out.println("Project proposed successfully.");
-        System.out.println("Proposed Project: " + response.body());
+        JSONObject newProject = new JSONObject(response.body());
+        printProjectDetails(newProject);
     } else {
         System.out.println("Failed to propose project. Status code: " + response.statusCode());
     }
@@ -226,8 +228,6 @@ public class StaffClient extends UserClient{
         String title = project.getString("title");
         boolean assignStatus = project.getBoolean("status");
         System.out.println("ID: " + id + ", Title: " + title + ", Status: " + (assignStatus ? "Unavailable" : "Available"));
-    
-        // If the project is not assigned, display the interested students' information
         
     System.out.println("Create Date: " + project.getString("createDate"));
     }
