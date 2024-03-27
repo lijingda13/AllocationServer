@@ -102,25 +102,56 @@ const ListActions = () => {
     );
 }
 
+const RegisterText = (props: {label:string}) => {
+    const record = useRecordContext();
+    const role = localStorage.getItem("role");
+    return (
+        
+            role === 'STAFF'?
+            '':
+            ( record.hasOwnProperty("registerStatus") ? 
+            <FunctionField
+            label="Register Interest Status"
+            render={(record1: any) =>  (record.registerStatus ? 'Registered' : 'Unregistered')}
+            />:
+            null
+            )
+            
+        
+    );
+}
+
 // Project List
 export const PostList = () => {
     const role = localStorage.getItem("role");
     const notify = useNotify();
     const redirect = useRedirect();
     const dataProvider = useDataProvider();
-
     const onError = (error:any) => {
         notify(`Could not load list: server error`);
         redirect('/');
     };
     const navigate = useNavigate();
-
     const transferRowData = (record: any) => {
         navigate('/projects/edit', { state: Object.assign(record, {action: 'view'}) });
     }
+    // handle route params.
+    const location = useLocation();
+    const queryParams = location.search;
+    const parsedParams: any = {};
+    if (queryParams) {
+        const queryString = queryParams.substring(1);
+        const queryParamsArray = queryString.split("&");
+        queryParamsArray.forEach((param: any) => {
+            const [key, value] = param.split("=");
+            parsedParams[decodeURIComponent(key)] = decodeURIComponent(value);
+        });
+    }
+    const filterParams = parsedParams['filter'] ? JSON.parse(parsedParams['filter']) : {};
+    const category = filterParams['category'];
     return (
         
-    <List filters={role === 'STUDENT' ? postFilters: undefined} actions={<ListActions/>} pagination={false} queryOptions={{ onError,  meta: { role } }} >
+    <List filters={role === 'STUDENT' ? postFilters: undefined} filterDefaultValues={{ id: '1' }} actions={<ListActions/>} pagination={false} queryOptions={{ onError,  meta: { role } }} >
         <Datagrid bulkActionButtons={false} rowClick={((id, resource, record) => {
             transferRowData(record);
             return false;})}>
@@ -172,16 +203,20 @@ export const PostList = () => {
             {
                 role === 'STAFF'?
                 '':
+                (category == '2' || category == '3' ? null:
                 <FunctionField
                     label="Register Interest Status"
-                    render={(record: any) => (record.registerInterest ? 'Registered' : 'Unregistered')}
-                />
+                    render={(record: any) => (record.registerStatus ? 'Registered' : 'Unregistered')}
+                />)
             }
+            
             {
                 role === 'STAFF' ? 
                 <Staffbutton/>: 
-                <Mybutton />
+                (category == '2' || category == '3' ? null:<Mybutton />)
             }
+
+            
         </Datagrid>
     </List>
 );}
@@ -190,6 +225,7 @@ const postFilters = [
     <SelectInput value="1" alwaysOn source="category"  validate={required()} choices={[
         { id: '1', name: 'Available Projects' },
         { id: '2', name: 'My Projects' },
+        { id: '3', name: 'Projects of Interest' },
     ]} />
 ];
 

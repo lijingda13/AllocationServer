@@ -15,14 +15,22 @@ export const dataProvider1: DataProvider = {
         if (localStorage.getItem("role") === 'STAFF') {
             url = BACKEND_URL + Url.projects_staff_get(localStorage.getItem("userid"));
         } else {
-            if (params.filter.category === '2') {
+            if (params.filter.category === '2' || params.filter.category === '3') {
                 url = BACKEND_URL + Url.projects_student_assigned_get(localStorage.getItem('userid'));
             } else {
                 url = BACKEND_URL + Url.projects_student_available_get(localStorage.getItem('userid'));
             }
         }
         const result =  httpClient(url, {method:'GET', headers}).then(({ headers,json }) => {
-            const resData = params.filter.category === '2' ? (json.assignedProject ? [json.assignedProject] : []) : json;
+            let resData: any;
+            if (params.filter.category === '2') {
+                resData = json.assignedProject ? [json.assignedProject] : [];
+            } else if (params.filter.category === '3'){
+                resData = Array.isArray(json.interestProjects) ? json.interestProjects : [];
+            } else {
+                resData = json;
+            }
+            // const resData = params.filter.category === '2' ? (json.assignedProject ? [json.assignedProject] : []) : json;
             return ({
             data: resData,
             total: resData?.length || 0,
@@ -54,7 +62,7 @@ export const dataProvider1: DataProvider = {
         headers.set("Authorization", `Bearer ${token}`);
         const student = {...params.meta.student};
         delete student.password;
-        const url = BACKEND_URL + Url.projects_id_assign_post(params.meta.projectId);
+        const url = BACKEND_URL + Url.projects_id_assign_post(params.meta.projectId) + `?userId=${student.id}`;
        return httpClient(url, {
             method: 'POST',
             headers,
