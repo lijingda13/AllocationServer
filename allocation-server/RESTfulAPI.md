@@ -575,7 +575,8 @@ This API is used by staff to delete a project.
 - **Response:**
     - Status Code:
         - `200`: Project successfully deleted.
-        - `404`: Project not found or already assigned and cannot be deleted.
+        - `404`: Project not found.
+        - `409`: Project already assigned.
 
 #### **Example:**
 
@@ -633,7 +634,7 @@ This API allows a student to unregister their interest in a project they previou
     - Status Code:
         - `200`: Successfully unregistered interest in the project.
         - `404`: Project not found, user not found, or interest record not found.
-        - `400`: User already assigned to a project, cannot unregister interest.
+        - `409`: User already assigned to a project, cannot unregister interest.
 
 #### **Example:**
 
