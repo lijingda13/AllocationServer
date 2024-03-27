@@ -1,5 +1,6 @@
 package com.project.allocation.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
@@ -17,6 +18,7 @@ public class Project extends BaseEntity {
     private User staff; // The staff member who proposed the project
 
     private boolean status = false;
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date createDate;
 
     public Project(String title, String description, User staff, boolean status) {

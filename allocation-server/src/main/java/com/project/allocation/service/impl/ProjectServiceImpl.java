@@ -174,19 +174,19 @@ public class ProjectServiceImpl implements ProjectService {
 
     @Transactional
     @Override
-    public boolean assignProject(Long projectId, User user) {
+    public boolean assignProject(Long projectId, Long userId) {
         Project project = projectRepository.findById(projectId).orElse(null);
         if (project == null) {
             throw new NullPointerException("Project not found.");
         }
-        User student = userRepository.findById(user.getId()).orElse(null);
+        User student = userRepository.findById(userId).orElse(null);
         if (student == null) {
             throw new NullPointerException("User not found.");
         }
         if (project.getStatus()) {
             throw new DataIntegrityViolationException("Project already assigned to a student.");
         }
-        if (assignRecordRepository.findByStudentId(user.getId()).isPresent()) {
+        if (assignRecordRepository.findByStudentId(userId).isPresent()) {
             throw new DataIntegrityViolationException("Student already assigned to a project.");
         }
         AssignRecord assignRecord = new AssignRecord();
@@ -196,14 +196,5 @@ public class ProjectServiceImpl implements ProjectService {
         project.setStatus(true);
         projectRepository.save(project);
         return true;
-    }
-
-    @Override
-    public Project getAssignedProject(Long studentId) {
-        AssignRecord assignRecord = assignRecordRepository.findByStudentId(studentId).orElse(null);
-        if (assignRecord == null) {
-            throw new NullPointerException("Student not assigned");
-        }
-        return assignRecord.getProject();
     }
 }

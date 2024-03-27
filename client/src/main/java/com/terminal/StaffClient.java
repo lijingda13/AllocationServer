@@ -1,6 +1,8 @@
 package com.terminal;
 
 import java.net.http.HttpResponse;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import org.json.JSONArray;
@@ -68,11 +70,12 @@ public class StaffClient extends UserClient{
                 case 8:
                     System.out.print("Enter Project Id to change: ");
                     Long projectId = scanner.nextLong();
+                    scanner.nextLine();
                     System.out.print("Enter title to change: ");
                     String title1 = scanner.nextLine();
                     System.out.print("Enter description to change: ");
                     String description1 = scanner.nextLine();
-                    updateProjectInformation(projectId, title1, description1, id);
+                    updateProjectInformation(projectId, title1, description1);
                     break;
                 case 9:
                     System.out.print("Enter Project Id to delete: ");
@@ -112,6 +115,24 @@ public class StaffClient extends UserClient{
             for (int i = 0; i < projects.length(); i++) {
                 JSONObject project = projects.getJSONObject(i);
                 printProjectDetails(project);  // Call your method to print project details
+                boolean assignStatus = project.getBoolean("status");
+                if (!assignStatus && project.has("interestStudents")) {
+
+                    JSONArray interestedStudents = project.getJSONArray("interestStudents");
+                    
+                    for (int j = 0; j < interestedStudents.length(); j++) {
+                        JSONObject student = interestedStudents.getJSONObject(j);
+                        Long studentId = student.getLong("id");
+                        String username = student.getString("username");
+                        System.out.println("  - Interested Student ID: " + studentId + ", Username: " + username);
+                    }
+                } 
+                else if (assignStatus && project.has("assignedStudent")) {
+                    JSONObject student = project.getJSONObject("assignedStudent");
+                    Long studentId = student.getLong("id");
+                    String username = student.getString("username");
+                    System.out.println("  - Assigned Student ID: " + studentId + ", Username: " + username);
+                } 
                 System.out.println("----------------------------");
             }
         } else if (response.statusCode() == 404) {
@@ -121,46 +142,54 @@ public class StaffClient extends UserClient{
         }
     }
 
-    public void updateProjectInformation(Long projectId, String title, String description, Long staffId) throws Exception {
-    JSONObject json = new JSONObject();
-    json.put("id", projectId);
-    json.put("title", title);
-    json.put("description", description);
-    json.put("staff", staffId);
-    HttpResponse<String> response = HttpClientUtil.sendPutWithToken("http://localhost:8080/api/projects/" + projectId, json.toString());
-
-    if (response.statusCode() == 200) {
-        System.out.println("Project information successfully updated.");
-        System.out.println("Updated Project: " + response.body());
-    } else if (response.statusCode() == 404) {
-        System.out.println("Project not found.");
-    } else {
-        System.out.println("Failed to update project information. Status code: " + response.statusCode());
-    }
-}
-
-    public void createProject(String title, String description, Long staffId) throws Exception {
+    public void updateProjectInformation(Long projectId, String title, String description) throws Exception {
+        // Create a JSON object with the fields that need to be updated
         JSONObject json = new JSONObject();
         json.put("title", title);
         json.put("description", description);
-        json.put("staff", staffId); 
-        json.put("status", false); 
-
-        HttpResponse<String> response = HttpClientUtil.sendPostWithToken("http://localhost:8080/api/projects", json.toString());
-        
-        if (response.statusCode() == 201) {
-            System.out.println("Project created successfully.");
-            System.out.println("Created Project: " + response.body());
+    
+        // Construct the endpoint URL to include the projectId as a path variable
+        String endpoint = "http://localhost:8080/api/projects/" + projectId;
+    
+        // Send the PATCH request with the JWT token and JSON payload
+        // Assuming sendPatchWithToken method accepts the URL, JSON payload, and the JWT token
+        HttpResponse<String> response = HttpClientUtil.sendPatchWithToken(endpoint, json.toString());
+    
+        // Handle the response based on the status code
+        if (response.statusCode() == 200) {
+            System.out.println("Project information successfully updated.");
+            System.out.println("Updated Project: " + response.body());
+        } else if (response.statusCode() == 404) {
+            System.out.println("Project not found.");
         } else {
-            System.out.println("Failed to create project. Status code: " + response.statusCode());
+            System.out.println("Failed to update project information. Status code: " + response.statusCode());
         }
     }
+
+    public void createProject(String title, String description, Long staffId) throws Exception {
+        JSONObject json = new JSONObject();
+    json.put("title", title);
+    json.put("description", description);
+
+    // Construct the endpoint URL with the staff ID as a path variable
+    String endpoint = "http://localhost:8080/api/staff/" + staffId + "/create-project";
+
+    HttpResponse<String> response = HttpClientUtil.sendPostWithToken(endpoint, json.toString());
+
+    // Handle the response based on the status code
+    if (response.statusCode() == 201) {
+        System.out.println("Project proposed successfully.");
+        System.out.println("Proposed Project: " + response.body());
+    } else {
+        System.out.println("Failed to propose project. Status code: " + response.statusCode());
+    }
+}
 
     public void assignProjectToStudent(Long projectIdToAssign, Long userId) throws Exception {
         JSONObject json = new JSONObject();
         json.put("userId", userId); 
 
-        HttpResponse<String> response = HttpClientUtil.sendPostWithToken("http://localhost:8080/api/projects/" + projectIdToAssign + "/assign-project", json.toString());
+        HttpResponse<String> response = HttpClientUtil.sendPostWithToken("http://localhost:8080/api/projects/" + projectIdToAssign + "/assign-project?userId="+userId, "");
 
         switch (response.statusCode()) {
             case 200:
@@ -184,8 +213,10 @@ public class StaffClient extends UserClient{
         if (response.statusCode() == 200) {
             System.out.println("Project successfully deleted.");
         } else if (response.statusCode() == 404) {
-            System.out.println("Project not found or already assigned and cannot be deleted.");
-        } else {
+            System.out.println("Project not found.");
+        } else if (response.statusCode() == 409) {
+            System.out.println("Project already assigned and cannot be deleted.");
+        }else {
             System.out.println("Failed to delete project. Status code: " + response.statusCode());
         }
     }
@@ -193,17 +224,11 @@ public class StaffClient extends UserClient{
     private void printProjectDetails(JSONObject project) {
         Long id = project.getLong("id");
         String title = project.getString("title");
-        boolean assignStatus = project.getBoolean("assign_status");
+        boolean assignStatus = project.getBoolean("status");
         System.out.println("ID: " + id + ", Title: " + title + ", Status: " + (assignStatus ? "Unavailable" : "Available"));
     
-                // If the project is not assigned, display the interested student's information
-        if (!assignStatus && project.has("student")) {
-            JSONObject student = project.getJSONObject("student");
-            Long studentId = student.getLong("id");
-            String username = student.getString("username");
-            System.out.println("  - Interested Student ID: " + studentId + ", Username: " + username);
-          
-        }  
-        System.out.println("Create Date: " + project.getString("createDate"));
+        // If the project is not assigned, display the interested students' information
+        
+    System.out.println("Create Date: " + project.getString("createDate"));
     }
 }

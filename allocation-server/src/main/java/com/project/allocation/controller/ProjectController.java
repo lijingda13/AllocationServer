@@ -2,7 +2,6 @@ package com.project.allocation.controller;
 
 import com.project.allocation.dto.StaffProjectDTO;
 import com.project.allocation.dto.StudentProjectDTO;
-import com.project.allocation.model.User;
 import com.project.allocation.service.ProjectService;
 import com.project.allocation.util.JwtUtil;
 import jakarta.validation.Valid;
@@ -47,12 +46,6 @@ public class ProjectController {
         return new ResponseEntity<>(projects, HttpStatus.OK);
     }
 
-//    @GetMapping("/students/{studentId}/assigned-project")
-//    public ResponseEntity<Project> getAssignedProject(@PathVariable Long studentId) {
-//        Project assignedProject = projectService.getAssignedProject(studentId);
-//        return assignedProject != null ? new ResponseEntity<>(assignedProject, HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
-//    }
-
     @PostMapping("/staff/{staffId}/create-project")
     public ResponseEntity<Project> createProject(@PathVariable Long staffId, @Valid @RequestBody Project project) {
         Project createdProject = projectService.createProject(project, staffId);
@@ -80,19 +73,29 @@ public class ProjectController {
     public ResponseEntity<?> registerInterest(@PathVariable Long projectId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         Long userId = jwtUtil.getUserIdFromToken(token);
         boolean registered = projectService.registerInterest(projectId, userId);
-        return registered ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
-    }
+        if (registered) {
+            return ResponseEntity.ok("Interest registered successfully");
+        } else {
+            return (ResponseEntity<?>) ResponseEntity.status(HttpStatus.NOT_FOUND);
+        }    }
 
     @PostMapping("/projects/{projectId}/unregister-interest")
     public ResponseEntity<?> unregisterInterest(@PathVariable Long projectId, @RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
         Long userId = jwtUtil.getUserIdFromToken(token);
         boolean unregistered = projectService.unregisterInterest(projectId, userId);
-        return unregistered ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-    }
+        if (unregistered) {
+            return ResponseEntity.ok("Unregister interest successfully");
+        } else {
+            return (ResponseEntity<?>) ResponseEntity.status(HttpStatus.BAD_REQUEST);
+        }    }
 
     @PostMapping("/projects/{projectId}/assign-project")
-    public ResponseEntity<?> assignProject(@PathVariable Long projectId, @RequestBody User user) {
-        boolean assigned = projectService.assignProject(projectId, user);
-        return assigned ? new ResponseEntity<>(HttpStatus.OK) : new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    public ResponseEntity<?> assignProject(@PathVariable Long projectId, @RequestParam Long userId) {
+        boolean assigned = projectService.assignProject(projectId, userId);
+        if (assigned) {
+            return ResponseEntity.ok("Project successfully assigned.");
+        } else {
+            return (ResponseEntity<?>) ResponseEntity.status(HttpStatus.NOT_FOUND);
+        }
     }
 }

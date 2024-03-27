@@ -4,10 +4,8 @@ import com.project.allocation.model.Project;
 import com.project.allocation.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
-import org.springframework.test.annotation.DirtiesContext;
 
 import java.util.List;
 import java.util.Optional;
@@ -85,5 +83,11 @@ public class ProjectRepositoryTest {
     public void testFindAllByStatus() {
         List<Project> projects = projectRepository.findAllByStatus(true);
         assertNotEquals(projects.size(), 0);
+    }
+
+    @Test
+    public void testFindAllByStaffId() {
+        List<Project> projects = projectRepository.findAllByStaffId(1L);
+        assertEquals(2, projects.size());
     }
 }

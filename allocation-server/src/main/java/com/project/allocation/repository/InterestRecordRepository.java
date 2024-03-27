@@ -1,8 +1,6 @@
 package com.project.allocation.repository;
 
 import com.project.allocation.model.InterestRecord;
-import com.project.allocation.model.Project;
-import com.project.allocation.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

@@ -1,5 +1,6 @@
 package com.project.allocation.model;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -15,11 +16,12 @@ public class AssignRecord extends BaseEntity {
     @JoinColumn(name = "project_id", referencedColumnName = "id")
     private Project project;
 
+    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
     private Date assignDate;
 
     @PrePersist
     protected void onAssign() {
-        this.assignDate = new java.util.Date();
+        this.assignDate = new Date();
     }
 
     public AssignRecord() {
