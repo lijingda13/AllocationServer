@@ -14,9 +14,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 @Import(SecurityConfig.class)
 public class PasswordTest {
 
-
     @Autowired
     private PasswordEncoder passwordEncoder;
+
     @Test
     public void PasswordEncoder() {
         String rawPassword = "123456";

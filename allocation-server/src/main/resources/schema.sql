@@ -22,7 +22,6 @@ CREATE TABLE projects (
      title VARCHAR(255),
      description TEXT,
      status BOOLEAN, -- false for available, true for assigned
-     student_user_id INT, -- assigned student id
      create_date TIMESTAMP,
      FOREIGN KEY (staff_user_id) REFERENCES users (id)
 );

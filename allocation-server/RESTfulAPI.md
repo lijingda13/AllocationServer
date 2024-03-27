@@ -8,16 +8,16 @@
 - [x] get student information about the project (assigned status, assigned project of the student)
 - [x] update user information
 - [x] partial update user information (which includes update password)
-- [ ] get all projects
-- [ ] get all available projects for the student
-- [ ] get all proposed projects for the staff
-- [ ] get assigned project for the student
-- [ ] staff propose a project
-- [ ] staff update a project information
-- [ ] staff delete a project
-- [ ] student register interest in a project
-- [ ] student unregister interest in a project
-- [ ] staff approve student interest and assign student to the project
+- [x] get all projects
+- [x] get all available projects for the student
+- [x] get all proposed projects for the staff
+- [x] get assigned project for the student
+- [x] staff propose a project
+- [x] staff update a project information
+- [x] staff delete a project
+- [x] student register interest in a project
+- [x] student unregister interest in a project
+- [x] staff approve student interest and assign student to the project
 
 ## Introduction
 
