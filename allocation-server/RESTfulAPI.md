@@ -659,7 +659,7 @@ This API is used by staff to approve a student's interest in a project and assig
 - **Request Header:**
     - Authorization: "Bearer {JWT token}"
 - **Request Parameter:**
-    - `id`: The ID of the student to be assigned.
+    - `userId`: The ID of the student to be assigned.
 - **Response:**
     - Status Code:
         - `200`: Successfully assigned the project to the student.
