@@ -189,7 +189,7 @@ public class StaffClient extends UserClient{
         JSONObject json = new JSONObject();
         json.put("userId", userId); 
 
-        HttpResponse<String> response = HttpClientUtil.sendPostWithToken("http://localhost:8080/api/projects/" + projectIdToAssign + "/assign-project", json.toString());
+        HttpResponse<String> response = HttpClientUtil.sendPostWithToken("http://localhost:8080/api/projects/" + projectIdToAssign + "/assign-project?userId="+userId, "");
 
         switch (response.statusCode()) {
             case 200:
@@ -213,8 +213,10 @@ public class StaffClient extends UserClient{
         if (response.statusCode() == 200) {
             System.out.println("Project successfully deleted.");
         } else if (response.statusCode() == 404) {
-            System.out.println("Project not found or already assigned and cannot be deleted.");
-        } else {
+            System.out.println("Project not found.");
+        } else if (response.statusCode() == 409) {
+            System.out.println("Project already assigned and cannot be deleted.");
+        }else {
             System.out.println("Failed to delete project. Status code: " + response.statusCode());
         }
     }
