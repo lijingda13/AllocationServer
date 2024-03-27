@@ -144,7 +144,7 @@ curl --location 'http://localhost:8080/api/users' \
 - **Example:**
 - Request:
 
-```
+```shell
 curl --location 'http://localhost:8080/api/users/1' \
 --header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlNUQUZGIiwiZXhwIjoxNzExMDE3NDM4LCJ1c2VybmFtZSI6InJ3aWxsaWFtcyJ9.pmAnq5LDcTsy9wvAMKMB35zoozkYfzxeBAq16DMqC6w'
 ```
@@ -449,7 +449,7 @@ This API fetches all the projects proposed by a particular staff member.
         - `staff`: Staff who proposed the project.
         - `status`: Status of the project.
         - `createDate`: Propose date of the project.
-        - `interestedStudents`: List of students who registered interest.
+        - `interestStudents`: List of students who registered interest.
         - `assignedStudent`: Student assigned to the project.
 
 #### **Example:**
@@ -465,44 +465,6 @@ This API fetches all the projects proposed by a particular staff member.
 ```json
 
 ```
-
-[//]: # (### Get assigned project for the student)
-
-[//]: # (This API retrieves the project assigned to a particular student.)
-
-[//]: # ()
-
-[//]: # (- **Endpoint:** `GET /api/students/{studentId}/assigned-project`)
-
-[//]: # (- **Path Variable:**)
-
-[//]: # (  - `studentId`: The ID of the student.)
-
-[//]: # (- **Request Header:**)
-
-[//]: # (  - Authorization: "Bearer {JWT token}")
-
-[//]: # (- **Response:**)
-
-[//]: # (  - Status Code:)
-
-[//]: # (    - `200`: Successfully retrieved the assigned project.)
-
-[//]: # (    - `404`: Student not found or no project assigned to the student.)
-
-[//]: # (  - Response Body: Details of the project assigned to the student.)
-
-[//]: # (    - `id`: Project id.)
-
-[//]: # (    - `title`: Title of the project.)
-
-[//]: # (    - `description`: Description of the project.)
-
-[//]: # (    - `staff`: Staff who proposed the project.)
-
-[//]: # (    - `status`: Status of the project.)
-
-[//]: # (    - `createDate`: Propose date of the project.)
 
 ### Staff propose a project
 
@@ -696,13 +658,8 @@ This API is used by staff to approve a student's interest in a project and assig
     - `projectId`: The ID of the project to assign.
 - **Request Header:**
     - Authorization: "Bearer {JWT token}"
-- **Request Body:**
-    - `id`: The user id.
-    - `username`: The username of the user.
-    - `role`: The role of the user.
-    - `firstName`: The first name of the user.
-    - `lastName`: The last name of the user.
-    - `email`: The email address of the user.
+- **Request Parameter:**
+    - `id`: The ID of the student to be assigned.
 - **Response:**
     - Status Code:
         - `200`: Successfully assigned the project to the student.
@@ -714,11 +671,24 @@ This API is used by staff to approve a student's interest in a project and assig
 - Request:
 
 ```shell
-
+curl --location 'http://localhost:8080/api/projects/2/assign-project?userId=4' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlNUQUZGIiwiZXhwIjoxNzExNTk2ODYyLCJ1c2VybmFtZSI6InJ3aWxsaWFtcyJ9.aWEYd6XExKafhAd5a9lgY2T0gEkrYb1qOj-8sRA9_KY'
 ```
 
-- Response:
+- Response(success):
 
-```json
+```text
+"Project successfully assigned."
+```
 
+- Response(Failure):
+
+```text
+"Project not found."
+
+"User not found."
+
+"Project already assigned to a student."
+
+"Student already assigned to a project."
 ```

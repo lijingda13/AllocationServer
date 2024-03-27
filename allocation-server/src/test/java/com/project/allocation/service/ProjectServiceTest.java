@@ -230,7 +230,7 @@ public class ProjectServiceTest {
         when(projectRepository.findById(project2.getId())).thenReturn(Optional.of(project2));
         when(userRepository.findById(student1.getId())).thenReturn(Optional.of(student1));
         when(assignRecordRepository.findByStudentId(student1.getId())).thenReturn(Optional.empty());
-        boolean result = projectService.assignProject(project2.getId(), student1);
+        boolean result = projectService.assignProject(project2.getId(), student1.getId());
         assertTrue(result);
         verify(assignRecordRepository, times(1)).save(any(AssignRecord.class));
         verify(projectRepository, times(1)).save(project2);

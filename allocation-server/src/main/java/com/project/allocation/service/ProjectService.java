@@ -3,7 +3,6 @@ package com.project.allocation.service;
 import com.project.allocation.dto.StaffProjectDTO;
 import com.project.allocation.dto.StudentProjectDTO;
 import com.project.allocation.model.Project;
-import com.project.allocation.model.User;
 
 import java.util.List;
 
@@ -59,8 +58,8 @@ public interface ProjectService {
      * Assign a project to a user
      *
      * @param projectId Project id
-     * @param user      User
+     * @param userId    User
      * @return boolean
      */
-    boolean assignProject(Long projectId, User user);
+    boolean assignProject(Long projectId, Long userId);
 }
