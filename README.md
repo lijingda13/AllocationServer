@@ -1,16 +1,22 @@
 # cs5031-p3
-# Web Server for CS 5031-P3
+
+# Allocation Server
 
 ## Overview
 
-This is a web server application for the coursework project CS5031-P3. The server is implemented in Java using the Spring framework. It provides RESTful HTTP APIs for both the frontend application (a GUI application) and the Terminal application. This application uses an H2 database for data storage and initializes the database with sample data. The schema.sql file creates the database tables, while the data.sql file inserts the sample data.
+This is a web server application for the coursework project CS5031-P3. The server is implemented in Java using the
+Spring framework. It provides RESTful HTTP APIs for both the frontend application (a GUI application) and the Terminal
+application. This application uses an H2 database for data storage and initializes the database with sample data. The
+schema.sql file creates the database tables, while the data.sql file inserts the sample data.
 
 ## Development
 
 Ensure you have Maven version 3.8.1 or higher and Java JDK 21 installed for system development.
+
 ### Run the Back-End (Spring Application)
 
 You can run the back-end application using the following commands:
+
 ```shell
 # move to the allocated-server directory
 cd allocated-server
@@ -25,6 +31,7 @@ mvn spring-boot:run
 ```
 
 ### Build and Deploy
+
 ```shell
 # Build the Spring application
 mvn clean package
@@ -40,9 +47,11 @@ java -jar /path/to/server/target/allocation-0.0.1-SNAPSHOT.jar
 ```
 
 ## Testing
-You can run unit tests using Maven by executing `mvn test` in the project root. This will execute all JUnit5 tests located in the `src/test` directory.
 
-# Web Frontend for CS 5031-P3
+You can run unit tests using Maven by executing `mvn test` in the project root. This will execute all JUnit5 tests
+located in the `src/test` directory.
+
+# Web Frontend Client
 
 ## Installation
 
@@ -70,7 +79,8 @@ npm run build
 
 ## DataProvider
 
-The included data provider use [ra-data-json-server](https://github.com/marmelab/react-admin/tree/master/packages/ra-data-json-server). 
+The included data provider
+use [ra-data-json-server](https://github.com/marmelab/react-admin/tree/master/packages/ra-data-json-server).
 
 ## Project structure
 
@@ -102,4 +112,22 @@ The included data provider use [ra-data-json-server](https://github.com/marmelab
 │       └── url.ts // Shared URL file
 ├── tsconfig.json
 └── vite.config.ts
+```
+
+# Terminal Client
+
+## Build and Deploy
+
+The terminal client lives in the /client directory. Run the following command in the terminal
+or command prompt from the root directory:
+
+```shell
+# move to the terminal client directory
+cd client
+
+# Build the application
+mvn clean package
+
+#run the application
+java -jar target/client-1.0-SNAPSHOT-jar-with-dependencies.jar
 ```
