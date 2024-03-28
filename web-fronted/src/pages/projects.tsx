@@ -13,6 +13,7 @@ import { List, Datagrid, TextField,
     CreateButton,
     FunctionField,
     useDataProvider,
+    useUpdate,
 } from "react-admin";
 import Stack from '@mui/material/Stack';
 import Button from '@mui/material/Button';
@@ -313,11 +314,24 @@ const PostEditToolbar = (props:any) => {
     const goBack = () => {
         redirect("/projects")
     }
+    const notify = useNotify();
+    const refresh = useRefresh();
+    const onSuccess = (data: any) => {
+    };
+     const onError = (e:any) => {
+        if (typeof e === 'string') {
+            notify( e , {type: 'error'});
+        } else {
+            notify( 'Assign successfully' , {type: 'success'});
+        }
+        redirect('/projects');
+        refresh();
+    }
     return(
 
     <Toolbar sx={{display: "flex",justifyContent:"space-between"}}>
             {role==='STAFF' ?
-            <SaveButton label="save" disabled={postDefaultValue.status}/>:
+            <SaveButton type="button"  label="save" disabled={postDefaultValue.status} mutationOptions={{ onSuccess, onError }}/>:
             null
             }
             <Stack>

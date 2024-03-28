@@ -1,6 +1,7 @@
-import { DataProvider, GetOneParams, GetOneResult, fetchUtils } from "react-admin";
+import { DataProvider, GetOneParams, GetOneResult, fetchUtils, useNotify } from "react-admin";
 import { BACKEND_URL } from "../share/env.js";
 import { Url } from "../share/url.js";
+import { promises } from "dns";
 
 const httpClient = fetchUtils.fetchJson;
 const headers = new Headers();
@@ -57,20 +58,31 @@ export const dataProvider1: DataProvider = {
     },
 
     /** assign student */
-    update: (resource, params) =>{
+    update: async (resource, params) =>{
         const token = localStorage.getItem("token")||'';
         headers.set("Authorization", `Bearer ${token}`);
         const student = {...params.meta.student};
         delete student.password;
         const url = BACKEND_URL + Url.projects_id_assign_post(params.meta.projectId) + `?userId=${student.id}`;
-       return httpClient(url, {
-            method: 'POST',
-            headers,
-            body: JSON.stringify(student),
-        }).then(({ json }) => {
-            json.id=params.meta.projectId; 
-            return {data: json }
-        });
+        
+        try {
+            return await fetch(url, {
+                method: 'POST',
+                headers,
+                body: JSON.stringify(student),
+            }).then((response: any) => {
+                if (!response.ok) {
+                    return response.text().then((data: any) => {
+                        return Promise.reject(data)
+                    });
+                } else {
+                    return response.text();
+                }
+            });
+        } catch(e) {
+            return Promise.reject(e)
+        }
+        
     },
 
     updateMany: () => {
@@ -159,7 +171,7 @@ export const dataProvider1: DataProvider = {
                     return Promise.reject(data)
                 });
             } else {
-                response.text();
+                return response.text();
             }
         });
         return result;
