@@ -1,0 +1,6 @@
+com\terminal\util\HttpClientUtil.class
+com\terminal\StaffClient.class
+com\terminal\StudentClient.class
+com\terminal\TerminalClient.class
+com\terminal\util\Token.class
+com\terminal\UserClient.class
