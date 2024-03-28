@@ -1,24 +1,5 @@
 # RESTful API Documentation
 
-## Todo: Implement
-
-- [x] user login
-- [x] user registration
-- [x] get user information
-- [x] get student information about the project (assigned status, assigned project of the student)
-- [x] update user information
-- [x] partial update user information (which includes update password)
-- [x] get all projects
-- [x] get all available projects for the student
-- [x] get all proposed projects for the staff
-- [x] get assigned project for the student
-- [x] staff propose a project
-- [x] staff update a project information
-- [x] staff delete a project
-- [x] student register interest in a project
-- [x] student unregister interest in a project
-- [x] staff approve student interest and assign student to the project
-
 ## Introduction
 
 This document describes the RESTful API for the **Allocation** Application. The API is designed based on the REST
@@ -384,13 +365,79 @@ This API is used to retrieve a list of all projects in the Allocation Applicatio
 - Request:
 
 ```shell
-
+curl --location 'http://localhost:8080/api/projects' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlNUQUZGIiwiZXhwIjoxNzExNjcwNjg5LCJ1c2VybmFtZSI6InJ3aWxsaWFtcyJ9.yEm1B94J77gMaV7vNCtx6WbAezoibrFqoUS7PmfpSGI'
 ```
 
 - Response:
 
 ```json
-
+[
+  {
+    "id": 1,
+    "title": "AI in Education",
+    "description": "Exploring the use of AI to personalize learning experiences.",
+    "staff": {
+      "id": 1,
+      "username": "rwilliams",
+      "password": "123456",
+      "email": "rwilliams@gmail.com",
+      "role": "STAFF",
+      "firstName": "Rachel",
+      "lastName": "Williams"
+    },
+    "status": true,
+    "createDate": "2024-01-01 10:00:00"
+  },
+  {
+    "id": 2,
+    "title": "Sustainable Computing",
+    "description": "Investigating energy-efficient computing techniques for a sustainable future.",
+    "staff": {
+      "id": 1,
+      "username": "rwilliams",
+      "password": "123456",
+      "email": "rwilliams@gmail.com",
+      "role": "STAFF",
+      "firstName": "Rachel",
+      "lastName": "Williams"
+    },
+    "status": false,
+    "createDate": "2024-01-02 11:00:00"
+  },
+  {
+    "id": 3,
+    "title": "Data Privacy",
+    "description": "Understanding the privacy implications of data collection and analysis.",
+    "staff": {
+      "id": 2,
+      "username": "mjones",
+      "password": "123456",
+      "email": "mjones@gmail.com",
+      "role": "STAFF",
+      "firstName": "Michael",
+      "lastName": "Jones"
+    },
+    "status": false,
+    "createDate": "2024-01-03 12:00:00"
+  },
+  {
+    "id": 4,
+    "title": "Cybersecurity",
+    "description": "Investigating the latest cybersecurity threats and defenses.",
+    "staff": {
+      "id": 2,
+      "username": "mjones",
+      "password": "123456",
+      "email": "mjones@gmail.com",
+      "role": "STAFF",
+      "firstName": "Michael",
+      "lastName": "Jones"
+    },
+    "status": false,
+    "createDate": "2024-01-04 13:00:00"
+  }
+]
 ```
 
 ### Get all available projects for the student
@@ -420,13 +467,66 @@ This API provides the list of all available projects that a student can register
 - Request:
 
 ```shell
-
+curl --location 'http://localhost:8080/api/students/4/available-projects' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0Iiwicm9sZSI6IlNUVURFTlQiLCJleHAiOjE3MTE2NzE2MTcsInVzZXJuYW1lIjoianpoYW5nIn0.JLMPv1-f9UgotmFRsSr7QiaN1i3qO4G9OoFolpmsqQQ'
 ```
 
 - Response:
 
 ```json
-
+[
+    {
+        "id": 2,
+        "title": "Sustainable Computing",
+        "description": "Investigating energy-efficient computing techniques for a sustainable future.",
+        "staff": {
+            "id": 1,
+            "username": "rwilliams",
+            "password": "123456",
+            "email": "rwilliams@gmail.com",
+            "role": "STAFF",
+            "firstName": "Rachel",
+            "lastName": "Williams"
+        },
+        "status": false,
+        "createDate": "2024-01-02 11:00:00",
+        "registerStatus": true
+    },
+    {
+        "id": 3,
+        "title": "Data Privacy",
+        "description": "Understanding the privacy implications of data collection and analysis.",
+        "staff": {
+            "id": 2,
+            "username": "mjones",
+            "password": "123456",
+            "email": "mjones@gmail.com",
+            "role": "STAFF",
+            "firstName": "Michael",
+            "lastName": "Jones"
+        },
+        "status": false,
+        "createDate": "2024-01-03 12:00:00",
+        "registerStatus": false
+    },
+    {
+        "id": 4,
+        "title": "Cybersecurity",
+        "description": "Investigating the latest cybersecurity threats and defenses.",
+        "staff": {
+            "id": 2,
+            "username": "mjones",
+            "password": "123456",
+            "email": "mjones@gmail.com",
+            "role": "STAFF",
+            "firstName": "Michael",
+            "lastName": "Jones"
+        },
+        "status": false,
+        "createDate": "2024-01-04 13:00:00",
+        "registerStatus": false
+    }
+]
 ```
 
 ### Get all proposed projects for the staff
@@ -457,13 +557,106 @@ This API fetches all the projects proposed by a particular staff member.
 - Request:
 
 ```shell
-
+curl --location 'http://localhost:8080/api/staff/1/proposed-projects' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlNUQUZGIiwiZXhwIjoxNzExNjcwNjg5LCJ1c2VybmFtZSI6InJ3aWxsaWFtcyJ9.yEm1B94J77gMaV7vNCtx6WbAezoibrFqoUS7PmfpSGI'
 ```
 
 - Response:
 
 ```json
-
+[
+  {
+    "id": 1,
+    "title": "AI in Education",
+    "description": "Exploring the use of AI to personalize learning experiences.",
+    "staff": {
+      "id": 1,
+      "username": "rwilliams",
+      "password": "123456",
+      "email": "rwilliams@gmail.com",
+      "role": "STAFF",
+      "firstName": "Rachel",
+      "lastName": "Williams"
+    },
+    "status": true,
+    "createDate": "2024-01-01 10:00:00",
+    "interestStudents": [
+      {
+        "id": 3,
+        "username": "jchen",
+        "password": "123456",
+        "email": "jchen@gmail.com",
+        "role": "STUDENT",
+        "firstName": "Jenny",
+        "lastName": "Chen"
+      },
+      {
+        "id": 4,
+        "username": "jzhang",
+        "password": "123456",
+        "email": "jzhang@gmail.com",
+        "role": "STUDENT",
+        "firstName": "Jack",
+        "lastName": "Zhang"
+      },
+      {
+        "id": 6,
+        "username": "asmith",
+        "password": "123456",
+        "email": "asmith@gmail.com",
+        "role": "STUDENT",
+        "firstName": "Alice",
+        "lastName": "Smith"
+      }
+    ],
+    "assignedStudent": {
+      "id": 3,
+      "username": "jchen",
+      "password": "123456",
+      "email": "jchen@gmail.com",
+      "role": "STUDENT",
+      "firstName": "Jenny",
+      "lastName": "Chen"
+    }
+  },
+  {
+    "id": 2,
+    "title": "Sustainable Computing",
+    "description": "Investigating energy-efficient computing techniques for a sustainable future.",
+    "staff": {
+      "id": 1,
+      "username": "rwilliams",
+      "password": "123456",
+      "email": "rwilliams@gmail.com",
+      "role": "STAFF",
+      "firstName": "Rachel",
+      "lastName": "Williams"
+    },
+    "status": false,
+    "createDate": "2024-01-02 11:00:00",
+    "interestStudents": [
+      {
+        "id": 3,
+        "username": "jchen",
+        "password": "123456",
+        "email": "jchen@gmail.com",
+        "role": "STUDENT",
+        "firstName": "Jenny",
+        "lastName": "Chen"
+      },
+      {
+        "id": 4,
+        "username": "jzhang",
+        "password": "123456",
+        "email": "jzhang@gmail.com",
+        "role": "STUDENT",
+        "firstName": "Jack",
+        "lastName": "Zhang"
+      }
+    ],
+    "assignedStudent": null
+  }
+]
 ```
 
 ### Staff propose a project
@@ -497,10 +690,11 @@ This API is used by staff to propose a new project.
 
 ```shell
 curl --location 'http://localhost:8080/api/staff/1/create-project' \
---header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlNUQUZGIiwiZXhwIjoxNzExMDE3NDM4LCJ1c2VybmFtZSI6InJ3aWxsaWFtcyJ9.pmAnq5LDcTsy9wvAMKMB35zoozkYfzxeBAq16DMqC6w' \
---data-raw '{
-    "title": "Deep learning",
-    "description": "Object detection"
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlNUQUZGIiwiZXhwIjoxNzExNjcwNjg5LCJ1c2VybmFtZSI6InJ3aWxsaWFtcyJ9.yEm1B94J77gMaV7vNCtx6WbAezoibrFqoUS7PmfpSGI' \
+--data '{
+    "title": "Title",
+    "description": "Description"
 }'
 ```
 
@@ -554,13 +748,34 @@ This API allows staff to update the information of an existing project.
 - Request:
 
 ```shell
-
+curl --location --request PATCH 'http://localhost:8080/api/projects/1' \
+--header 'Content-Type: application/json' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlNUQUZGIiwiZXhwIjoxNzExNjcwNjg5LCJ1c2VybmFtZSI6InJ3aWxsaWFtcyJ9.yEm1B94J77gMaV7vNCtx6WbAezoibrFqoUS7PmfpSGI' \
+--data '{
+        "title": "AI Practice",
+        "description": "Exploring the use of AI."
+}'
 ```
 
 - Response:
 
 ```json
-
+{
+  "id": 1,
+  "title": "AI Practice",
+  "description": "Exploring the use of AI.",
+  "staff": {
+    "id": 1,
+    "username": "rwilliams",
+    "password": "123456",
+    "email": "rwilliams@gmail.com",
+    "role": "STAFF",
+    "firstName": "Rachel",
+    "lastName": "Williams"
+  },
+  "status": true,
+  "createDate": "2024-01-01 10:00:00"
+}
 ```
 
 ### Staff delete a project
@@ -583,13 +798,22 @@ This API is used by staff to delete a project.
 - Request:
 
 ```shell
-
+curl --location --request DELETE 'http://localhost:8080/api/projects/2' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlNUQUZGIiwiZXhwIjoxNzExNjcwNjg5LCJ1c2VybmFtZSI6InJ3aWxsaWFtcyJ9.yEm1B94J77gMaV7vNCtx6WbAezoibrFqoUS7PmfpSGI'
 ```
 
-- Response:
+- Response(success):
 
-```json
+```text
+Project deleted successfully.
+```
 
+- Response(Failure):
+
+```text
+Project not found.
+
+Project already assigned to a student.
 ```
 
 ### Student register interest in a project
@@ -612,13 +836,28 @@ This API allows a student to register their interest in an available project.
 - Request:
 
 ```shell
-
+curl --location --request POST 'http://localhost:8080/api/projects/3/register-interest' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0Iiwicm9sZSI6IlNUVURFTlQiLCJleHAiOjE3MTE2NzE2MTcsInVzZXJuYW1lIjoianpoYW5nIn0.JLMPv1-f9UgotmFRsSr7QiaN1i3qO4G9OoFolpmsqQQ'
 ```
 
-- Response:
+- Response(success):
 
-```json
+```text
+Interest registered successfully.
+```
 
+- Response(failure):
+
+```text
+Project not found.
+
+User not found.
+
+Interest already registered.
+
+Project already assigned to a student.
+
+Student already assigned to a project.
 ```
 
 ### Student unregister interest in a project
@@ -641,13 +880,30 @@ This API allows a student to unregister their interest in a project they previou
 - Request:
 
 ```shell
-
+curl --location --request POST 'http://localhost:8080/api/projects/3/unregister-interest' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiI0Iiwicm9sZSI6IlNUVURFTlQiLCJleHAiOjE3MTE2NzE2MTcsInVzZXJuYW1lIjoianpoYW5nIn0.JLMPv1-f9UgotmFRsSr7QiaN1i3qO4G9OoFolpmsqQQ'
 ```
 
-- Response:
+- Response(success):
 
-```json
+```text
+Unregister interest successfully.
+```
 
+- Response(failure):
+
+```text
+Project not found.
+
+User not found.
+
+Project already assigned to a student.
+
+Student already assigned to a project.
+
+Interest not registered.
+
+Interest record not found.
 ```
 
 ### Staff approve student interest and assign student to the project
@@ -672,24 +928,24 @@ This API is used by staff to approve a student's interest in a project and assig
 - Request:
 
 ```shell
-curl --location 'http://localhost:8080/api/projects/2/assign-project?userId=4' \
---header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlNUQUZGIiwiZXhwIjoxNzExNTk2ODYyLCJ1c2VybmFtZSI6InJ3aWxsaWFtcyJ9.aWEYd6XExKafhAd5a9lgY2T0gEkrYb1qOj-8sRA9_KY'
+curl --location --request POST 'http://localhost:8080/api/projects/2/assign-project?userId=4' \
+--header 'Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiIxIiwicm9sZSI6IlNUQUZGIiwiZXhwIjoxNzExNjcxNTM0LCJ1c2VybmFtZSI6InJ3aWxsaWFtcyJ9.owi0API3p9244WA_GPYwgKcRRzCoyp_4bMEbO6fFXIg'
 ```
 
 - Response(success):
 
 ```text
-"Project successfully assigned."
+Project successfully assigned.
 ```
 
-- Response(Failure):
+- Response(failure):
 
 ```text
-"Project not found."
+Project not found.
 
-"User not found."
+User not found.
 
-"Project already assigned to a student."
+Project already assigned to a student.
 
-"Student already assigned to a project."
+Student already assigned to a project.
 ```
