@@ -22,5 +22,15 @@ mvn clean install
 mvn spring-boot:run
 ```
 
+### Build and Deploy
+```shell
+# Build the Spring application
+mvn clean package
+# Copy the JAR file to your server(Replace /path/to/server with the actual path) or Upload the JAR file to the server 
+cp target/allocated-server-0.0.1-SNAPSHOT.jar /path/to/server
+# Start the application
+java -jar /path/to/server/allocated-server-0.0.1-SNAPSHOT.jar
+```
+
 ## Testing
 You can run unit tests using Maven by executing `mvn test` in the project root. This will execute all JUnit5 tests located in the `src/test` directory.
