@@ -13,6 +13,10 @@ import org.springframework.boot.test.context.SpringBootTest;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+/**
+ * Test suite for {@link UserService} focusing on the business logic associated
+ * with user management, including CRUD operations and retrieval of user-related information.
+ */
 @SpringBootTest
 public class UserServiceTest {
 
@@ -54,6 +58,9 @@ public class UserServiceTest {
         this.staff = staff;
     }
 
+    /**
+     * Tests retrieval of a user by their ID.
+     */
     @Test
     public void testGetUserById() {
         User user = userService.getUserById(1L);
@@ -62,6 +69,9 @@ public class UserServiceTest {
         assertEquals(User.Role.STAFF, user.getRole());
     }
 
+    /**
+     * Tests retrieval of a user by their username.
+     */
     @Test
     public void testGetUserByUsername() {
         User user = userRepository.findByUsername("rwilliams");
@@ -70,6 +80,9 @@ public class UserServiceTest {
         assertEquals(User.Role.STAFF, user.getRole());
     }
 
+    /**
+     * Tests creating a new student user and validating their saved information.
+     */
     @Test
     public void testCreateStudentUser() {
         userService.createUser(student);
@@ -82,6 +95,9 @@ public class UserServiceTest {
         assertEquals(User.Role.STUDENT, student.getRole());
     }
 
+    /**
+     * Tests creating a new staff user and validating their saved information.
+     */
     @Test
     public void testCreateStaffUser() {
         userService.createUser(staff);
@@ -93,5 +109,4 @@ public class UserServiceTest {
         assertEquals("test-staff-last-name", staff.getLastName());
         assertEquals(User.Role.STAFF, staff.getRole());
     }
-
 }

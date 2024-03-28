@@ -14,6 +14,10 @@ import org.springframework.http.ResponseEntity;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+/**
+ * This class tests the authentication functionalities provided by the {@link AuthController}.
+ * It includes tests for successful and failed login attempts using mock user credentials.
+ */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 public class AuthControllerTest {
 
@@ -29,8 +33,13 @@ public class AuthControllerTest {
     @Autowired
     private AuthController authController;
 
+    /**
+     * Tests a successful login scenario where valid user credentials are provided.
+     * It verifies that the response status is OK, the response body contains a non-null
+     * {@link AuthResponseDTO} with a non-null JWT token, user ID, and user details that match the provided credentials.
+     */
     @Test
-    public void testSuccessfulLogin(){
+    public void testSuccessfulLogin() {
         User user = new User();
         user.setUsername("rwilliams");
         user.setPassword("123456");
@@ -54,6 +63,11 @@ public class AuthControllerTest {
         assertEquals(user.getUsername(), u.getUsername());
     }
 
+    /**
+     * Tests a failed login scenario where invalid user credentials are provided.
+     * It verifies that the response status is BAD_REQUEST and the response body contains a non-null
+     * {@link AuthResponseDTO} with an error message indicating an invalid login attempt.
+     */
     @Test
     public void testFailedLogin() {
         User user = new User();
@@ -66,5 +80,4 @@ public class AuthControllerTest {
         assertNotNull(response.getBody());
         assertEquals("Invalid username or password", response.getBody().getMessage());
     }
-
 }

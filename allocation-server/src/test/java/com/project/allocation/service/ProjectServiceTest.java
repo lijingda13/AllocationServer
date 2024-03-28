@@ -24,6 +24,11 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+/**
+ * Test suite for {@link ProjectService} focusing on the business logic associated
+ * with project management, including CRUD operations, listing projects, and
+ * managing interests and assignments.
+ */
 @SpringBootTest
 public class ProjectServiceTest {
 
@@ -111,6 +116,9 @@ public class ProjectServiceTest {
         assignRecord.setStudent(student1);
     }
 
+    /**
+     * Tests that an empty list is returned when no projects exist.
+     */
     @Test
     public void testListAllProjects() {
         when(projectRepository.findAll()).thenReturn(Collections.emptyList());
@@ -120,6 +128,9 @@ public class ProjectServiceTest {
         verify(projectRepository).findAll();
     }
 
+    /**
+     * Tests retrieval of all projects from the repository.
+     */
     @Test
     public void listAllProjects_ReturnsAllProjects() {
         when(projectRepository.findAll()).thenReturn(Arrays.asList(project1, project2));
@@ -131,6 +142,10 @@ public class ProjectServiceTest {
         verify(projectRepository, times(1)).findAll();
     }
 
+    /**
+     * Tests retrieval of available projects for a student along with
+     * their interest status in those projects.
+     */
     @Test
     public void listAvailableProjects_ReturnsAvailableProjectsWithInterestStatus() {
         long userId = 2L;
@@ -145,6 +160,10 @@ public class ProjectServiceTest {
         verify(interestRecordRepository, times(2)).existsByStudentIdAndProjectId(eq(userId), anyLong());
     }
 
+    /**
+     * Tests retrieval of projects proposed by a staff member, including
+     * information about interested and assigned students.
+     */
     @Test
     public void listProposedProjects_ReturnsProjectsWithInterestedAndAssignedStudents() {
         long userId = 1L;
@@ -164,6 +183,9 @@ public class ProjectServiceTest {
         verify(assignRecordRepository, times(1)).findByProjectId(project1.getId());
     }
 
+    /**
+     * Tests the creation of a new project by a staff member.
+     */
     @Test
     public void createProject_SavesProjectWithStaff() {
         when(userRepository.findById(staff.getId())).thenReturn(Optional.of(staff));
@@ -181,6 +203,9 @@ public class ProjectServiceTest {
         verify(projectRepository, times(1)).save(any(Project.class));
     }
 
+    /**
+     * Tests updating existing project information.
+     */
     @Test
     public void updateProject_UpdatesAndSavesProject() {
         when(projectRepository.findById(project1.getId())).thenReturn(Optional.of(project1));
@@ -192,6 +217,9 @@ public class ProjectServiceTest {
         verify(projectRepository, times(1)).save(any(Project.class));
     }
 
+    /**
+     * Tests deletion of a project, ensuring it's not already assigned to a student.
+     */
     @Test
     public void deleteProject_DeletesProjectIfNotAssigned() {
         when(projectRepository.findById(project2.getId())).thenReturn(Optional.of(project2));
@@ -202,6 +230,9 @@ public class ProjectServiceTest {
         verify(projectRepository, times(1)).delete(project2);
     }
 
+    /**
+     * Tests registering a student's interest in a project.
+     */
     @Test
     public void registerInterest_RegistersInterestForStudent() {
         when(projectRepository.findById(project2.getId())).thenReturn(Optional.of(project2));
@@ -213,6 +244,9 @@ public class ProjectServiceTest {
         verify(interestRecordRepository, times(1)).save(any(InterestRecord.class));
     }
 
+    /**
+     * Tests unregistering a student's interest in a project.
+     */
     @Test
     public void unregisterInterest_UnregistersInterestForStudent() {
         when(projectRepository.findById(project2.getId())).thenReturn(Optional.of(project2));
@@ -225,6 +259,9 @@ public class ProjectServiceTest {
         verify(interestRecordRepository, times(1)).delete(interestRecord1);
     }
 
+    /**
+     * Tests assigning a project to a student, ensuring the project is not already assigned.
+     */
     @Test
     public void assignProject_AssignsProjectToStudent() {
         when(projectRepository.findById(project2.getId())).thenReturn(Optional.of(project2));

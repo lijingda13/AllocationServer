@@ -93,13 +93,13 @@ curl --location 'http://localhost:8080/api/users' \
 }'
 ```
 
-- Response(Success):
+- Response(success):
 
 ```text
 "Registration successful"
 ```
 
-- Response(Failure):
+- Response(failure):
 
 ```text
 "Failed: Username has existed"
@@ -669,8 +669,8 @@ This API is used by staff to propose a new project.
 - **Request Header:**
     - Authorization: "Bearer {JWT token}"
 - **Request Body:**
-    - `title`: Title of the project. (Required)
-    - `description`: Description of the project. (Required)
+    - `title`: Title of the project.
+    - `description`: Description of the project.
 - **Response:**
     - Status Code:
         - `201`: Project successfully created.

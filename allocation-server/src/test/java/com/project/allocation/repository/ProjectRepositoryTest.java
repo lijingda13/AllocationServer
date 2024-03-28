@@ -13,6 +13,10 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 
+/**
+ * Test suite for {@link ProjectRepository} focusing on database interactions
+ * related to projects.
+ */
 @DataJpaTest
 public class ProjectRepositoryTest {
 
@@ -24,7 +28,6 @@ public class ProjectRepositoryTest {
 
     private User student;
     private User staff;
-
 
     @BeforeEach
     public void setUp() {
@@ -47,20 +50,27 @@ public class ProjectRepositoryTest {
         this.staff = userRepository.findByUsername("test-staff");
     }
 
-
+    /**
+     * Tests retrieval of all projects.
+     */
     @Test
     public void testGetProjects() {
         List<Project> projects = projectRepository.findAll();
         assertNotEquals(0, projects.size());
     }
 
-
+    /**
+     * Tests retrieval of a specific project by its ID.
+     */
     @Test
     public void testGetProjectById() {
         Optional<Project> project = projectRepository.findById(1L);
         assertNotEquals(Optional.empty(), project);
     }
 
+    /**
+     * Tests creation of a new project.
+     */
     @Test
     public void testCreateProject() {
         Project project = new Project();
@@ -79,12 +89,18 @@ public class ProjectRepositoryTest {
         assertEquals(staff, project1.get().getStaff());
     }
 
+    /**
+     * Tests retrieval of projects based on their status.
+     */
     @Test
     public void testFindAllByStatus() {
         List<Project> projects = projectRepository.findAllByStatus(true);
         assertNotEquals(projects.size(), 0);
     }
 
+    /**
+     * Tests retrieval of projects proposed by a specific staff member.
+     */
     @Test
     public void testFindAllByStaffId() {
         List<Project> projects = projectRepository.findAllByStaffId(1L);

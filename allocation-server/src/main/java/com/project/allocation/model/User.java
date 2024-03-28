@@ -3,9 +3,18 @@ package com.project.allocation.model;
 import jakarta.persistence.Entity;
 import jakarta.validation.constraints.NotBlank;
 
+/**
+ * Represents a user in the system, which can be either a student or a staff member.
+ * Each user has a unique username and password, along with personal information such as
+ * first name, last name, and email address. Users are differentiated by their roles in
+ * the system to provide appropriate access and functionalities.
+ */
 @Entity(name = "users")
 public class User extends BaseEntity {
-    // Role enum for better type safety
+
+    /**
+     * Defines the possible roles for users within the system for type safety and clarity.
+     */
     public enum Role {
         STUDENT, STAFF
     }
