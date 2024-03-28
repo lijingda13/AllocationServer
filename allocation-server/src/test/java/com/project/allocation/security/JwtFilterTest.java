@@ -86,16 +86,6 @@ public class JwtFilterTest {
     }
 
     /**
-     * Tests accessing a secured endpoint without a JWT token should fail.
-     */
-    @Test
-    public void testJwtFilterWithoutTokenThenFail() throws Exception {
-        mockMvc.perform(get("/api/auth/hello_staff")
-                        .contentType("application/json"))
-                .andExpect(status().isBadRequest());
-    }
-
-    /**
      * Tests accessing a secured endpoint with a valid JWT token should succeed.
      */
     @Test

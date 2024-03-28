@@ -5,13 +5,10 @@ import com.project.allocation.model.User;
 import com.project.allocation.service.AuthService;
 import com.project.allocation.util.JwtUtil;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.HttpHeaders;
 
 /**
  * Controller for authentication-related operations.
@@ -42,41 +39,5 @@ public class AuthController {
         } else {
             return ResponseEntity.badRequest().body(dto);
         }
-    }
-
-    /**
-     * A simple endpoint for testing successful authentication.
-     *
-     * @param token The JWT token provided in the request header.
-     * @return A greeting message with the user ID extracted from the JWT token.
-     */
-    @GetMapping("/hello")
-    public ResponseEntity<String> hello(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        Long userId = jwtUtil.getUserIdFromToken(token);
-        return ResponseEntity.ok("Hello " + userId);
-    }
-
-    /**
-     * A staff-specific endpoint for testing successful authentication and authorization.
-     *
-     * @param token The JWT token provided in the request header.
-     * @return A staff-specific greeting message with the user ID extracted from the JWT token.
-     */
-    @GetMapping("/hello_staff")
-    public ResponseEntity<String> helloStaff(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        Long userId = jwtUtil.getUserIdFromToken(token);
-        return ResponseEntity.ok("Hello staff " + userId);
-    }
-
-    /**
-     * A student-specific endpoint for testing successful authentication and authorization.
-     *
-     * @param token The JWT token provided in the request header.
-     * @return A student-specific greeting message with the user ID extracted from the JWT token.
-     */
-    @GetMapping("/hello_student")
-    public ResponseEntity<String> helloStudent(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        Long userId = jwtUtil.getUserIdFromToken(token);
-        return ResponseEntity.ok("Hello student " + userId);
     }
 }
