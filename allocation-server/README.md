@@ -15,6 +15,7 @@ You can run the back-end application using the following commands:
 cd allocated-server
 # Check if Java is installed, Install if not
 java -version
+# Check if Maven is installed, Install if not
 mvn -version
 # Install the dependencies
 mvn clean install
