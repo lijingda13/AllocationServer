@@ -42,8 +42,8 @@ java -jar /path/to/server/allocation-0.0.1-SNAPSHOT.jar
 
 #Or simply use
 mvn clean package
-#Replace /path/to/server/target with the actual path
-java -jar /path/to/server/target/allocation-0.0.1-SNAPSHOT.jar
+
+java -jar target/allocation-0.0.1-SNAPSHOT.jar
 ```
 
 ## Testing
