@@ -22,6 +22,11 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+/**
+ * Service implementation for managing projects.
+ * Provides functionality to list, create, update, delete, register interest in, unregister interest from,
+ * and assign projects.
+ */
 @Service
 public class ProjectServiceImpl implements ProjectService {
 
@@ -38,11 +43,22 @@ public class ProjectServiceImpl implements ProjectService {
         this.assignRecordRepository = assignRecordRepository;
     }
 
+    /**
+     * Lists all projects.
+     *
+     * @return a list of all projects
+     */
     @Override
     public List<Project> listAllProjects() {
         return projectRepository.findAll();
     }
 
+    /**
+     * Lists available projects for a student.
+     *
+     * @param userId the ID of the student
+     * @return a list of StudentProjectDTOs representing available projects for the student
+     */
     @Override
     public List<StudentProjectDTO> listAvailableProjects(Long userId) {
         List<Project> availableProjects = projectRepository.findAllByStatus(false);
@@ -55,6 +71,12 @@ public class ProjectServiceImpl implements ProjectService {
         }).collect(Collectors.toList());
     }
 
+    /**
+     * Lists proposed projects by a staff member.
+     *
+     * @param userId the ID of the staff member
+     * @return a list of StaffProjectDTOs representing projects proposed by the staff member
+     */
     @Override
     public List<StaffProjectDTO> listProposedProjects(Long userId) {
         List<Project> projects = projectRepository.findAllByStaffId(userId);
@@ -76,6 +98,13 @@ public class ProjectServiceImpl implements ProjectService {
         return staffProjectDTOs;
     }
 
+    /**
+     * Creates a new project associated with a staff member.
+     *
+     * @param project the project to be created
+     * @param staffId the ID of the staff member proposing the project
+     * @return the created project
+     */
     @Override
     public Project createProject(Project project, Long staffId) {
         User staff = userRepository.findById(staffId).orElse(null);
@@ -86,6 +115,12 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.save(project);
     }
 
+    /**
+     * Updates an existing project.
+     *
+     * @param project the project with updated information
+     * @return the updated project
+     */
     @Override
     public Project updateProject(Project project) {
         if (project == null || project.getId() == null) {
@@ -101,6 +136,12 @@ public class ProjectServiceImpl implements ProjectService {
         return projectRepository.save(updatedProject);
     }
 
+    /**
+     * Deletes a project by its ID.
+     *
+     * @param projectId the ID of the project to be deleted
+     * @return true if the project was deleted, false otherwise
+     */
     @Transactional
     @Override
     public boolean deleteProject(Long projectId) {
@@ -117,6 +158,13 @@ public class ProjectServiceImpl implements ProjectService {
         return true;
     }
 
+    /**
+     * Registers a student's interest in a project.
+     *
+     * @param projectId the ID of the project
+     * @param userId    the ID of the student expressing interest
+     * @return true if the interest was registered, false otherwise
+     */
     @Override
     public boolean registerInterest(Long projectId, Long userId) {
         Project project = projectRepository.findById(projectId).orElse(null);
@@ -145,6 +193,13 @@ public class ProjectServiceImpl implements ProjectService {
         return true;
     }
 
+    /**
+     * Unregisters a student's interest in a project.
+     *
+     * @param projectId the ID of the project
+     * @param userId    the ID of the student withdrawing interest
+     * @return true if the interest was unregistered, false otherwise
+     */
     @Override
     public boolean unregisterInterest(Long projectId, Long userId) {
         Project project = projectRepository.findById(projectId).orElse(null);
@@ -172,6 +227,13 @@ public class ProjectServiceImpl implements ProjectService {
         return true;
     }
 
+    /**
+     * Assigns a project to a student, marking the project as assigned and recording the assignment.
+     *
+     * @param projectId the ID of the project to be assigned
+     * @param userId    the ID of the student to whom the project is assigned
+     * @return true if the project was successfully assigned, false otherwise
+     */
     @Transactional
     @Override
     public boolean assignProject(Long projectId, Long userId) {

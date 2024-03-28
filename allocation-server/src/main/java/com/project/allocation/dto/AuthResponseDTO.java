@@ -2,6 +2,10 @@ package com.project.allocation.dto;
 
 import com.project.allocation.model.User;
 
+/**
+ * Data Transfer Object for authentication responses.
+ * This class encapsulates the authentication result, message, JWT token, and user details.
+ */
 public class AuthResponseDTO {
 
     private boolean result;
@@ -14,9 +18,20 @@ public class AuthResponseDTO {
 
     private User user;
 
+    /**
+     * Default constructor for creating an empty AuthResponseDTO object.
+     */
     public AuthResponseDTO() {
     }
 
+    /**
+     * Constructs an AuthResponseDTO with specified details.
+     *
+     * @param result  The result of the authentication attempt.
+     * @param message A message describing the outcome of the authentication attempt.
+     * @param token   The JWT token issued upon successful authentication.
+     * @param user    The authenticated user's details.
+     */
     public AuthResponseDTO(boolean result, String message, String token, User user) {
         this.result = result;
         this.message = message;
@@ -67,10 +82,23 @@ public class AuthResponseDTO {
         this.userId = userId;
     }
 
+    /**
+     * Creates a successful AuthResponseDTO object.
+     *
+     * @param token The JWT token issued upon successful authentication.
+     * @param user  The authenticated user's details.
+     * @return A new instance of AuthResponseDTO indicating a successful authentication.
+     */
     public static AuthResponseDTO success(String token, User user) {
         return new AuthResponseDTO(true, "Login successful", token, user);
     }
 
+    /**
+     * Creates a failed AuthResponseDTO object.
+     *
+     * @param message A message describing the reason for authentication failure.
+     * @return A new instance of AuthResponseDTO indicating a failed authentication.
+     */
     public static AuthResponseDTO fail(String message) {
         return new AuthResponseDTO(false, message, null, null);
     }

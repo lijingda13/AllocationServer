@@ -5,20 +5,19 @@ import com.project.allocation.model.User;
 import com.project.allocation.service.AuthService;
 import com.project.allocation.util.JwtUtil;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.http.HttpHeaders;
 
+/**
+ * Controller for authentication-related operations.
+ */
 @RestController
 @RequestMapping("/api/auth")
 public class AuthController {
 
     private final AuthService authService;
-
     private final JwtUtil jwtUtil;
 
     public AuthController(AuthService authService, JwtUtil jwtUtil) {
@@ -27,7 +26,10 @@ public class AuthController {
     }
 
     /**
-     * Login
+     * Authenticates a user based on username and password.
+     *
+     * @param user A user object containing the username and password.
+     * @return A response entity with the authentication result, including a JWT token if successful.
      */
     @PostMapping("/login")
     public ResponseEntity<AuthResponseDTO> login(@RequestBody User user) {
@@ -37,23 +39,5 @@ public class AuthController {
         } else {
             return ResponseEntity.badRequest().body(dto);
         }
-    }
-
-    @GetMapping("/hello")
-    public ResponseEntity<String> hello(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        Long userId = jwtUtil.getUserIdFromToken(token);
-        return ResponseEntity.ok("Hello " + userId);
-    }
-
-    @GetMapping("/hello_staff")
-    public ResponseEntity<String> helloStaff(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        Long userId = jwtUtil.getUserIdFromToken(token);
-        return ResponseEntity.ok("Hello staff " + userId);
-    }
-
-    @GetMapping("/hello_student")
-    public ResponseEntity<String> helloStudent(@RequestHeader(HttpHeaders.AUTHORIZATION) String token) {
-        Long userId = jwtUtil.getUserIdFromToken(token);
-        return ResponseEntity.ok("Hello student " + userId);
     }
 }

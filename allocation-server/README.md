@@ -15,11 +15,27 @@ You can run the back-end application using the following commands:
 cd allocated-server
 # Check if Java is installed, Install if not
 java -version
+# Check if Maven is installed, Install if not
 mvn -version
 # Install the dependencies
 mvn clean install
 # Start the allocated-server application
 mvn spring-boot:run
+```
+
+### Build and Deploy
+```shell
+# Build the Spring application
+mvn clean package
+# Copy the JAR file to your server(Replace /path/to/server with the actual path) or Upload the JAR file to the server 
+cp target/allocation-0.0.1-SNAPSHOT.jar /path/to/server
+# Start the application
+java -jar /path/to/server/allocation-0.0.1-SNAPSHOT.jar
+
+#Or simply use
+mvn clean package
+#Replace /path/to/server/target with the actual path
+java -jar /path/to/server/target/allocation-0.0.1-SNAPSHOT.jar
 ```
 
 ## Testing

@@ -41,6 +41,11 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * Test class for {@link ProjectController}. This class performs integration tests
+ * for the project-related endpoints, ensuring that the Project Controller handles
+ * HTTP requests as expected and interacts correctly with the {@link ProjectService}.
+ */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 public class ProjectControllerTest {
@@ -63,6 +68,11 @@ public class ProjectControllerTest {
     private User student1;
     private User student2;
 
+    /**
+     * Sets up the testing environment before each test. This includes initializing
+     * mock projects, users, and configuring the mock service layer to return specific
+     * data for testing purposes.
+     */
     @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
@@ -104,6 +114,11 @@ public class ProjectControllerTest {
 
     }
 
+    /**
+     * Tests that the API endpoint for listing all projects returns a correct response
+     * with a list of all projects. This test ensures that the endpoint processes the request
+     * successfully and utilizes the {@link ProjectService} to fetch project data.
+     */
     @Test
     public void listAllProjects_ShouldReturnAllProjects() throws Exception {
         List<Project> projects = Arrays.asList(project1, project2);
@@ -116,6 +131,12 @@ public class ProjectControllerTest {
         verify(projectService, times(1)).listAllProjects();
     }
 
+    /**
+     * Tests that the API endpoint for listing available projects for a student
+     * returns the correct projects. It ensures that the projects returned are those
+     * that the student hasn't registered interest in and that the service layer is called
+     * with the correct student ID.
+     */
     @Test
     public void listAvailableProjects_ForStudent_ShouldReturnProjects() throws Exception {
         StudentProjectDTO studentProjectDTO1 = new StudentProjectDTO();
@@ -131,6 +152,11 @@ public class ProjectControllerTest {
         verify(projectService, times(1)).listAvailableProjects(studentId);
     }
 
+    /**
+     * Tests that the API endpoint for listing proposed projects by a staff member
+     * returns the correct projects along with information about students who have
+     * registered interest and the student assigned to each project, if any.
+     */
     @Test
     public void listProposedProjects_ForStaff_ShouldReturnProjects() throws Exception {
         StaffProjectDTO staffProjectDTO1 = new StaffProjectDTO();
@@ -155,6 +181,10 @@ public class ProjectControllerTest {
         verify(projectService, times(1)).listProposedProjects(staffId);
     }
 
+    /**
+     * Tests that the API endpoint for creating a new project successfully
+     * creates the project when provided with valid project data and a valid staff ID.
+     */
     @Test
     public void createProject_WithValidData_ShouldReturnCreated() throws Exception {
         Long staffId = 1L;
@@ -170,6 +200,10 @@ public class ProjectControllerTest {
         verify(projectService, times(1)).createProject(any(Project.class), eq(staffId));
     }
 
+    /**
+     * Tests that the API endpoint for updating a project successfully updates
+     * the project when provided with valid project data and an existing project ID.
+     */
     @Test
     public void updateProject_WithValidData_ShouldReturnUpdatedProject() throws Exception {
         Long projectId = 1L;
@@ -183,6 +217,10 @@ public class ProjectControllerTest {
         verify(projectService, times(1)).updateProject(any(Project.class));
     }
 
+    /**
+     * Tests that the API endpoint for deleting a project successfully deletes
+     * the project when provided with an existing project ID.
+     */
     @Test
     public void deleteProject_ExistingProject_ShouldReturnSuccess() throws Exception {
         Long projectId = 1L;
@@ -194,6 +232,10 @@ public class ProjectControllerTest {
         verify(projectService, times(1)).deleteProject(projectId);
     }
 
+    /**
+     * Tests that the API endpoint for registering interest in a project successfully
+     * registers the student's interest when provided with a valid project ID and user token.
+     */
     @Test
     public void registerInterest_ShouldReturnOk() throws Exception {
         Long projectId = 1L;
@@ -207,6 +249,10 @@ public class ProjectControllerTest {
         verify(projectService, times(1)).registerInterest(projectId, userId);
     }
 
+    /**
+     * Tests that the API endpoint for unregistering interest in a project successfully
+     * unregisters the student's interest when provided with a valid project ID and user token.
+     */
     @Test
     public void unregisterInterest_ShouldReturnOk() throws Exception {
         Long projectId = 1L;
@@ -220,6 +266,7 @@ public class ProjectControllerTest {
         verify(projectService, times(1)).unregisterInterest(projectId, userId);
     }
 
+    // Helper method for converting objects to JSON strings
     private static String asJsonString(final Object obj) {
         try {
             return new ObjectMapper().writeValueAsString(obj);

@@ -7,8 +7,13 @@ import com.project.allocation.model.User;
 import java.util.Date;
 import java.util.List;
 
+/**
+ * Data Transfer Object representing a project for staff members.
+ * This class extends {@link Project} and includes additional details like the creation date,
+ * students interested in the project, and the student it is assigned to, if any.
+ */
 public class StaffProjectDTO extends Project {
-    @JsonFormat(pattern="yyyy-MM-dd HH:mm:ss")
+    @JsonFormat(pattern = "yyyy-MM-dd HH:mm:ss")
     private Date createDate;
 
     private List<User> interestStudents;

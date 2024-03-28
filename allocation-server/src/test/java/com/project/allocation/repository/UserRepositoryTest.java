@@ -12,31 +12,46 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+/**
+ * Test suite for {@link UserRepository} focusing on database interactions
+ * related to users, including both student and staff entities.
+ */
 @DataJpaTest
 public class UserRepositoryTest {
 
     @Autowired
     private UserRepository userRepository;
 
-
+    /**
+     * Tests retrieval of all users.
+     */
     @Test
     public void testGetUser() {
         List<User> users = userRepository.findAll();
         assertNotEquals(0, users.size());
     }
 
+    /**
+     * Tests retrieval of a user by their username.
+     */
     @Test
     public void testGetUserByUsername() {
         User user = userRepository.findByUsername("rwilliams");
         assertNotEquals(null, user);
     }
 
+    /**
+     * Tests retrieval of a user by their ID.
+     */
     @Test
     public void testGetUserById() {
         User user = userRepository.findById(1);
         assertNotEquals(null, user);
     }
 
+    /**
+     * Tests the creation and retrieval of a new student.
+     */
     @Test
     public void testCreateStudent() {
         User user = new User();
@@ -55,6 +70,9 @@ public class UserRepositoryTest {
         assertEquals(User.Role.STUDENT, student.getRole());
     }
 
+    /**
+     * Tests the creation and retrieval of a new staff member.
+     */
     @Test
     public void testCreateStaff() {
         User user = new User();
@@ -73,6 +91,9 @@ public class UserRepositoryTest {
         assertEquals(User.Role.STAFF, staff.getRole());
     }
 
+    /**
+     * Tests updating a user's information.
+     */
     @Test
     public void testUpdateUser() {
         User user = userRepository.findByUsername("rwilliams");
@@ -83,6 +104,9 @@ public class UserRepositoryTest {
         assertEquals("newFirstName", updatedUser.getFirstName());
     }
 
+    /**
+     * Tests the existence check for a username.
+     */
     @Test
     public void testExistsByUsername() {
         boolean exists = userRepository.existsByUsername("rwilliams");
@@ -92,6 +116,9 @@ public class UserRepositoryTest {
         assertFalse(notExists);
     }
 
+    /**
+     * Tests saving a new user to the database.
+     */
     @Test
     public void testSaveUser() {
         User user = new User();
@@ -106,6 +133,9 @@ public class UserRepositoryTest {
         assertEquals("testPass", savedUser.getPassword());
     }
 
+    /**
+     * Tests updating a user's password.
+     */
     @Test
     public void testUpdateUserPassword() {
         User user = userRepository.findByUsername("rwilliams");

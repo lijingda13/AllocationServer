@@ -24,6 +24,11 @@ import org.springframework.web.context.WebApplicationContext;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+/**
+ * Test class for {@link UserController}. This class contains integration tests for user-related
+ * endpoints, ensuring that UserController correctly processes requests and interacts with the
+ * UserService as expected.
+ */
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 public class UserControllerTest {
@@ -59,15 +64,20 @@ public class UserControllerTest {
 
     @Autowired
     private UserController projectController;
-    @Autowired
-    private UserController userController;
 
+    /**
+     * Sets up the mock MVC environment for testing.
+     */
 
     @BeforeEach
     public void setUp() {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
+    /**
+     * Tests the user registration endpoint for a new student. Ensures successful
+     * registration and the correct HTTP response.
+     */
     @Test
     public void testRegisterStudent() {
 
@@ -84,9 +94,13 @@ public class UserControllerTest {
         assertEquals("Registration successfully", response.getBody());
     }
 
+    /**
+     * Tests the user registration endpoint for a new staff member. Ensures successful
+     * registration and the correct HTTP response.
+     */
     @Test
     public void testRegisterStaff() {
-        User  staff = new User();
+        User staff = new User();
         staff.setUsername("staff-test");
         staff.setPassword("staff-test-password");
         staff.setFirstName("staff-test-first-name");
@@ -98,6 +112,10 @@ public class UserControllerTest {
         assertEquals("Registration successfully", response.getBody());
     }
 
+    /**
+     * Tests the retrieval of a user by ID when the user does not exist. Expects a
+     * 404 Not Found response.
+     */
     @Test
     public void testGetUserByIdWithNonExistedThenNotFound() {
         ResponseEntity<User> response = projectController.getUserById(100L);
@@ -105,6 +123,10 @@ public class UserControllerTest {
         assertEquals(HttpStatus.NOT_FOUND, response.getStatusCode());
     }
 
+    /**
+     * Tests the retrieval of a user by ID when the user exists. Expects a 200 OK response
+     * and the user's details in the response body.
+     */
     @Test
     public void testGetUserByIdWithExistedThenFound() {
         ResponseEntity<User> response2 = projectController.getUserById(1L);
@@ -112,6 +134,10 @@ public class UserControllerTest {
         assertEquals(HttpStatus.OK, response2.getStatusCode());
     }
 
+    /**
+     * Tests updating user details. Ensures the user details are updated correctly
+     * and returns a 200 OK response.
+     */
     @Test
     public void testUpdateUser() {
         User user = new User();
@@ -128,6 +154,10 @@ public class UserControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
+    /**
+     * Tests partially updating user details using the PATCH method. Ensures partial updates
+     * are applied correctly and returns a 200 OK response.
+     */
     @Test
     public void testPatchUser() {
         User user = new User();
@@ -137,6 +167,10 @@ public class UserControllerTest {
         assertEquals(HttpStatus.OK, response.getStatusCode());
     }
 
+    /**
+     * Tests retrieving project information for a student. Ensures the correct information
+     * is returned for a given student ID and returns a 200 OK response.
+     */
     @Test
     public void testGetStudentProjectInfo() {
         ResponseEntity<StudentInfoDTO> response = projectController.getStudentProjectInfo(3L);

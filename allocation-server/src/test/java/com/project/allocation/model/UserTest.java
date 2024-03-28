@@ -5,7 +5,16 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 
 import org.junit.jupiter.api.Test;
 
+/**
+ * Tests the functionality of the {@link User} class, focusing on the creation
+ * of user instances and the correct handling of user properties.
+ */
 public class UserTest {
+
+    /**
+     * Validates the creation of a {@link User} instance using its constructor
+     * and ensures the correct assignment of all provided user details.
+     */
     @Test
     void createUserWithConstructorAndValidateFields() {
         String username = "testUser";
@@ -22,6 +31,10 @@ public class UserTest {
         assertEquals(lastname, user.getLastName(), "Last name should match the one provided to the constructor");
     }
 
+    /**
+     * Tests the ability to update a {@link User}'s password and validates that
+     * the new password is correctly set and retrievable.
+     */
     @Test
     void setPasswordAndValidate() {
         User user = new User();
