@@ -1,5 +1,3 @@
-# cs5031-p3
-
 # Allocation Server
 
 ## Overview
